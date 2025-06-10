@@ -44,7 +44,7 @@ next_actions:
 
 ### MCP Server Interface
 
-The system will be accessed through an MCP (Model Context Protocol) server that Claude Code can interact with on behalf of the user.
+The system will be accessed through an MCP (Model Context Protocol) server built using the official TypeScript SDK (@modelcontextprotocol/sdk) that Claude Code can interact with on behalf of the user. This MCP server will be located at `code/mcp/` and will contain ALL tools created for this project, serving as the central interface for all capabilities.
 
 #### Core Capabilities (Phase 1 - MVP)
 1. **Create Operations**
@@ -121,14 +121,20 @@ interface Document {
 }
 ```
 
-### MCP Server Endpoints
-- `createDocument(type, content, frontmatter)`
-- `readDocument(path)`
-- `updateDocument(path, updates)`
-- `searchDocuments(query, filters)`
-- `getRelatedDocuments(path)`
-- `moveDocument(path, newCategory)`
-- `getKnowledgeGraph(options)`
+### MCP Server Implementation
+
+The server will be implemented in TypeScript at `code/mcp/` using @modelcontextprotocol/sdk with the following tools:
+
+#### MCP Tools
+- `context_create` - Create new documents with validated frontmatter
+- `context_read` - Read document content and metadata
+- `context_update` - Update documents while preserving structure
+- `context_search` - Search by tags, content, or relationships
+- `context_query_links` - Get related documents and backlinks
+- `context_move` - Move documents between PARA categories
+- `context_graph` - Export knowledge graph data
+
+All future tools for the forge project will be added to this same MCP server, making it the unified interface for all project capabilities.
 
 ## Benefits
 1. **Comprehensive History**: Every decision, discussion, and development step is captured
