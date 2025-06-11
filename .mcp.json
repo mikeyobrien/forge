@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "context-manager": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["-r", "dotenv/config", "/Users/mobrienv/Code/why/code/mcp-server/dist/index.js"],
+      "env": {
+        "CONTEXT_ROOT": "/Users/mobrienv/Code/why/context",
+        "LOG_LEVEL": "error",
+        "MCP_ENABLE_LOGGING": "false"
+      }
+    }
+  }
+}
