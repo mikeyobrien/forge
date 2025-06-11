@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Plan: Static Website Generator - PARA SSG</title>
+    <style>
+        
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #fff;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Header and Navigation */
+    header {
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 0;
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    header h1 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .nav-menu {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .nav-menu a {
+        color: #666;
+        text-decoration: none;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #333;
+        border-bottom-color: #333;
+    }
+    
+    /* Main content */
+    main {
+        min-height: calc(100vh - 200px);
+        padding: 2rem 0;
+    }
+    
+    /* Document styles */
+    .document h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .document-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .document-meta .author,
+    .document-meta time,
+    .document-meta .status {
+        display: inline-block;
+    }
+    
+    .document-meta .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .tag {
+        background-color: #f0f0f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 3px;
+        font-size: 0.85rem;
+    }
+    
+    .document-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
+    
+    .document-content h1,
+    .document-content h2,
+    .document-content h3,
+    .document-content h4,
+    .document-content h5,
+    .document-content h6 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .document-content ul,
+    .document-content ol {
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+    }
+    
+    .document-content pre {
+        background-color: #f5f5f5;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content code {
+        background-color: #f5f5f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.9em;
+    }
+    
+    .document-content pre code {
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    .document-content blockquote {
+        border-left: 4px solid #e0e0e0;
+        padding-left: 1rem;
+        margin: 1rem 0;
+        color: #666;
+    }
+    
+    .document-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content th,
+    .document-content td {
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem;
+        text-align: left;
+    }
+    
+    .document-content th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        margin-bottom: 2rem;
+    }
+    
+    .breadcrumbs ol {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumbs li {
+        display: inline;
+    }
+    
+    .breadcrumbs a {
+        color: #666;
+        text-decoration: none;
+    }
+    
+    .breadcrumbs a:hover {
+        color: #333;
+        text-decoration: underline;
+    }
+    
+    .breadcrumbs .separator {
+        margin: 0 0.5rem;
+        color: #999;
+    }
+    
+    .breadcrumbs .current {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    /* Category pages */
+    .category-index h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-description {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-count {
+        font-size: 0.95rem;
+        color: #999;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    
+    .document-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .document-entry {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-entry:last-child {
+        border-bottom: none;
+    }
+    
+    .document-entry h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-entry h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .document-entry h2 a:hover {
+        color: #666;
+    }
+    
+    .entry-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary {
+        color: #555;
+        line-height: 1.6;
+    }
+    
+    /* Home page */
+    .home-page h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .home-page > p {
+        font-size: 1.2rem;
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+    
+    .search-placeholder {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .search-placeholder input {
+        width: 100%;
+        max-width: 500px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        background-color: #f8f8f8;
+        color: #999;
+        cursor: not-allowed;
+    }
+    
+    .category-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    
+    .category-card {
+        background-color: #f8f8f8;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .category-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-card h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .category-card p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .document-count {
+        font-size: 0.9rem;
+        color: #999;
+    }
+    
+    /* Footer */
+    footer {
+        background-color: #f8f8f8;
+        border-top: 1px solid #e0e0e0;
+        padding: 2rem 0;
+        margin-top: 4rem;
+        text-align: center;
+        color: #666;
+    }
+    
+    /* Hamburger menu button */
+    .nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
+    .nav-toggle span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        margin: 5px 0;
+        transition: 0.3s;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .nav-toggle {
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .nav-menu {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-menu a {
+            padding: 0.75rem 1rem;
+            border-bottom: none;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            border-left-color: #333;
+            background-color: #f0f0f0;
+        }
+        
+        .document h1 {
+            font-size: 2rem;
+        }
+        
+        .home-page h1 {
+            font-size: 2rem;
+        }
+        
+        .category-overview {
+            grid-template-columns: 1fr;
+        }
+        
+        .breadcrumbs {
+            font-size: 0.85rem;
+        }
+        
+        .container {
+            padding: 0 15px;
+        }
+    }
+    
+    /* Links */
+    a {
+        color: #0066cc;
+    }
+    
+    a:hover {
+        color: #0052a3;
+    }
+    
+    /* Status indicators */
+    .status-draft {
+        color: #ff6600;
+    }
+    
+    .status-published {
+        color: #00aa00;
+    }
+    
+    /* Wiki links */
+    .wiki-link {
+        color: #0066cc;
+        text-decoration: none;
+        border-bottom: 1px dashed #0066cc;
+    }
+    
+    .wiki-link:hover {
+        color: #0052a3;
+        border-bottom-style: solid;
+    }
+    
+    .wiki-link.broken {
+        color: #cc0000;
+        border-bottom-color: #cc0000;
+        cursor: help;
+    }
+    
+    .wiki-link.broken:hover {
+        color: #990000;
+    }
+    
+    /* Backlinks section (for Phase 2) */
+    .backlinks {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .backlinks h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">PARA Knowledge Base</a></h1>
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/projects/" class="active">Projects</a></li>
+                    <li><a href="/areas/" class="">Areas</a></li>
+                    <li><a href="/resources/" class="">Resources</a></li>
+                    <li><a href="/archives/" class="">Archives</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/projects/">Projects</a></li><li class="separator">/</li><li class="current">Prompt Plan: Static Website Generator</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>Prompt Plan: Static Website Generator</h1>
+        <div class="document-meta"><time class="date">2025-06-11</time>
+<span class="status status-active">active</span>
+<div class="tags"><span class="tag">prompt-plan</span> <span class="tag">systematic</span> <span class="tag">development</span> <span class="tag">rust</span> <span class="tag">static-site-generator</span></div></div>
+    </header>
+    
+    <div class="document-content">
+        <h1>Prompt Plan: Static Website Generator</h1>
+<h2>Created: 2025-01-06 15:30:00</h2>
+<h2>Project Overview</h2>
+<h3>Objective</h3>
+<p>Build a static website generator in Rust (<code>para-ssg</code>) that converts PARA-organized markdown documents into a clean, browsable website with search functionality and Obsidian-compatible wiki links.</p>
+<h3>Technical Context</h3>
+<ul>
+<li><strong>Language</strong>: Rust</li>
+<li><strong>Framework</strong>: None (foundational packages only)</li>
+<li><strong>Testing</strong>: Built-in Rust test framework with tempfile for integration tests</li>
+<li><strong>Integration</strong>: Existing PARA context structure at <code>/Users/mobrienv/Code/why/context/</code></li>
+<li><strong>Allowed Dependencies</strong>: serde, pulldown-cmark, toml, serde_json, tempfile (dev)</li>
+</ul>
+<h3>Success Definition</h3>
+<p>A working CLI tool that generates a complete static website from the PARA context directory, preserving structure, enabling wiki-style navigation, and providing client-side search functionality with a 70s earthy design theme.</p>
+<h2>Prompt Sequence</h2>
+<h3>Phase 1: Foundation &amp; Core Infrastructure</h3>
+<p><strong>Goal</strong>: Establish basic project structure, document parsing, and simple HTML generation</p>
+<h4>Prompt 1.1: Project Structure &amp; Basic CLI</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Set up proper Rust project structure with comprehensive module organization
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Complete module structure in <code>src/</code></li>
+<li><input disabled="" type="checkbox"/>
+CLI argument parsing with proper error handling</li>
+<li><input disabled="" type="checkbox"/>
+Basic file system operations</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests for CLI functionality</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Set up the complete Rust project structure for para-ssg in code/static-site-generator/. Create all necessary modules (parser/, generator/, theme/, utils/) with proper mod.rs files. Implement robust CLI argument parsing in main.rs that validates input/output directories and provides helpful error messages. Add comprehensive unit tests for all CLI functionality. Follow Rust best practices with proper error handling using Result types.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+All module directories created with mod.rs files</li>
+<li><input disabled="" type="checkbox"/>
+CLI accepts input_dir and output_dir arguments</li>
+<li><input disabled="" type="checkbox"/>
+Proper error handling for missing/invalid directories</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests covering CLI argument validation</li>
+<li><input disabled="" type="checkbox"/>
+Code compiles without warnings</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 1.2: Document Discovery &amp; PARA Structure Detection</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Implement directory traversal and PARA category detection
+<strong>Dependencies</strong>: [Requires Prompt 1.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Recursive directory traversal utility</li>
+<li><input disabled="" type="checkbox"/>
+PARA category detection (projects/, areas/, resources/, archives/)</li>
+<li><input disabled="" type="checkbox"/>
+Document metadata extraction</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests with sample documents</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement document discovery system in src/utils/para.rs and src/utils/fs.rs. Create functions to recursively traverse the context directory, detect PARA categories, and collect all .md files with their metadata. Include proper error handling for file system operations and comprehensive integration tests using tempfile to create test directory structures.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Recursive directory traversal working correctly</li>
+<li><input disabled="" type="checkbox"/>
+PARA categories properly detected and categorized</li>
+<li><input disabled="" type="checkbox"/>
+File filtering for .md files only</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests with sample directory structures</li>
+<li><input disabled="" type="checkbox"/>
+Error handling for permission issues and invalid paths</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 1.3: Frontmatter &amp; Markdown Parsing</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Parse YAML frontmatter and convert markdown to HTML
+<strong>Dependencies</strong>: [Requires Prompt 1.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+YAML frontmatter parsing with serde</li>
+<li><input disabled="" type="checkbox"/>
+Markdown-to-HTML conversion using pulldown-cmark</li>
+<li><input disabled="" type="checkbox"/>
+Document struct with all metadata fields</li>
+<li><input disabled="" type="checkbox"/>
+Comprehensive parsing tests</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement markdown parsing in src/parser/. Create frontmatter.rs for YAML parsing using serde, and markdown.rs for HTML conversion using pulldown-cmark. Define a comprehensive Document struct that captures all metadata (title, tags, dates, category, status). Add thorough unit tests covering various frontmatter formats and markdown edge cases.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+YAML frontmatter correctly parsed into structs</li>
+<li><input disabled="" type="checkbox"/>
+Markdown converted to clean HTML</li>
+<li><input disabled="" type="checkbox"/>
+Document struct captures all required metadata</li>
+<li><input disabled="" type="checkbox"/>
+Handles missing or malformed frontmatter gracefully</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests cover edge cases and error conditions</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 1.4: Basic HTML Template System</h4>
+<p><strong>Status</strong>: ✅ Complete
+<strong>Objective</strong>: Create HTML template system and generate basic static pages
+<strong>Dependencies</strong>: [Requires Prompt 1.3]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+HTML template system in src/theme/templates.rs</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Base page template with navigation structure</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Document page generation</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Output directory management</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement basic HTML generation in src/generator/html.rs and src/theme/templates.rs. Create a simple template system using string replacement that generates clean HTML pages with proper navigation structure reflecting PARA categories. Include base template with header, navigation, content area, and footer. Add functionality to create output directory and generate individual HTML files for each document.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Template system generates valid HTML</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Navigation reflects PARA structure</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Individual pages created for each document</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Output directory properly managed</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Generated HTML validates and renders correctly</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration tests verify complete build process</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: 2025-01-06 17:30:00
+<strong>Notes</strong>: Successfully implemented complete HTML template system with TemplateEngine, document/category/home page generation, breadcrumb navigation, responsive design with basic styles, and full site generation from context directory. All 51 tests pass. Site generation creates 18 HTML pages from PARA context with proper navigation structure.</p>
+<hr />
+<h3>Phase 2: Wiki Links &amp; Advanced Navigation</h3>
+<p><strong>Goal</strong>: Implement Obsidian-compatible wiki links and enhanced navigation features</p>
+<h4>Prompt 2.1: Wiki Link Parsing &amp; Resolution</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Parse <span class="wiki-link broken" title="Link target not found: wiki-links">wiki-links</span> and resolve them to actual file paths
+<strong>Dependencies</strong>: [Requires Prompt 1.4]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Wiki link regex parser</li>
+<li><input disabled="" type="checkbox"/>
+Link resolution algorithm</li>
+<li><input disabled="" type="checkbox"/>
+Broken link detection and warnings</li>
+<li><input disabled="" type="checkbox"/>
+Link replacement in HTML output</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement wiki link system in src/parser/wiki_links.rs. Create robust regex-based parser for &lt;span class="wiki-link broken" title="Link target not found: document-name"&gt;document-name&lt;/span&gt; patterns, implement link resolution algorithm that finds target documents by title or filename, and add broken link detection with helpful warnings. Update HTML generation to replace wiki links with proper &lt;a&gt; tags pointing to generated HTML files.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Wiki links correctly parsed from markdown content</li>
+<li><input disabled="" type="checkbox"/>
+Links resolved to actual file paths</li>
+<li><input disabled="" type="checkbox"/>
+Broken links detected and reported as warnings</li>
+<li><input disabled="" type="checkbox"/>
+HTML output contains proper <a> tags</li>
+<li><input disabled="" type="checkbox"/>
+Case-insensitive link matching works</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests cover various link formats and edge cases</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 2.2: Backlink System &amp; Cross-References</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Generate backlinks and document relationship mapping
+<strong>Dependencies</strong>: [Requires Prompt 2.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Backlink generation system</li>
+<li><input disabled="" type="checkbox"/>
+Document relationship mapping</li>
+<li><input disabled="" type="checkbox"/>
+Backlink display in HTML templates</li>
+<li><input disabled="" type="checkbox"/>
+Cross-reference validation</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement backlink system in src/generator/. Create functionality to build reverse index of document relationships, generate backlink sections for each document, and update HTML templates to display backlinks. Add validation to ensure all cross-references are working correctly and provide comprehensive reporting of link statistics.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Backlinks correctly identified and generated</li>
+<li><input disabled="" type="checkbox"/>
+Document relationship mapping complete</li>
+<li><input disabled="" type="checkbox"/>
+Backlink sections appear in generated HTML</li>
+<li><input disabled="" type="checkbox"/>
+Link statistics provided in build output</li>
+<li><input disabled="" type="checkbox"/>
+Validation catches inconsistent link states</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests verify full link ecosystem</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 2.3: Enhanced Navigation &amp; Category Pages</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Create breadcrumbs, category indexes, and improved navigation
+<strong>Dependencies</strong>: [Requires Prompt 2.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Breadcrumb generation system</li>
+<li><input disabled="" type="checkbox"/>
+Category index pages (Projects, Areas, Resources, Archives)</li>
+<li><input disabled="" type="checkbox"/>
+Navigation menu improvements</li>
+<li><input disabled="" type="checkbox"/>
+Site-wide index page</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Enhance navigation system in src/generator/html.rs. Implement breadcrumb generation based on file paths, create category index pages that list all documents in each PARA category, improve navigation menus with proper highlighting of current section, and generate a comprehensive site index page. Add responsive navigation that works on mobile devices.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Breadcrumbs generated for all pages</li>
+<li><input disabled="" type="checkbox"/>
+Category index pages created and functional</li>
+<li><input disabled="" type="checkbox"/>
+Navigation highlights current section</li>
+<li><input disabled="" type="checkbox"/>
+Site index page provides overview</li>
+<li><input disabled="" type="checkbox"/>
+Mobile-responsive navigation implemented</li>
+<li><input disabled="" type="checkbox"/>
+Navigation tests verify all functionality</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h3>Phase 3: Search System &amp; 70s Theme</h3>
+<p><strong>Goal</strong>: Implement client-side search functionality and apply 70s earthy design theme</p>
+<h4>Prompt 3.1: Search Index Generation</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Build JSON search index with document content and metadata
+<strong>Dependencies</strong>: [Requires Prompt 2.3]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Search index data structure</li>
+<li><input disabled="" type="checkbox"/>
+JSON index generation during build</li>
+<li><input disabled="" type="checkbox"/>
+Content excerpting for search results</li>
+<li><input disabled="" type="checkbox"/>
+Index optimization for client-side performance</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement search index system in src/generator/search.rs. Create data structures for search index containing document titles, paths, content excerpts, tags, and categories. Generate optimized JSON index during build process with content excerpting for search results. Add functionality to exclude common words and optimize index size for client-side loading.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Search index JSON generated during build</li>
+<li><input disabled="" type="checkbox"/>
+Index contains all necessary document metadata</li>
+<li><input disabled="" type="checkbox"/>
+Content excerpts optimized for search results</li>
+<li><input disabled="" type="checkbox"/>
+Index size reasonable for client-side loading</li>
+<li><input disabled="" type="checkbox"/>
+Index structure supports efficient searching</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests verify index generation</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 3.2: Client-Side Search Implementation</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Create JavaScript search functionality with results interface
+<strong>Dependencies</strong>: [Requires Prompt 3.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Client-side JavaScript search engine</li>
+<li><input disabled="" type="checkbox"/>
+Search interface with input and results</li>
+<li><input disabled="" type="checkbox"/>
+Search result highlighting and ranking</li>
+<li><input disabled="" type="checkbox"/>
+Search functionality embedded in HTML templates</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement client-side search in src/theme/. Create JavaScript search engine that loads the JSON index and provides fast text search with ranking. Build search interface with input field, results display, and result highlighting. Embed search functionality into HTML templates and ensure it works without external dependencies. Add keyboard shortcuts and search result navigation.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+JavaScript search loads and parses JSON index</li>
+<li><input disabled="" type="checkbox"/>
+Search interface responsive and functional</li>
+<li><input disabled="" type="checkbox"/>
+Results ranked by relevance</li>
+<li><input disabled="" type="checkbox"/>
+Search highlighting shows matching terms</li>
+<li><input disabled="" type="checkbox"/>
+Keyboard shortcuts work (Ctrl+K, escape, arrow keys)</li>
+<li><input disabled="" type="checkbox"/>
+Search works offline after initial page load</li>
+<li><input disabled="" type="checkbox"/>
+Manual testing confirms search functionality</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 3.3: 70s Earthy Theme Implementation</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Apply complete 70s earthy design theme with responsive layout
+<strong>Dependencies</strong>: [Requires Prompt 3.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+70s earthy color palette CSS</li>
+<li><input disabled="" type="checkbox"/>
+Typography and layout styling</li>
+<li><input disabled="" type="checkbox"/>
+Mobile-responsive design</li>
+<li><input disabled="" type="checkbox"/>
+CSS embedded in HTML templates</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement complete 70s earthy theme in src/theme/styles.rs. Create CSS with the defined color palette (Saddle Brown, Peru, Goldenrod, Beige, etc.), implement typography using system fonts, and ensure fully responsive design that works on mobile and desktop. Embed CSS directly in HTML templates to avoid external dependencies. Add subtle design elements that evoke the 70s era while maintaining modern usability.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+70s earthy color palette fully implemented</li>
+<li><input disabled="" type="checkbox"/>
+Typography clear and readable on all devices</li>
+<li><input disabled="" type="checkbox"/>
+Responsive design works on mobile and desktop</li>
+<li><input disabled="" type="checkbox"/>
+CSS embedded in HTML templates</li>
+<li><input disabled="" type="checkbox"/>
+Design evokes 70s era while remaining modern</li>
+<li><input disabled="" type="checkbox"/>
+Visual testing confirms theme quality</li>
+<li><input disabled="" type="checkbox"/>
+Generated site looks professional and cohesive</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h3>Phase 4: Polish, Testing &amp; Documentation</h3>
+<p><strong>Goal</strong>: Comprehensive testing, performance optimization, and production readiness</p>
+<h4>Prompt 4.1: Performance Optimization &amp; Build Speed</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Optimize build performance and generated output
+<strong>Dependencies</strong>: [Requires Prompt 3.3]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Build time optimization</li>
+<li><input disabled="" type="checkbox"/>
+Generated file size optimization</li>
+<li><input disabled="" type="checkbox"/>
+Memory usage optimization</li>
+<li><input disabled="" type="checkbox"/>
+Performance benchmarks</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Optimize para-ssg performance in all areas. Profile build time and optimize file processing, reduce generated HTML/CSS/JS file sizes, optimize memory usage during build process, and add performance benchmarks to track improvements. Implement parallel processing where possible and add build progress reporting. Ensure build completes quickly even with large document sets.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Build time reduced by at least 50% from previous version</li>
+<li><input disabled="" type="checkbox"/>
+Generated file sizes minimized without functionality loss</li>
+<li><input disabled="" type="checkbox"/>
+Memory usage optimized for large document sets</li>
+<li><input disabled="" type="checkbox"/>
+Performance benchmarks added to test suite</li>
+<li><input disabled="" type="checkbox"/>
+Parallel processing implemented where beneficial</li>
+<li><input disabled="" type="checkbox"/>
+Build progress reporting functional</li>
+<li><input disabled="" type="checkbox"/>
+Benchmarks pass: <code>cargo bench</code> (if implemented)</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 4.2: Comprehensive Error Handling &amp; Validation</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Robust error handling, validation, and helpful user feedback
+<strong>Dependencies</strong>: [Requires Prompt 4.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Comprehensive error handling throughout codebase</li>
+<li><input disabled="" type="checkbox"/>
+Input validation and helpful error messages</li>
+<li><input disabled="" type="checkbox"/>
+Build validation and warnings system</li>
+<li><input disabled="" type="checkbox"/>
+Graceful handling of malformed documents</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement comprehensive error handling throughout para-ssg. Add proper input validation with helpful error messages, create build validation system that warns about potential issues, and ensure graceful handling of malformed documents. Update all functions to use proper Result types and provide meaningful error context. Add --verbose flag for detailed build information.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+All functions use proper Result types for error handling</li>
+<li><input disabled="" type="checkbox"/>
+Input validation provides helpful error messages</li>
+<li><input disabled="" type="checkbox"/>
+Build validation warns about potential issues</li>
+<li><input disabled="" type="checkbox"/>
+Malformed documents handled gracefully without stopping build</li>
+<li><input disabled="" type="checkbox"/>
+–verbose flag provides detailed build information</li>
+<li><input disabled="" type="checkbox"/>
+Error handling tests cover all error conditions</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 4.3: Integration Testing &amp; End-to-End Validation</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Comprehensive integration tests with real document sets
+<strong>Dependencies</strong>: [Requires Prompt 4.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Integration tests with sample document sets</li>
+<li><input disabled="" type="checkbox"/>
+End-to-end build validation</li>
+<li><input disabled="" type="checkbox"/>
+Automated testing of generated website functionality</li>
+<li><input disabled="" type="checkbox"/>
+CI/CD compatibility testing</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Create comprehensive integration test suite in src/integration_tests/. Build test document sets that cover all PARA categories, wiki link patterns, and edge cases. Implement end-to-end tests that build complete websites and validate functionality. Add automated testing of generated HTML, search functionality, and link integrity. Ensure tests can run in CI/CD environments.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Integration tests cover all major functionality</li>
+<li><input disabled="" type="checkbox"/>
+Test document sets comprehensive and realistic</li>
+<li><input disabled="" type="checkbox"/>
+End-to-end tests validate complete build process</li>
+<li><input disabled="" type="checkbox"/>
+Generated HTML automatically validated</li>
+<li><input disabled="" type="checkbox"/>
+Search functionality tested programmatically</li>
+<li><input disabled="" type="checkbox"/>
+Link integrity verified in tests</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 4.4: Documentation &amp; Production Readiness</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Complete documentation, deployment guides, and production optimization
+<strong>Dependencies</strong>: [Requires Prompt 4.3]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Comprehensive README with usage examples</li>
+<li><input disabled="" type="checkbox"/>
+Configuration documentation</li>
+<li><input disabled="" type="checkbox"/>
+Deployment and hosting guides</li>
+<li><input disabled="" type="checkbox"/>
+Code documentation and API docs</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Complete all documentation for para-ssg. Update README.md with comprehensive usage examples, configuration options, and troubleshooting guide. Add deployment guides for common hosting platforms. Ensure all code has proper documentation comments and generate API docs. Add examples directory with sample configurations and document sets. Prepare for release with proper versioning and release notes.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+README comprehensive with clear usage examples</li>
+<li><input disabled="" type="checkbox"/>
+Configuration options fully documented</li>
+<li><input disabled="" type="checkbox"/>
+Deployment guides for major hosting platforms</li>
+<li><input disabled="" type="checkbox"/>
+Code documentation complete and API docs generated</li>
+<li><input disabled="" type="checkbox"/>
+Examples directory with sample configurations</li>
+<li><input disabled="" type="checkbox"/>
+Release preparation complete with versioning</li>
+<li><input disabled="" type="checkbox"/>
+Documentation tests verify examples work</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h2>Execution Instructions</h2>
+<p>When using this plan with Claude Code, use this exact prompt for each session:</p>
+<pre><code>1. Open @projects/static-website-generator-prompt-plan.md and identify the next unfinished prompt (Status: ⏳ Not Started)
+2. For the next incomplete prompt:
+   - Verify if truly unfinished by checking the Success Criteria
+   - Implement exactly as described in the prompt section
+   - Ensure all deliverables are completed
+   - Ensure all success criteria are met
+   - Run tests and verify they pass: `cargo test`
+   - Run linting: `cargo clippy`
+   - Run formatting: `cargo fmt`
+   - Commit changes to repository with descriptive commit message (no --no-verify)
+   - Update the prompt plan to mark as completed (Status: ✅ Complete) with timestamp and notes
+3. Pause after completing the prompt for user review
+4. Ask if ready to proceed with next unfinished prompt
+</code></pre>
+<h2>Progress Tracking</h2>
+<h3>Overall Progress</h3>
+<ul>
+<li><strong>Total Prompts</strong>: 16</li>
+<li><strong>Completed</strong>: 4 ✅</li>
+<li><strong>In Progress</strong>: 0 🔄</li>
+<li><strong>Not Started</strong>: 12 ⏳</li>
+</ul>
+<h3>Status Legend</h3>
+<ul>
+<li>⏳ <strong>Not Started</strong>: Ready to be implemented</li>
+<li>🔄 <strong>In Progress</strong>: Currently being worked on</li>
+<li>✅ <strong>Complete</strong>: Fully implemented and verified</li>
+<li>❌ <strong>Blocked</strong>: Cannot proceed due to dependency</li>
+<li>⚠️ <strong>Needs Review</strong>: Implemented but needs verification</li>
+</ul>
+<h2>Quality Gates</h2>
+<p>Each prompt must pass these gates before marking complete:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+All deliverables achieved</li>
+<li><input disabled="" type="checkbox"/>
+All success criteria met</li>
+<li><input disabled="" type="checkbox"/>
+Tests written and passing: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Code follows Rust conventions: <code>cargo clippy</code></li>
+<li><input disabled="" type="checkbox"/>
+Code properly formatted: <code>cargo fmt</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git (no –no-verify)</li>
+<li><input disabled="" type="checkbox"/>
+MCP validation passes: <code>npx -y @modelcontextprotocol/inspector --cli ./code/mcp-server/start-mcp.sh --method tools/list</code></li>
+</ul>
+<h2>Completion Criteria</h2>
+<p>The entire prompt plan is complete when:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+All 16 prompts marked as ✅ Complete</li>
+<li><input disabled="" type="checkbox"/>
+Final integration testing passed</li>
+<li><input disabled="" type="checkbox"/>
+Complete static website generated from context/ directory</li>
+<li><input disabled="" type="checkbox"/>
+Search functionality working correctly</li>
+<li><input disabled="" type="checkbox"/>
+Wiki links and navigation functional</li>
+<li><input disabled="" type="checkbox"/>
+70s earthy theme applied consistently</li>
+<li><input disabled="" type="checkbox"/>
+Documentation comprehensive and accurate</li>
+<li><input disabled="" type="checkbox"/>
+Ready for deployment and public hosting</li>
+</ul>
+<hr />
+<p><em>Use this systematic plan to build para-ssg incrementally with full testing and validation at each step</em></p>
+<p><strong>Status</strong>: ✅ Complete
+<strong>Objective</strong>: Set up proper Rust project structure with comprehensive module organization
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Complete module structure in <code>src/</code></li>
+<li><input disabled="" type="checkbox" checked=""/>
+CLI argument parsing with proper error handling</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Basic file system operations</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Unit tests for CLI functionality</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Set up the complete Rust project structure for para-ssg in code/static-site-generator/. Create all necessary modules (parser/, generator/, theme/, utils/) with proper mod.rs files. Implement robust CLI argument parsing in main.rs that validates input/output directories and provides helpful error messages. Add comprehensive unit tests for all CLI functionality. Follow Rust best practices with proper error handling using Result types.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+All module directories created with mod.rs files</li>
+<li><input disabled="" type="checkbox" checked=""/>
+CLI accepts input_dir and output_dir arguments</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Proper error handling for missing/invalid directories</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Unit tests covering CLI argument validation</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Code compiles without warnings</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: 2025-01-06 16:10:00
+<strong>Notes</strong>: Successfully implemented complete project structure with 8 modules, robust CLI with comprehensive error handling using thiserror, 6 unit tests covering all CLI validation scenarios, and proper Rust conventions. All tests pass, code compiles cleanly, and changes committed with commit hash 9595df7.</p>
+<h4>Prompt 1.2: Document Discovery &amp; PARA Structure Detection</h4>
+<p><strong>Status</strong>: ✅ Complete
+<strong>Objective</strong>: Implement directory traversal and PARA category detection
+<strong>Dependencies</strong>: [Requires Prompt 1.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Recursive directory traversal utility</li>
+<li><input disabled="" type="checkbox" checked=""/>
+PARA category detection (projects/, areas/, resources/, archives/)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Document metadata extraction</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration tests with sample documents</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement document discovery system in src/utils/para.rs and src/utils/fs.rs. Create functions to recursively traverse the context directory, detect PARA categories, and collect all .md files with their metadata. Include proper error handling for file system operations and comprehensive integration tests using tempfile to create test directory structures.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Recursive directory traversal working correctly</li>
+<li><input disabled="" type="checkbox" checked=""/>
+PARA categories properly detected and categorized</li>
+<li><input disabled="" type="checkbox" checked=""/>
+File filtering for .md files only</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration tests with sample directory structures</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Error handling for permission issues and invalid paths</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: 2025-01-06 16:25:00
+<strong>Notes</strong>: Successfully implemented document discovery with DocumentInfo struct, PARA category detection with constants, ParaStatistics for counting documents by category, recursive directory traversal that skips hidden directories, and comprehensive integration tests using tempfile. All 16 tests pass. CLI now discovers 33 documents in the actual context directory with proper PARA categorization. Commit: b47dea7</p>
+<h4>Prompt 1.3: Frontmatter &amp; Markdown Parsing</h4>
+<p><strong>Status</strong>: ✅ Complete
+<strong>Objective</strong>: Parse YAML frontmatter and convert markdown to HTML
+<strong>Dependencies</strong>: [Requires Prompt 1.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+YAML frontmatter parsing with serde</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Markdown-to-HTML conversion using pulldown-cmark</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Document struct with all metadata fields</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Comprehensive parsing tests</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement markdown parsing in src/parser/. Create frontmatter.rs for YAML parsing using serde, and markdown.rs for HTML conversion using pulldown-cmark. Define a comprehensive Document struct that captures all metadata (title, tags, dates, category, status). Add thorough unit tests covering various frontmatter formats and markdown edge cases.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+YAML frontmatter correctly parsed into structs</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Markdown converted to clean HTML</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Document struct captures all required metadata</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Handles missing or malformed frontmatter gracefully</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Unit tests cover edge cases and error conditions</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: 2025-01-06 (verified 2025-06-11)
+<strong>Notes</strong>: Previously implemented. Includes robust frontmatter extraction, full markdown parsing with extensions, comprehensive metadata struct, and 23 passing tests. Handles all edge cases gracefully.</p>
+<hr />
+<h3>Overall Progress</h3>
+<ul>
+<li><strong>Total Prompts</strong>: 16</li>
+<li><strong>Completed</strong>: 5 ✅</li>
+<li><strong>In Progress</strong>: 0 🔄</li>
+<li><strong>Not Started</strong>: 11 ⏳</li>
+</ul>
+<h4>Prompt 2.1: Wiki Link Parsing &amp; Resolution</h4>
+<p><strong>Status</strong>: ✅ Complete
+<strong>Objective</strong>: Parse <span class="wiki-link broken" title="Link target not found: wiki-links">wiki-links</span> and resolve them to actual file paths
+<strong>Dependencies</strong>: [Requires Prompt 1.4]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Wiki link regex parser</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Link resolution algorithm</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Broken link detection and warnings</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Link replacement in HTML output</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement wiki link system in src/parser/wiki_links.rs. Create robust regex-based parser for &lt;span class="wiki-link broken" title="Link target not found: document-name"&gt;document-name&lt;/span&gt; patterns, implement link resolution algorithm that finds target documents by title or filename, and add broken link detection with helpful warnings. Update HTML generation to replace wiki links with proper &lt;a&gt; tags pointing to generated HTML files.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Wiki links correctly parsed from markdown content</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Links resolved to actual file paths</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Broken links detected and reported as warnings</li>
+<li><input disabled="" type="checkbox" checked=""/>
+HTML output contains proper <a> tags</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Case-insensitive link matching works</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Unit tests cover various link formats and edge cases</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: 2025-06-11 15:18:00
+<strong>Notes</strong>: Implemented complete wiki link system with regex parser, case-insensitive resolution, broken link detection, and HTML generation with relative paths. Added 10 comprehensive tests. Successfully detects and reports broken links during site generation.</p>
+<hr />
+<h3>Overall Progress</h3>
+<ul>
+<li><strong>Total Prompts</strong>: 16</li>
+<li><strong>Completed</strong>: 6 ✅</li>
+<li><strong>In Progress</strong>: 0 🔄</li>
+<li><strong>Not Started</strong>: 10 ⏳</li>
+</ul>
+<h4>Prompt 2.2: Backlink System &amp; Cross-References</h4>
+<p><strong>Status</strong>: ✅ Complete
+<strong>Objective</strong>: Generate backlinks and document relationship mapping
+<strong>Dependencies</strong>: [Requires Prompt 2.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Backlink generation system</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Document relationship mapping</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Backlink display in HTML templates</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Cross-reference validation</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement backlink system in src/generator/. Create functionality to build reverse index of document relationships, generate backlink sections for each document, and update HTML templates to display backlinks. Add validation to ensure all cross-references are working correctly and provide comprehensive reporting of link statistics.
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Backlinks correctly identified and generated</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Document relationship mapping complete</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Backlink sections appear in generated HTML</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Link statistics provided in build output</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Validation catches inconsistent link states</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration tests verify full link ecosystem</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: 2025-06-11 16:50:00
+<strong>Notes</strong>: Successfully implemented complete backlink system with reverse index generation, HTML display, and comprehensive link statistics. Fixed path matching issue to use output_path. All 65 tests passing. Commit: cd5bf0e</p>
+<hr />
+<h3>Overall Progress</h3>
+<ul>
+<li><strong>Total Prompts</strong>: 16</li>
+<li><strong>Completed</strong>: 6 ✅</li>
+<li><strong>In Progress</strong>: 0 🔄</li>
+<li><strong>Not Started</strong>: 10 ⏳</li>
+</ul>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by PARA SSG</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleNav() {
+            var navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var navMenu = document.getElementById('navMenu');
+            var navToggle = document.querySelector('.nav-toggle');
+            if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

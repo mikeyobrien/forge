@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tdd-implementation-plan - PARA SSG</title>
+    <style>
+        
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #fff;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Header and Navigation */
+    header {
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 0;
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    header h1 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .nav-menu {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .nav-menu a {
+        color: #666;
+        text-decoration: none;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #333;
+        border-bottom-color: #333;
+    }
+    
+    /* Main content */
+    main {
+        min-height: calc(100vh - 200px);
+        padding: 2rem 0;
+    }
+    
+    /* Document styles */
+    .document h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .document-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .document-meta .author,
+    .document-meta time,
+    .document-meta .status {
+        display: inline-block;
+    }
+    
+    .document-meta .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .tag {
+        background-color: #f0f0f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 3px;
+        font-size: 0.85rem;
+    }
+    
+    .document-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
+    
+    .document-content h1,
+    .document-content h2,
+    .document-content h3,
+    .document-content h4,
+    .document-content h5,
+    .document-content h6 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .document-content ul,
+    .document-content ol {
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+    }
+    
+    .document-content pre {
+        background-color: #f5f5f5;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content code {
+        background-color: #f5f5f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.9em;
+    }
+    
+    .document-content pre code {
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    .document-content blockquote {
+        border-left: 4px solid #e0e0e0;
+        padding-left: 1rem;
+        margin: 1rem 0;
+        color: #666;
+    }
+    
+    .document-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content th,
+    .document-content td {
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem;
+        text-align: left;
+    }
+    
+    .document-content th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        margin-bottom: 2rem;
+    }
+    
+    .breadcrumbs ol {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumbs li {
+        display: inline;
+    }
+    
+    .breadcrumbs a {
+        color: #666;
+        text-decoration: none;
+    }
+    
+    .breadcrumbs a:hover {
+        color: #333;
+        text-decoration: underline;
+    }
+    
+    .breadcrumbs .separator {
+        margin: 0 0.5rem;
+        color: #999;
+    }
+    
+    .breadcrumbs .current {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    /* Category pages */
+    .category-index h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-description {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-count {
+        font-size: 0.95rem;
+        color: #999;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    
+    .document-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .document-entry {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-entry:last-child {
+        border-bottom: none;
+    }
+    
+    .document-entry h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-entry h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .document-entry h2 a:hover {
+        color: #666;
+    }
+    
+    .entry-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary {
+        color: #555;
+        line-height: 1.6;
+    }
+    
+    /* Home page */
+    .home-page h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .home-page > p {
+        font-size: 1.2rem;
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+    
+    .search-placeholder {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .search-placeholder input {
+        width: 100%;
+        max-width: 500px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        background-color: #f8f8f8;
+        color: #999;
+        cursor: not-allowed;
+    }
+    
+    .category-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    
+    .category-card {
+        background-color: #f8f8f8;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .category-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-card h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .category-card p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .document-count {
+        font-size: 0.9rem;
+        color: #999;
+    }
+    
+    /* Footer */
+    footer {
+        background-color: #f8f8f8;
+        border-top: 1px solid #e0e0e0;
+        padding: 2rem 0;
+        margin-top: 4rem;
+        text-align: center;
+        color: #666;
+    }
+    
+    /* Hamburger menu button */
+    .nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
+    .nav-toggle span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        margin: 5px 0;
+        transition: 0.3s;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .nav-toggle {
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .nav-menu {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-menu a {
+            padding: 0.75rem 1rem;
+            border-bottom: none;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            border-left-color: #333;
+            background-color: #f0f0f0;
+        }
+        
+        .document h1 {
+            font-size: 2rem;
+        }
+        
+        .home-page h1 {
+            font-size: 2rem;
+        }
+        
+        .category-overview {
+            grid-template-columns: 1fr;
+        }
+        
+        .breadcrumbs {
+            font-size: 0.85rem;
+        }
+        
+        .container {
+            padding: 0 15px;
+        }
+    }
+    
+    /* Links */
+    a {
+        color: #0066cc;
+    }
+    
+    a:hover {
+        color: #0052a3;
+    }
+    
+    /* Status indicators */
+    .status-draft {
+        color: #ff6600;
+    }
+    
+    .status-published {
+        color: #00aa00;
+    }
+    
+    /* Wiki links */
+    .wiki-link {
+        color: #0066cc;
+        text-decoration: none;
+        border-bottom: 1px dashed #0066cc;
+    }
+    
+    .wiki-link:hover {
+        color: #0052a3;
+        border-bottom-style: solid;
+    }
+    
+    .wiki-link.broken {
+        color: #cc0000;
+        border-bottom-color: #cc0000;
+        cursor: help;
+    }
+    
+    .wiki-link.broken:hover {
+        color: #990000;
+    }
+    
+    /* Backlinks section (for Phase 2) */
+    .backlinks {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .backlinks h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">PARA Knowledge Base</a></h1>
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/projects/" class="active">Projects</a></li>
+                    <li><a href="/areas/" class="">Areas</a></li>
+                    <li><a href="/resources/" class="">Resources</a></li>
+                    <li><a href="/archives/" class="">Archives</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/projects/">Projects</a></li><li class="separator">/</li><li><a href="/projects/mcp-server-implementation/">Mcp Server Implementation</a></li><li class="separator">/</li><li class="current">tdd-implementation-plan</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>tdd-implementation-plan</h1>
+        
+    </header>
+    
+    <div class="document-content">
+        <h1>TDD Implementation Plan for Documentation &amp; Journaling System</h1>
+<h2>Overview</h2>
+<p>This plan breaks down the implementation of the MCP-based documentation system into small, testable increments. Each step builds on the previous one, ensuring continuous integration and avoiding orphaned code. The system uses the latest @modelcontextprotocol/sdk patterns and respects the CONTEXT_ROOT environment variable for document storage.</p>
+<p><strong>Language</strong>: TypeScript (strict mode) - all implementation MUST be in TypeScript with proper type safety.</p>
+<h2>Architecture Decisions</h2>
+<h3>Environment Variables</h3>
+<ul>
+<li><code>CONTEXT_ROOT</code>: Base directory for all document storage (required)</li>
+<li><code>LOG_LEVEL</code>: Logging verbosity (optional, defaults to ‘info’)</li>
+<li><code>PORT</code>: Server port for HTTP transport (optional, defaults to 3000)</li>
+<li><code>NODE_ENV</code>: Environment mode (optional, defaults to ‘production’)</li>
+</ul>
+<h3>SDK Patterns (2024-2025)</h3>
+<ul>
+<li>Use latest @modelcontextprotocol/sdk with ES modules</li>
+<li>Import paths must include .js extension</li>
+<li>Support both stdio and StreamableHttp transports</li>
+<li>Proper TypeScript configuration with module resolution</li>
+</ul>
+<h2>High-Level Phases</h2>
+<h3>Phase 1: Foundation (Steps 1-6)</h3>
+<ul>
+<li>TypeScript project setup with pre-commit hooks</li>
+<li>Environment configuration with CONTEXT_ROOT</li>
+<li>Document model and validation</li>
+<li>File system operations</li>
+</ul>
+<h3>Phase 2: Core Operations (Steps 7-11)</h3>
+<ul>
+<li>PARA structure management</li>
+<li>Create and read operations</li>
+<li>Frontmatter parsing and validation</li>
+</ul>
+<h3>Phase 3: Search &amp; Relationships (Steps 12-16)</h3>
+<ul>
+<li>Wiki-link parsing</li>
+<li>Search functionality</li>
+<li>Relationship tracking</li>
+</ul>
+<h3>Phase 4: Advanced Features (Steps 17-21)</h3>
+<ul>
+<li>Update operations</li>
+<li>Move operations between PARA categories</li>
+<li>Knowledge graph export</li>
+</ul>
+<h2>Detailed Step-by-Step Implementation</h2>
+<h3>Step 1: TypeScript Project Setup with Pre-commit Hooks</h3>
+<ul>
+<li>Initialize TypeScript project at <code>code/mcp/</code></li>
+<li>Configure strict TypeScript settings</li>
+<li>Set up ESLint with TypeScript plugin</li>
+<li>Configure Prettier for consistent formatting</li>
+<li>Install husky and lint-staged for pre-commit hooks</li>
+<li>Configure pre-commit to run: typecheck, lint, format, tests</li>
+<li>Ensure all code quality checks pass before commits</li>
+</ul>
+<h3>Step 2: MCP SDK Integration with TypeScript</h3>
+<ul>
+<li>Install @modelcontextprotocol/sdk with TypeScript types</li>
+<li>Configure for ES modules with .js imports</li>
+<li>Create basic MCP server structure with proper types</li>
+<li>Set up Jest with ts-jest for TypeScript testing</li>
+<li>Add minimal “ping” tool with full type safety</li>
+<li>Verify TypeScript compilation and type checking</li>
+</ul>
+<h3>Step 3: Environment Configuration System</h3>
+<ul>
+<li>Create typed environment configuration</li>
+<li>Validate CONTEXT_ROOT exists and is writable</li>
+<li>Support .env files for development</li>
+<li>Create configuration schema with TypeScript interfaces</li>
+<li>Add environment validation on startup</li>
+<li>Unit test configuration loading with type safety</li>
+</ul>
+<h3>Step 4: Document Model and Types</h3>
+<ul>
+<li>Define TypeScript interfaces for Document</li>
+<li>Create frontmatter schema types with strict typing</li>
+<li>Implement validation functions with proper return types</li>
+<li>Add type guards for optional fields</li>
+<li>Use Zod for runtime validation with TypeScript integration</li>
+<li>Unit test all type validations</li>
+</ul>
+<h3>Step 5: File System Abstraction Layer</h3>
+<ul>
+<li>Create FileSystem interface with TypeScript</li>
+<li>Implement with CONTEXT_ROOT base path</li>
+<li>Add typed path utilities for safe operations</li>
+<li>Ensure all paths are within CONTEXT_ROOT</li>
+<li>Create typed mock for testing</li>
+<li>Handle cross-platform path issues with types</li>
+</ul>
+<h3>Step 6: PARA Structure Management</h3>
+<ul>
+<li>Implement PARA folder creation under CONTEXT_ROOT</li>
+<li>Create typed path resolver for document locations</li>
+<li>Add category validation with TypeScript enums</li>
+<li>Ensure proper folder initialization</li>
+<li>Test edge cases for invalid paths</li>
+<li>Verify CONTEXT_ROOT isolation</li>
+</ul>
+<h3>Step 7: Frontmatter Parser with TypeScript</h3>
+<ul>
+<li>Implement YAML frontmatter extraction with types</li>
+<li>Create frontmatter serialization with type safety</li>
+<li>Handle malformed frontmatter gracefully</li>
+<li>Preserve document content during parsing</li>
+<li>Test various frontmatter formats</li>
+<li>Support both Windows and Unix line endings</li>
+</ul>
+<h3>Step 8: Document Creation Tool (context_create)</h3>
+<ul>
+<li>Implement context_create MCP tool with Zod schema</li>
+<li>Use CONTEXT_ROOT for storage location</li>
+<li>Validate required frontmatter fields with types</li>
+<li>Generate timestamps automatically</li>
+<li>Place documents in correct PARA folder</li>
+<li>Return typed document metadata</li>
+</ul>
+<h3>Step 9: Document Reading Tool (context_read)</h3>
+<ul>
+<li>Implement context_read MCP tool with types</li>
+<li>Resolve paths relative to CONTEXT_ROOT</li>
+<li>Parse frontmatter and content with type safety</li>
+<li>Handle missing documents gracefully</li>
+<li>Return structured Document objects</li>
+<li>Support both absolute and relative paths</li>
+</ul>
+<h3>Step 10: Wiki-Link Parser with TypeScript</h3>
+<ul>
+<li>Extract <span class="wiki-link broken" title="Link target not found: wiki-links">wiki-links</span> with typed results</li>
+<li>Handle nested and escaped brackets</li>
+<li>Create link normalization rules with types</li>
+<li>Build typed link index data structure</li>
+<li>Support <span class="wiki-link broken" title="Link target not found: Link">Display</span> format</li>
+<li>Unit test link extraction edge cases</li>
+</ul>
+<h3>Step 11: Basic Search Tool (context_search)</h3>
+<ul>
+<li>Implement tag-based search with typed queries</li>
+<li>Add content search within CONTEXT_ROOT</li>
+<li>Create typed search result ranking</li>
+<li>Handle empty/invalid queries with types</li>
+<li>Limit search to CONTEXT_ROOT</li>
+<li>Test search performance</li>
+</ul>
+<h3>Step 12: Integration Testing Phase 1</h3>
+<ul>
+<li>Set up test CONTEXT_ROOT directory</li>
+<li>Test complete create-&gt;read-&gt;search flow</li>
+<li>Verify PARA structure maintained</li>
+<li>Ensure CONTEXT_ROOT isolation</li>
+<li>Create typed test fixtures</li>
+<li>Benchmark performance baseline</li>
+</ul>
+<h3>Step 13: Backlink Tracking System</h3>
+<ul>
+<li>Build reverse link index with TypeScript types</li>
+<li>Update index on document operations</li>
+<li>Handle link updates efficiently</li>
+<li>Store backlinks per document with types</li>
+<li>Test circular link scenarios</li>
+<li>Ensure index consistency</li>
+</ul>
+<h3>Step 14: Link Queries Tool (context_query_links)</h3>
+<ul>
+<li>Implement context_query_links with typed inputs</li>
+<li>Find documents linking to target</li>
+<li>Get all links from document with types</li>
+<li>Build link graph traversal</li>
+<li>Respect CONTEXT_ROOT boundaries</li>
+<li>Test deep link chains</li>
+</ul>
+<h3>Step 15: Document Updates Tool (context_update)</h3>
+<ul>
+<li>Implement context_update with typed operations</li>
+<li>Preserve frontmatter structure with types</li>
+<li>Update link indexes on change</li>
+<li>Validate within CONTEXT_ROOT</li>
+<li>Handle concurrent updates with type safety</li>
+<li>Test partial updates</li>
+</ul>
+<h3>Step 16: Advanced Search Features</h3>
+<ul>
+<li>Add date range filtering with types</li>
+<li>Implement status-based search with enums</li>
+<li>Create compound queries with typed operators</li>
+<li>Add search result pagination with types</li>
+<li>Keep searches within CONTEXT_ROOT</li>
+<li>Performance test with large datasets</li>
+</ul>
+<h3>Step 17: Integration Testing Phase 2</h3>
+<ul>
+<li>Test update-&gt;search-&gt;query flow</li>
+<li>Verify link integrity after updates</li>
+<li>Stress test with many documents</li>
+<li>Ensure index consistency</li>
+<li>Verify CONTEXT_ROOT isolation</li>
+<li>Profile memory usage</li>
+</ul>
+<h3>Step 18: Document Movement Tool (context_move)</h3>
+<ul>
+<li>Implement context_move with typed parameters</li>
+<li>Update all link references with type safety</li>
+<li>Keep within CONTEXT_ROOT</li>
+<li>Handle cross-category moves with types</li>
+<li>Test invalid move operations</li>
+<li>Ensure atomic operations</li>
+</ul>
+<h3>Step 19: Knowledge Graph Builder</h3>
+<ul>
+<li>Create typed graph data structure</li>
+<li>Build from link indexes with TypeScript</li>
+<li>Add typed node/edge metadata</li>
+<li>Implement graph algorithms with types</li>
+<li>Scope to CONTEXT_ROOT documents</li>
+<li>Test cyclic graph handling</li>
+</ul>
+<h3>Step 20: Graph Export Tool (context_graph)</h3>
+<ul>
+<li>Implement context_graph with typed formats</li>
+<li>Export to JSON with TypeScript interfaces</li>
+<li>Add GraphML support with types</li>
+<li>Include typed relationship metadata</li>
+<li>Filter by CONTEXT_ROOT scope</li>
+<li>Test large graph exports</li>
+</ul>
+<h3>Step 21: Template System with TypeScript</h3>
+<ul>
+<li>Create typed document templates</li>
+<li>Store in CONTEXT_ROOT/templates</li>
+<li>Add typed template variables</li>
+<li>Implement template selection with types</li>
+<li>Build default templates with TypeScript</li>
+<li>Test template inheritance</li>
+</ul>
+<h3>Step 22: Final Integration and Polish</h3>
+<ul>
+<li>Complete MCP server with all tools typed</li>
+<li>Validate CONTEXT_ROOT on startup</li>
+<li>Add StreamableHttp transport with types</li>
+<li>Implement graceful shutdown</li>
+<li>Create deployment documentation</li>
+<li>Full system integration tests</li>
+</ul>
+<h3>Step 23: Claude Code Self-Verification Suite</h3>
+<ul>
+<li>Create test harness for headless Claude executions</li>
+<li>Write self-verification scripts for each MCP tool</li>
+<li>Test permission prompts and security boundaries</li>
+<li>Validate tool interactions and error handling</li>
+<li>Create CI/CD integration for automated testing</li>
+<li>Document self-verification patterns</li>
+</ul>
+<h2>Testing Strategy</h2>
+<h3>Unit Tests</h3>
+<ul>
+<li>Written in TypeScript with full type coverage</li>
+<li>Each function tested with typed inputs/outputs</li>
+<li>Mock file system with typed CONTEXT_ROOT</li>
+<li>Test edge cases with proper types</li>
+<li>Maintain &gt;90% coverage</li>
+</ul>
+<h3>Integration Tests</h3>
+<ul>
+<li>TypeScript tests with typed assertions</li>
+<li>Use temporary CONTEXT_ROOT directories</li>
+<li>Test tool interactions with types</li>
+<li>Verify file system changes</li>
+<li>Check data consistency with types</li>
+</ul>
+<h3>End-to-End Tests</h3>
+<ul>
+<li>Full workflow scenarios in TypeScript</li>
+<li>Performance benchmarks with typed metrics</li>
+<li>Stress testing with typed thresholds</li>
+<li>CONTEXT_ROOT isolation verification</li>
+</ul>
+<h3>Self-Verification Tests with Claude Code</h3>
+<ul>
+<li>Headless Claude executions using <code>claude -p</code> flag</li>
+<li>Automated MCP tool testing through Claude CLI</li>
+<li>Permission and security validation</li>
+<li>Real-world usage simulation</li>
+</ul>
+<h2>TypeScript Configuration</h2>
+<h3>tsconfig.json Requirements</h3>
+<ul>
+<li><code>"strict": true</code> - enable all strict type checking</li>
+<li><code>"noImplicitAny": true</code> - no implicit any types</li>
+<li><code>"strictNullChecks": true</code> - explicit null handling</li>
+<li><code>"esModuleInterop": true</code> - proper module interop</li>
+<li><code>"target": "ES2022"</code> - modern JavaScript features</li>
+<li><code>"module": "ESNext"</code> - ES modules</li>
+<li><code>"moduleResolution": "node"</code> - Node resolution</li>
+</ul>
+<h3>Code Quality Tools</h3>
+<ul>
+<li>ESLint with @typescript-eslint plugin</li>
+<li>Prettier for consistent formatting</li>
+<li>ts-prune for unused exports</li>
+<li>TypeScript compiler for type checking</li>
+</ul>
+<h2>Self-Verification Testing Strategy</h2>
+<h3>Headless Claude Testing</h3>
+<p>Each MCP tool will be tested using Claude Code’s headless mode (<code>claude -p</code>) to ensure real-world functionality:</p>
+<ol>
+<li>
+<p><strong>Test Structure</strong>:</p>
+<pre><code class="language-bash"># Start MCP server
+npm run dev &amp;
+SERVER_PID=$!
+
+# Run headless tests
+claude -p "Test context_create tool..."
+claude -p "Verify created document..."
+
+# Cleanup
+kill $SERVER_PID
+</code></pre>
+</li>
+<li>
+<p><strong>Test Categories</strong>:</p>
+<ul>
+<li><strong>Functional Tests</strong>: Verify each tool works correctly</li>
+<li><strong>Permission Tests</strong>: Ensure proper permission handling</li>
+<li><strong>Error Tests</strong>: Validate error messages and recovery</li>
+<li><strong>Integration Tests</strong>: Test tool interactions</li>
+<li><strong>Performance Tests</strong>: Measure response times</li>
+</ul>
+</li>
+<li>
+<p><strong>Verification Scripts</strong>:</p>
+<ul>
+<li><code>tests/claude/test-context-create.sh</code></li>
+<li><code>tests/claude/test-context-read.sh</code></li>
+<li><code>tests/claude/test-context-search.sh</code></li>
+<li><code>tests/claude/test-permissions.sh</code></li>
+<li><code>tests/claude/test-integration.sh</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Expected Outputs</strong>:
+Each test script will validate:</p>
+<ul>
+<li>Tool execution success/failure</li>
+<li>Output format and content</li>
+<li>Side effects (file creation/modification)</li>
+<li>Error handling behavior</li>
+</ul>
+</li>
+<li>
+<p><strong>CI/CD Integration</strong>:</p>
+<ul>
+<li>Run self-verification on every commit</li>
+<li>Generate test reports</li>
+<li>Flag any deviations from expected behavior</li>
+</ul>
+</li>
+</ol>
+<h2>Implementation Prompts</h2>
+<h3>Prompt 23: Claude Code Self-Verification Test Suite</h3>
+<pre><code class="language-text">Create a self-verification test suite that uses Claude Code's headless mode to test MCP tools.
+
+Requirements:
+1. Create tests/claude/ directory structure:
+   - test-helpers.sh - Common test functions
+   - run-all-tests.sh - Main test runner
+   - Individual test scripts for each tool
+
+2. Implement test-helpers.sh:
+   ```bash
+   #!/bin/bash
+
+   # Start MCP server and get PID
+   start_mcp_server() {
+     cd code/mcp
+     npm run dev &gt; /tmp/mcp-test.log 2&gt;&amp;1 &amp;
+     echo $!
+   }
+
+   # Execute headless Claude command
+   test_claude_command() {
+     local command="$1"
+     local expected_pattern="$2"
+
+     output=$(claude -p "$command" 2&gt;&amp;1)
+     if echo "$output" | grep -q "$expected_pattern"; then
+       echo "✓ Test passed: $command"
+       return 0
+     else
+       echo "✗ Test failed: $command"
+       echo "Expected pattern: $expected_pattern"
+       echo "Actual output: $output"
+       return 1
+     fi
+   }
+</code></pre>
+<ol start="3">
+<li>
+<p>Example test-context-create.sh:</p>
+<pre><code class="language-bash">#!/bin/bash
+source ./test-helpers.sh
+
+# Start server
+SERVER_PID=$(start_mcp_server)
+sleep 2
+
+# Test 1: Create valid document
+test_claude_command \
+  "Use the context_create MCP tool to create a document in Projects with title 'Test Document', tags ['test', 'verification'], and summary 'Testing MCP tool'" \
+  "successfully created"
+
+# Test 2: Verify document exists
+test_claude_command \
+  "Use the context_read MCP tool to read Projects/test-document.md" \
+  "Test Document"
+
+# Test 3: Test invalid input
+test_claude_command \
+  "Use the context_create MCP tool with empty title" \
+  "error\|failed\|invalid"
+
+# Cleanup
+kill $SERVER_PID
+rm -rf "$CONTEXT_ROOT/Projects/test-document.md"
+</code></pre>
+</li>
+<li>
+<p>Create TypeScript test validator:</p>
+<pre><code class="language-typescript">// tests/claude/validate-results.ts
+interface TestResult {
+  tool: string;
+  test: string;
+  passed: boolean;
+  output: string;
+  expectedPattern: string;
+}
+
+class TestValidator {
+  validateToolOutput(result: TestResult): void {
+    // Validate tool response format
+    // Check for required fields
+    // Verify error handling
+  }
+}
+</code></pre>
+</li>
+<li>
+<p>CI/CD integration (.github/workflows/self-verify.yml):</p>
+<pre><code class="language-yaml">name: Self-Verification Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: cd code/mcp &amp;&amp; npm install
+      - name: Run self-verification
+        run: |
+          export CONTEXT_ROOT=/tmp/test-context
+          cd tests/claude
+          ./run-all-tests.sh
+</code></pre>
+</li>
+<li>
+<p>Test patterns to verify:</p>
+<ul>
+<li>Tool execution success</li>
+<li>Permission handling</li>
+<li>Error messages</li>
+<li>Output format consistency</li>
+<li>CONTEXT_ROOT enforcement</li>
+<li>Tool interaction flows</li>
+</ul>
+</li>
+</ol>
+<p>This creates a comprehensive self-verification system using Claude’s own capabilities.</p>
+<pre><code>
+### Prompt 1: TypeScript Project with Pre-commit Hooks
+
+```text
+Create a new TypeScript MCP server project at code/mcp/ with strict typing and pre-commit hooks.
+
+Requirements:
+1. Initialize TypeScript project with package.json:
+   - "type": "module" for ES modules
+   - Scripts: build, test, lint, typecheck, format
+   - Node 18+ requirement
+2. Configure TypeScript (tsconfig.json):
+   - strict: true (enables all strict checks)
+   - target: ES2022, module: ESNext
+   - esModuleInterop: true
+   - resolveJsonModule: true
+   - outDir: ./dist, rootDir: ./src
+3. Set up ESLint (.eslintrc.json):
+   - extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended']
+   - TypeScript parser and plugin
+   - Rules for code quality and type safety
+4. Configure Prettier (.prettierrc):
+   - Semi-colons, single quotes
+   - 2 space indentation
+   - Trailing commas
+5. Install and configure husky + lint-staged:
+   - Pre-commit hook running:
+     * npm run typecheck
+     * npm run lint
+     * npm run test -- --findRelatedTests
+     * prettier --write
+   - Commit-msg hook for conventional commits
+6. Create initial structure:
+   - src/index.ts - entry point
+   - src/types/ - TypeScript interfaces
+   - src/tools/ - MCP tools
+   - tests/ - Jest tests
+7. Verify setup:
+   - All hooks run on commit
+   - TypeScript compiles without errors
+   - Tests pass
+
+This ensures code quality from the start.
+</code></pre>
+<h3>Prompt 2: MCP SDK Integration with TypeScript Types</h3>
+<pre><code class="language-text">Set up MCP SDK with full TypeScript type safety and create a typed ping tool.
+
+Requirements:
+1. Install dependencies:
+   - @modelcontextprotocol/sdk (latest)
+   - zod for runtime validation
+   - dotenv for environment variables
+2. Create src/server.ts with typed MCP server:
+   ```typescript
+   import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+   import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+</code></pre>
+<ul>
+<li>Define server with proper types</li>
+<li>Set up transport with TypeScript</li>
+</ul>
+<ol start="3">
+<li>Create src/tools/ping.ts:
+<ul>
+<li>Define input schema with Zod</li>
+<li>Implement tool with full type safety</li>
+<li>Return typed response</li>
+</ul>
+<pre><code class="language-typescript">const pingSchema = z.object({
+  message: z.string().optional(),
+});
+type PingInput = z.infer&lt;typeof pingSchema&gt;;
+</code></pre>
+</li>
+<li>Set up Jest with TypeScript:
+<ul>
+<li>Configure ts-jest</li>
+<li>Test the ping tool with types</li>
+<li>Mock MCP server for testing</li>
+</ul>
+</li>
+<li>Create npm scripts:
+<ul>
+<li>build: tsc</li>
+<li>dev: tsx watch src/index.ts</li>
+<li>test: jest</li>
+<li>typecheck: tsc –noEmit</li>
+</ul>
+</li>
+<li>Write tests:
+<ul>
+<li>Ping tool with various inputs</li>
+<li>Type safety verification</li>
+<li>Error handling</li>
+</ul>
+</li>
+</ol>
+<p>All code must be strongly typed TypeScript.</p>
+<pre><code>
+### Prompt 3: Typed Environment Configuration
+
+```text
+Create a fully typed environment configuration system with CONTEXT_ROOT validation.
+
+Requirements:
+1. Create src/config/environment.ts:
+   ```typescript
+   interface EnvironmentConfig {
+     contextRoot: string;
+     logLevel: 'debug' | 'info' | 'warn' | 'error';
+     port: number;
+     nodeEnv: 'development' | 'production' | 'test';
+   }
+</code></pre>
+<ol start="2">
+<li>Implementation requirements:
+<ul>
+<li>Load from process.env with type coercion</li>
+<li>Validate CONTEXT_ROOT exists and is writable</li>
+<li>Support .env file in development</li>
+<li>Throw typed errors for invalid config</li>
+</ul>
+</li>
+<li>Create src/config/validation.ts:
+<ul>
+<li>validateDirectory(path: string): Promise<void></li>
+<li>Type-safe validation functions</li>
+<li>Custom error types</li>
+</ul>
+</li>
+<li>Error handling:
+<pre><code class="language-typescript">class ConfigurationError extends Error {
+  constructor(
+    public field: string,
+    public reason: string,
+  ) {
+    super(`Configuration error: ${field} - ${reason}`);
+  }
+}
+</code></pre>
+</li>
+<li>Tests with TypeScript:
+<ul>
+<li>Valid configuration loading</li>
+<li>Missing CONTEXT_ROOT handling</li>
+<li>Invalid directory handling</li>
+<li>Type coercion testing</li>
+</ul>
+</li>
+<li>Export typed config object:
+<ul>
+<li>Singleton pattern</li>
+<li>Lazy validation</li>
+<li>Type-safe access</li>
+</ul>
+</li>
+</ol>
+<p>No any types allowed - everything must be properly typed.</p>
+<pre><code>
+### Prompt 4: Document Model with Full TypeScript Types
+
+```text
+Create comprehensive TypeScript types for the document system.
+
+Requirements:
+1. Create src/types/document.ts:
+   ```typescript
+   interface FrontmatterRequired {
+     created_date: string; // ISO 8601
+     tags: string[];
+     summary: string;
+   }
+
+   interface FrontmatterOptional {
+     context?: string;
+     decisions?: string[];
+     status?: 'active' | 'resolved' | 'deprecated';
+     stakeholders?: string[];
+     related?: string[];
+     priority?: 'high' | 'medium' | 'low';
+     next_actions?: string[];
+   }
+
+   interface Document {
+     path: string; // Relative to CONTEXT_ROOT
+     frontmatter: FrontmatterRequired &amp; Partial&lt;FrontmatterOptional&gt;;
+     content: string;
+     links: string[];
+     backlinks: string[];
+   }
+</code></pre>
+<ol start="2">
+<li>Create src/types/para.ts:
+<pre><code class="language-typescript">enum PARACategory {
+  Projects = 'Projects',
+  Areas = 'Areas',
+  Resources = 'Resources',
+  Archives = 'Archives',
+}
+</code></pre>
+</li>
+<li>Zod schemas for validation:
+<ul>
+<li>Match TypeScript interfaces exactly</li>
+<li>Runtime validation aligned with types</li>
+<li>Type inference from schemas</li>
+</ul>
+</li>
+<li>Type guards:
+<pre><code class="language-typescript">function isValidDocument(obj: unknown): obj is Document;
+function hasRequiredFrontmatter(fm: unknown): fm is FrontmatterRequired;
+</code></pre>
+</li>
+<li>Path types:
+<pre><code class="language-typescript">type RelativePath = string &amp; { __brand: 'RelativePath' };
+type AbsolutePath = string &amp; { __brand: 'AbsolutePath' };
+</code></pre>
+</li>
+<li>Tests:
+<ul>
+<li>Type guard functionality</li>
+<li>Zod schema validation</li>
+<li>Type inference verification</li>
+</ul>
+</li>
+</ol>
+<p>Use branded types for path safety.</p>
+<pre><code>
+### Prompt 5: Typed File System Abstraction
+
+```text
+Create a type-safe file system abstraction enforcing CONTEXT_ROOT boundaries.
+
+Requirements:
+1. Create src/utils/filesystem.ts:
+   ```typescript
+   interface IFileSystem {
+     readFile(path: RelativePath): Promise&lt;string&gt;;
+     writeFile(path: RelativePath, content: string): Promise&lt;void&gt;;
+     exists(path: RelativePath): Promise&lt;boolean&gt;;
+     mkdir(path: RelativePath, recursive?: boolean): Promise&lt;void&gt;;
+     listFiles(path: RelativePath, pattern?: string): Promise&lt;RelativePath[]&gt;;
+   }
+
+   class FileSystem implements IFileSystem {
+     constructor(private contextRoot: AbsolutePath) {}
+   }
+</code></pre>
+<ol start="2">
+<li>Path utilities with types:
+<pre><code class="language-typescript">function toRelativePath(path: string): RelativePath;
+function toAbsolutePath(path: string, base: AbsolutePath): AbsolutePath;
+function isWithinContextRoot(path: AbsolutePath, root: AbsolutePath): boolean;
+</code></pre>
+</li>
+<li>Security with TypeScript:
+<ul>
+<li>Path validation at type level</li>
+<li>Runtime checks for safety</li>
+<li>Custom typed errors</li>
+</ul>
+</li>
+<li>Error types:
+<pre><code class="language-typescript">class SecurityError extends Error {
+  constructor(
+    public attemptedPath: string,
+    public contextRoot: string,
+  ) {}
+}
+</code></pre>
+</li>
+<li>Mock implementation:
+<pre><code class="language-typescript">class MockFileSystem implements IFileSystem
+</code></pre>
+</li>
+<li>Tests with full type coverage:
+<ul>
+<li>Path traversal prevention</li>
+<li>Type safety verification</li>
+<li>Mock behavior validation</li>
+</ul>
+</li>
+</ol>
+<p>Use TypeScript’s type system to prevent security issues.</p>
+<pre><code>
+### Prompt 6: PARA Structure with TypeScript
+
+```text
+Implement PARA methodology with full TypeScript type safety.
+
+Requirements:
+1. Create src/utils/para.ts:
+   ```typescript
+   interface PARAStructure {
+     initializeStructure(): Promise&lt;void&gt;;
+     validateCategory(category: string): category is PARACategory;
+     resolvePath(category: PARACategory, filename: string): RelativePath;
+     getCategoryFromPath(path: RelativePath): PARACategory | null;
+   }
+
+   class PARAManager implements PARAStructure {
+     constructor(private fs: IFileSystem) {}
+   }
+</code></pre>
+<ol start="2">
+<li>Type-safe operations:
+<ul>
+<li>Use enum for categories</li>
+<li>Typed path resolution</li>
+<li>Validation with type predicates</li>
+</ul>
+</li>
+<li>Constants with types:
+<pre><code class="language-typescript">const PARA_PATHS: Record&lt;PARACategory, RelativePath&gt; = {
+  [PARACategory.Projects]: 'Projects' as RelativePath,
+  // etc...
+};
+</code></pre>
+</li>
+<li>Integration types:
+<pre><code class="language-typescript">interface PARADocument extends Document {
+  category: PARACategory;
+}
+</code></pre>
+</li>
+<li>Tests with TypeScript:
+<ul>
+<li>Category validation</li>
+<li>Path resolution accuracy</li>
+<li>Type predicate testing</li>
+</ul>
+</li>
+<li>Startup integration:
+<ul>
+<li>Type-safe initialization</li>
+<li>Error handling with types</li>
+</ul>
+</li>
+</ol>
+<p>Leverage TypeScript enums and type predicates.</p>
+<pre><code>
+### Prompt 7: Frontmatter Parser with TypeScript Types
+
+```text
+Create a type-safe frontmatter parser for markdown documents.
+
+Requirements:
+1. Create src/utils/frontmatter.ts:
+   ```typescript
+   interface ParseResult&lt;T = unknown&gt; {
+     frontmatter: T;
+     body: string;
+     raw: string;
+   }
+
+   class FrontmatterParser {
+     parse&lt;T = unknown&gt;(content: string): ParseResult&lt;T&gt;;
+     serialize&lt;T&gt;(frontmatter: T, body: string): string;
+     update&lt;T extends Record&lt;string, unknown&gt;&gt;(
+       content: string,
+       updates: Partial&lt;T&gt;
+     ): string;
+   }
+</code></pre>
+<ol start="2">
+<li>Type-safe parsing:
+<ul>
+<li>Generic types for frontmatter</li>
+<li>Preserve type information</li>
+<li>Validation with Zod schemas</li>
+</ul>
+</li>
+<li>Specific extractors:
+<pre><code class="language-typescript">function extractTags(frontmatter: unknown): string[];
+function extractDate(frontmatter: unknown): Date | null;
+function extractAs&lt;T&gt;(frontmatter: unknown, schema: ZodSchema&lt;T&gt;): T;
+</code></pre>
+</li>
+<li>Safe YAML options:
+<ul>
+<li>Prevent code execution</li>
+<li>Type-safe loading</li>
+<li>Error handling</li>
+</ul>
+</li>
+<li>Tests with types:
+<ul>
+<li>Generic parsing</li>
+<li>Type preservation</li>
+<li>Schema validation</li>
+<li>Round-trip accuracy</li>
+</ul>
+</li>
+</ol>
+<p>Use generics for flexible yet safe parsing.</p>
+<pre><code>
+### Prompt 8: Create Document Tool with Full Types
+
+```text
+Implement context_create tool with comprehensive TypeScript types.
+
+Requirements:
+1. Create src/tools/context_create.ts:
+   ```typescript
+   const createInputSchema = z.object({
+     category: z.nativeEnum(PARACategory),
+     title: z.string().min(1),
+     tags: z.array(z.string()),
+     summary: z.string(),
+     context: z.string().optional(),
+     priority: z.enum(['high', 'medium', 'low']).optional()
+   });
+
+   type CreateInput = z.infer&lt;typeof createInputSchema&gt;;
+
+   interface CreateResult {
+     path: RelativePath;
+     document: Document;
+   }
+</code></pre>
+<ol start="2">
+<li>Tool implementation:
+<pre><code class="language-typescript">server.tool(
+  'context_create',
+  createInputSchema,
+  async (input: CreateInput): Promise&lt;ToolResult&lt;CreateResult&gt;&gt; =&gt; {
+    // Fully typed implementation
+  },
+);
+</code></pre>
+</li>
+<li>Type-safe operations:
+<ul>
+<li>Validate with Zod schema</li>
+<li>Return typed results</li>
+<li>Handle errors with types</li>
+</ul>
+</li>
+<li>Filename generation:
+<pre><code class="language-typescript">function generateFilename(title: string, existing: Set&lt;string&gt;): string;
+</code></pre>
+</li>
+<li>Tests with TypeScript:
+<ul>
+<li>Input validation</li>
+<li>Type inference</li>
+<li>Error scenarios</li>
+<li>Result types</li>
+</ul>
+</li>
+</ol>
+<p>Every function must have explicit TypeScript types.</p>
+<pre><code>
+### Prompt 9: Read Document Tool with TypeScript
+
+```text
+Implement context_read tool with full type safety.
+
+Requirements:
+1. Create src/tools/context_read.ts:
+   ```typescript
+   const readInputSchema = z.object({
+     path: z.string().transform(toRelativePath)
+   });
+
+   type ReadInput = z.infer&lt;typeof readInputSchema&gt;;
+
+   interface ReadResult {
+     document: Document;
+     metadata: {
+       size: number;
+       modified: Date;
+       category: PARACategory;
+     };
+   }
+</code></pre>
+<ol start="2">
+<li>Path resolution with types:
+<pre><code class="language-typescript">async function resolveDocumentPath(
+  input: RelativePath,
+  para: PARAManager,
+): Promise&lt;RelativePath | null&gt;;
+</code></pre>
+</li>
+<li>Tool response:
+<pre><code class="language-typescript">interface ToolResult&lt;T&gt; {
+  content: Array&lt;{
+    type: 'text';
+    text: string;
+  }&gt;;
+}
+</code></pre>
+</li>
+<li>Error handling:
+<pre><code class="language-typescript">class DocumentNotFoundError extends Error {
+  constructor(public path: RelativePath) {
+    super(`Document not found: ${path}`);
+  }
+}
+</code></pre>
+</li>
+<li>Tests:
+<ul>
+<li>Type safety throughout</li>
+<li>Path resolution types</li>
+<li>Error type verification</li>
+</ul>
+</li>
+</ol>
+<p>Maintain type safety from input to output.</p>
+<pre><code>
+### Prompt 10: Wiki-Link Parser with TypeScript
+
+```text
+Create a type-safe wiki-link parser with TypeScript.
+
+Requirements:
+1. Create src/utils/links.ts:
+   ```typescript
+   interface WikiLink {
+     raw: string;
+     target: string;
+     display?: string;
+   }
+
+   interface LinkExtractor {
+     extractLinks(content: string): WikiLink[];
+     normalizeLink(link: string): string;
+     parseLink(raw: string): WikiLink | null;
+   }
+</code></pre>
+<ol start="2">
+<li>
+<p>Type-safe regex patterns:</p>
+<pre><code class="language-typescript">const WIKI_LINK_PATTERN = /\[\[([^\]]+)\]\]/g;
+
+function isValidLink(text: string): text is WikiLinkFormat {
+  return WIKI_LINK_PATTERN.test(text);
+}
+</code></pre>
+</li>
+<li>
+<p>Link index with types:</p>
+<pre><code class="language-typescript">class LinkIndex {
+  private forward: Map&lt;RelativePath, Set&lt;RelativePath&gt;&gt;;
+  private backward: Map&lt;RelativePath, Set&lt;RelativePath&gt;&gt;;
+
+  addDocument(doc: Document): void;
+  getBacklinks(path: RelativePath): RelativePath[];
+  getForwardLinks(path: RelativePath): RelativePath[];
+}
+</code></pre>
+</li>
+<li>
+<p>Type guards:</p>
+<pre><code class="language-typescript">function isWikiLink(obj: unknown): obj is WikiLink;
+</code></pre>
+</li>
+<li>
+<p>Tests with types:</p>
+<ul>
+<li>Link extraction accuracy</li>
+<li>Type guard functionality</li>
+<li>Index operations</li>
+</ul>
+</li>
+</ol>
+<p>Use TypeScript interfaces for link structure.</p>
+<pre><code>
+### Prompt 11: Search Tool with Typed Queries
+
+```text
+Implement context_search with fully typed search queries and results.
+
+Requirements:
+1. Create src/tools/context_search.ts:
+   ```typescript
+   const searchInputSchema = z.object({
+     tags: z.array(z.string()).optional(),
+     text: z.string().optional(),
+     category: z.nativeEnum(PARACategory).optional(),
+     limit: z.number().default(20)
+   });
+
+   type SearchInput = z.infer&lt;typeof searchInputSchema&gt;;
+
+   interface SearchResult {
+     path: RelativePath;
+     score: number;
+     highlights: string[];
+     document: Pick&lt;Document, 'frontmatter'&gt;;
+   }
+</code></pre>
+<ol start="2">
+<li>
+<p>Search index with types:</p>
+<pre><code class="language-typescript">interface SearchIndex {
+  addDocument(doc: Document): void;
+  search(query: SearchInput): SearchResult[];
+  removeDocument(path: RelativePath): void;
+}
+</code></pre>
+</li>
+<li>
+<p>Scoring with types:</p>
+<pre><code class="language-typescript">interface ScoringFactors {
+  tagMatch: number;
+  textMatch: number;
+  titleMatch: number;
+}
+
+function calculateScore(factors: ScoringFactors): number;
+</code></pre>
+</li>
+<li>
+<p>Result formatting:</p>
+<pre><code class="language-typescript">function formatResults(results: SearchResult[]): ToolResult&lt;SearchResult[]&gt;;
+</code></pre>
+</li>
+<li>
+<p>Tests:</p>
+<ul>
+<li>Query type validation</li>
+<li>Result type accuracy</li>
+<li>Score calculation types</li>
+</ul>
+</li>
+</ol>
+<p>Every search operation must be type-safe.</p>
+<pre><code>
+### Prompt 12: Phase 1 Integration Tests with TypeScript
+
+```text
+Create comprehensive TypeScript integration tests for Phase 1.
+
+Requirements:
+1. Create tests/integration/phase1.test.ts:
+   ```typescript
+   describe('Phase 1 Integration', () =&gt; {
+     let testContext: TestContext;
+
+     interface TestContext {
+       contextRoot: AbsolutePath;
+       server: Server;
+       fs: IFileSystem;
+     }
+   });
+</code></pre>
+<ol start="2">
+<li>
+<p>Typed test helpers:</p>
+<pre><code class="language-typescript">async function createTestDocument(
+  context: TestContext,
+  params: Partial&lt;CreateInput&gt;,
+): Promise&lt;Document&gt;;
+
+async function assertDocumentExists(context: TestContext, path: RelativePath): Promise&lt;void&gt;;
+</code></pre>
+</li>
+<li>
+<p>Test scenarios with types:</p>
+<ul>
+<li>Type-safe document creation</li>
+<li>Typed search queries</li>
+<li>Result type verification</li>
+</ul>
+</li>
+<li>
+<p>Performance types:</p>
+<pre><code class="language-typescript">interface PerformanceMetrics {
+  operationTime: number;
+  memoryUsed: number;
+}
+
+function measurePerformance&lt;T&gt;(operation: () =&gt; Promise&lt;T&gt;): Promise&lt;[T, PerformanceMetrics]&gt;;
+</code></pre>
+</li>
+<li>
+<p>Cleanup with types:</p>
+<pre><code class="language-typescript">async function cleanupTestContext(context: TestContext): Promise&lt;void&gt;;
+</code></pre>
+</li>
+</ol>
+<p>All test code must use TypeScript with proper types.</p>
+<pre><code>
+Continue with remaining prompts following the same TypeScript-first pattern...
+
+## Success Criteria
+
+Each step must:
+1. Use TypeScript with strict mode enabled
+2. Have zero `any` types (use `unknown` when needed)
+3. Pass all pre-commit hooks before commit
+4. Have comprehensive typed tests
+5. Use proper TypeScript patterns (interfaces, enums, generics)
+6. Document types with JSDoc when helpful
+7. Export all necessary types for consumers
+
+## TypeScript Best Practices
+
+1. **No Any Types**: Use `unknown` and type guards instead
+2. **Branded Types**: Use for paths and other string types needing validation
+3. **Const Assertions**: Use `as const` for literal types
+4. **Discriminated Unions**: For different document types or results
+5. **Generic Constraints**: Use extends to constrain generic types
+6. **Type Predicates**: For runtime type checking
+7. **Strict Null Checks**: Handle null/undefined explicitly
+
+The final system should leverage TypeScript's type system to prevent bugs at compile time while maintaining the security boundary of CONTEXT_ROOT.
+</code></pre>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by PARA SSG</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleNav() {
+            var navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var navMenu = document.getElementById('navMenu');
+            var navToggle = document.querySelector('.nav-toggle');
+            if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

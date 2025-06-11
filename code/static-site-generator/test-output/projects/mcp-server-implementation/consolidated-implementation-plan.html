@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>consolidated-implementation-plan - PARA SSG</title>
+    <style>
+        
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #fff;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Header and Navigation */
+    header {
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 0;
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    header h1 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .nav-menu {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .nav-menu a {
+        color: #666;
+        text-decoration: none;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #333;
+        border-bottom-color: #333;
+    }
+    
+    /* Main content */
+    main {
+        min-height: calc(100vh - 200px);
+        padding: 2rem 0;
+    }
+    
+    /* Document styles */
+    .document h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .document-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .document-meta .author,
+    .document-meta time,
+    .document-meta .status {
+        display: inline-block;
+    }
+    
+    .document-meta .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .tag {
+        background-color: #f0f0f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 3px;
+        font-size: 0.85rem;
+    }
+    
+    .document-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
+    
+    .document-content h1,
+    .document-content h2,
+    .document-content h3,
+    .document-content h4,
+    .document-content h5,
+    .document-content h6 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .document-content ul,
+    .document-content ol {
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+    }
+    
+    .document-content pre {
+        background-color: #f5f5f5;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content code {
+        background-color: #f5f5f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.9em;
+    }
+    
+    .document-content pre code {
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    .document-content blockquote {
+        border-left: 4px solid #e0e0e0;
+        padding-left: 1rem;
+        margin: 1rem 0;
+        color: #666;
+    }
+    
+    .document-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content th,
+    .document-content td {
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem;
+        text-align: left;
+    }
+    
+    .document-content th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        margin-bottom: 2rem;
+    }
+    
+    .breadcrumbs ol {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumbs li {
+        display: inline;
+    }
+    
+    .breadcrumbs a {
+        color: #666;
+        text-decoration: none;
+    }
+    
+    .breadcrumbs a:hover {
+        color: #333;
+        text-decoration: underline;
+    }
+    
+    .breadcrumbs .separator {
+        margin: 0 0.5rem;
+        color: #999;
+    }
+    
+    .breadcrumbs .current {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    /* Category pages */
+    .category-index h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-description {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-count {
+        font-size: 0.95rem;
+        color: #999;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    
+    .document-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .document-entry {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-entry:last-child {
+        border-bottom: none;
+    }
+    
+    .document-entry h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-entry h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .document-entry h2 a:hover {
+        color: #666;
+    }
+    
+    .entry-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary {
+        color: #555;
+        line-height: 1.6;
+    }
+    
+    /* Home page */
+    .home-page h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .home-page > p {
+        font-size: 1.2rem;
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+    
+    .search-placeholder {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .search-placeholder input {
+        width: 100%;
+        max-width: 500px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        background-color: #f8f8f8;
+        color: #999;
+        cursor: not-allowed;
+    }
+    
+    .category-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    
+    .category-card {
+        background-color: #f8f8f8;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .category-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-card h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .category-card p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .document-count {
+        font-size: 0.9rem;
+        color: #999;
+    }
+    
+    /* Footer */
+    footer {
+        background-color: #f8f8f8;
+        border-top: 1px solid #e0e0e0;
+        padding: 2rem 0;
+        margin-top: 4rem;
+        text-align: center;
+        color: #666;
+    }
+    
+    /* Hamburger menu button */
+    .nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
+    .nav-toggle span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        margin: 5px 0;
+        transition: 0.3s;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .nav-toggle {
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .nav-menu {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-menu a {
+            padding: 0.75rem 1rem;
+            border-bottom: none;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            border-left-color: #333;
+            background-color: #f0f0f0;
+        }
+        
+        .document h1 {
+            font-size: 2rem;
+        }
+        
+        .home-page h1 {
+            font-size: 2rem;
+        }
+        
+        .category-overview {
+            grid-template-columns: 1fr;
+        }
+        
+        .breadcrumbs {
+            font-size: 0.85rem;
+        }
+        
+        .container {
+            padding: 0 15px;
+        }
+    }
+    
+    /* Links */
+    a {
+        color: #0066cc;
+    }
+    
+    a:hover {
+        color: #0052a3;
+    }
+    
+    /* Status indicators */
+    .status-draft {
+        color: #ff6600;
+    }
+    
+    .status-published {
+        color: #00aa00;
+    }
+    
+    /* Wiki links */
+    .wiki-link {
+        color: #0066cc;
+        text-decoration: none;
+        border-bottom: 1px dashed #0066cc;
+    }
+    
+    .wiki-link:hover {
+        color: #0052a3;
+        border-bottom-style: solid;
+    }
+    
+    .wiki-link.broken {
+        color: #cc0000;
+        border-bottom-color: #cc0000;
+        cursor: help;
+    }
+    
+    .wiki-link.broken:hover {
+        color: #990000;
+    }
+    
+    /* Backlinks section (for Phase 2) */
+    .backlinks {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .backlinks h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">PARA Knowledge Base</a></h1>
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/projects/" class="active">Projects</a></li>
+                    <li><a href="/areas/" class="">Areas</a></li>
+                    <li><a href="/resources/" class="">Resources</a></li>
+                    <li><a href="/archives/" class="">Archives</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/projects/">Projects</a></li><li class="separator">/</li><li><a href="/projects/mcp-server-implementation/">Mcp Server Implementation</a></li><li class="separator">/</li><li class="current">consolidated-implementation-plan</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>consolidated-implementation-plan</h1>
+        
+    </header>
+    
+    <div class="document-content">
+        <h1>MCP Server Implementation Plan - Consolidated</h1>
+<p>This document consolidates all the individual step plans for the MCP server implementation into a single comprehensive reference.</p>
+<h2>Overview</h2>
+<p>The MCP (Model Context Protocol) server implementation is divided into multiple phases, with each step building upon the previous ones to create a complete context management system.</p>
+<h2>Phase 1: Core Infrastructure (Steps 5-8)</h2>
+<h3>Step 5: File System Abstraction Layer</h3>
+<p><strong>Objective</strong>: Create a secure file system abstraction layer that enforces CONTEXT_ROOT boundaries and provides a testable interface for all file operations.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li><code>IFileSystem</code> interface defining all file operations</li>
+<li><code>FileSystem</code> class for real file system operations</li>
+<li><code>MockFileSystem</code> class for testing</li>
+<li>Security validations to prevent path traversal attacks</li>
+<li>Support for both synchronous and asynchronous operations</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/filesystem/IFileSystem.ts</code> - Core interface</li>
+<li><code>/src/filesystem/FileSystem.ts</code> - Real implementation</li>
+<li><code>/src/filesystem/MockFileSystem.ts</code> - Mock for testing</li>
+<li><code>/src/filesystem/security.ts</code> - Security utilities</li>
+<li>Comprehensive test suite</li>
+</ul>
+<h3>Step 6: PARA Structure Management</h3>
+<p><strong>Objective</strong>: Implement a robust PARA (Projects, Areas, Resources, Archives) structure management system.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>PARA category validation and path resolution</li>
+<li>Metadata management for each category type</li>
+<li>Path normalization and security boundaries</li>
+<li>TypeScript types for PARA structures</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/para/PARAManager.ts</code> - Main PARA management class</li>
+<li><code>/src/para/types.ts</code> - TypeScript type definitions</li>
+<li>Integration with FileSystem abstraction</li>
+<li>Test suite with 100% coverage</li>
+</ul>
+<h3>Step 7: Frontmatter Parser with TypeScript</h3>
+<p><strong>Objective</strong>: Implement a robust TypeScript-based frontmatter parser for extracting and parsing YAML frontmatter from markdown documents.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>YAML frontmatter extraction</li>
+<li>Type-safe parsing with Zod schemas</li>
+<li>Document serialization (frontmatter + content)</li>
+<li>Error handling and validation</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/parsers/frontmatter.ts</code> - Parser implementation</li>
+<li><code>/src/parsers/serializer.ts</code> - Document serialization</li>
+<li>Zod schemas for validation</li>
+<li>Comprehensive test coverage</li>
+</ul>
+<h3>Step 8: Document Creation Tool (context_create)</h3>
+<p><strong>Objective</strong>: Implement the <code>context_create</code> tool for creating markdown documents with structured frontmatter.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>MCP tool implementation</li>
+<li>PARA category support</li>
+<li>Frontmatter generation</li>
+<li>Path validation and security</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/tools/context-create/index.ts</code> - Tool implementation</li>
+<li>Integration with PARA and FileSystem</li>
+<li>MCP tool registration</li>
+<li>End-to-end tests</li>
+</ul>
+<h2>Phase 2: Document Access and Search (Steps 9-11)</h2>
+<h3>Step 9: Document Reading Tool (context_read)</h3>
+<p><strong>Objective</strong>: Implement a tool to read and retrieve documents from the knowledge base.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>Document content retrieval</li>
+<li>Frontmatter parsing</li>
+<li>Metadata extraction</li>
+<li>Optional backlink information</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/tools/context-read/index.ts</code> - Tool implementation</li>
+<li>Support for include/exclude options</li>
+<li>Error handling for missing files</li>
+<li>Test coverage</li>
+</ul>
+<h3>Step 10: Wiki-Link Parser</h3>
+<p><strong>Objective</strong>: Implement a TypeScript parser for wiki-style <code>&lt;span class="wiki-link broken" title="Link target not found: double bracket"&gt;double bracket&lt;/span&gt;</code> links.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>Link extraction from markdown</li>
+<li>Support for aliases and anchors</li>
+<li>Link normalization utilities</li>
+<li>Type-safe link representations</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/parser/wiki-link.ts</code> - Parser implementation</li>
+<li>Link extraction and manipulation utilities</li>
+<li>Support for various link formats</li>
+<li>Comprehensive test suite</li>
+</ul>
+<h3>Step 11: Basic Search Tool (context_search)</h3>
+<p><strong>Objective</strong>: Implement a search tool for finding documents by tags, content, and metadata.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>Full-text search in document content</li>
+<li>Tag-based filtering</li>
+<li>Metadata queries</li>
+<li>Relevance scoring</li>
+<li>Search result snippets</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/search/SearchEngine.ts</code> - Core search engine</li>
+<li><code>/src/tools/context_search.ts</code> - MCP tool</li>
+<li>Indexing and caching strategies</li>
+<li>Performance optimization</li>
+</ul>
+<h2>Phase 3: Link Management and Advanced Features (Steps 12-16)</h2>
+<h3>Step 12: Integration Testing Phase 1</h3>
+<p><strong>Objective</strong>: Create comprehensive integration tests for all Phase 1 and Phase 2 components.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>End-to-end test scenarios</li>
+<li>MCP server integration tests</li>
+<li>Performance benchmarks</li>
+<li>Error handling validation</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/__tests__/integration/</code> - Test suites</li>
+<li>Test fixtures and helpers</li>
+<li>CI/CD integration</li>
+<li>Performance baselines</li>
+</ul>
+<h3>Step 13: Backlink Tracking System</h3>
+<p><strong>Objective</strong>: Implement automatic tracking of document relationships through backlinks.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>Backlink index management</li>
+<li>Real-time link tracking</li>
+<li>Bidirectional navigation</li>
+<li>Index persistence</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/backlinks/BacklinkManager.ts</code> - Core manager</li>
+<li><code>/src/links/LinkIndexer.ts</code> - Link indexing</li>
+<li>Integration with document operations</li>
+<li>Comprehensive tests</li>
+</ul>
+<h3>Step 14: Link Queries Tool (context_query_links)</h3>
+<p><strong>Objective</strong>: Implement a tool for querying document links and relationships.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>Forward link queries</li>
+<li>Backlink queries</li>
+<li>Orphaned document detection</li>
+<li>Broken link identification</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/tools/context-query-links/index.ts</code> - Tool implementation</li>
+<li>Multiple query types support</li>
+<li>Pagination and filtering</li>
+<li>Test coverage</li>
+</ul>
+<h3>Step 15: Document Updates Tool (context_update)</h3>
+<p><strong>Objective</strong>: Implement document update functionality with link preservation.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>Content update strategies</li>
+<li>Metadata modifications</li>
+<li>Link integrity preservation</li>
+<li>Atomic operations</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/updater/DocumentUpdater.ts</code> - Update logic</li>
+<li><code>/src/tools/context-update/index.ts</code> - MCP tool</li>
+<li>Link preservation utilities</li>
+<li>Transaction support</li>
+</ul>
+<h3>Step 16: Advanced Search Features</h3>
+<p><strong>Objective</strong>: Enhance search with advanced capabilities.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>Fuzzy search matching</li>
+<li>Advanced query syntax parser</li>
+<li>Search facets generation</li>
+<li>Similar document detection</li>
+<li>Saved searches</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/search/AdvancedSearchEngine.ts</code> - Enhanced engine</li>
+<li><code>/src/search/fuzzy-matcher.ts</code> - Fuzzy matching</li>
+<li><code>/src/search/query-parser.ts</code> - Query syntax</li>
+<li><code>/src/search/facet-generator.ts</code> - Faceting</li>
+<li>Performance optimizations</li>
+</ul>
+<h2>Phase 4: Advanced Operations (Steps 17-19)</h2>
+<h3>Step 17: Integration Testing Phase 2</h3>
+<p><strong>Objective</strong>: Comprehensive testing of all Phase 3 features.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>Document lifecycle tests</li>
+<li>Concurrent operation tests</li>
+<li>Performance and scale tests</li>
+<li>Error recovery scenarios</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/__tests__/integration/phase2/</code> - Test suites</li>
+<li>Stress testing framework</li>
+<li>Performance benchmarks</li>
+<li>CI/CD updates</li>
+</ul>
+<h3>Step 18: Document Movement Tool (context_move)</h3>
+<p><strong>Objective</strong>: Implement safe document movement with automatic link updates.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>Document relocation logic</li>
+<li>Automatic link rewriting</li>
+<li>PARA category transitions</li>
+<li>Conflict resolution</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/mover/DocumentMover.ts</code> - Movement logic</li>
+<li><code>/src/tools/context-move/index.ts</code> - MCP tool</li>
+<li>Link update utilities</li>
+<li>Transaction support</li>
+</ul>
+<h3>Step 19: Knowledge Graph Builder</h3>
+<p><strong>Objective</strong>: Create a graph data structure from document links for analysis.</p>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li>Graph construction from links</li>
+<li>Graph algorithms (PageRank, clustering)</li>
+<li>Visualization data generation</li>
+<li>Analysis metrics</li>
+</ul>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li><code>/src/graph/GraphBuilder.ts</code> - Graph construction</li>
+<li><code>/src/graph/GraphAnalyzer.ts</code> - Analysis tools</li>
+<li><code>/src/graph/algorithms/</code> - Graph algorithms</li>
+<li>Performance optimization</li>
+</ul>
+<h2>Phase 5: Enhancement and Optimization (Step 22)</h2>
+<h3>Step 22: High-Value Enhancements</h3>
+<p><strong>Objective</strong>: Focus on performance, user experience, and adoption rather than feature expansion.</p>
+<p><strong>Key Components</strong>:</p>
+<ol>
+<li>
+<p><strong>Performance Optimization</strong> (Week 1)</p>
+<ul>
+<li>50% faster search/indexing</li>
+<li>Reduced memory footprint</li>
+<li>Optimized file operations</li>
+</ul>
+</li>
+<li>
+<p><strong>User Experience</strong> (Week 2)</p>
+<ul>
+<li>Better error messages</li>
+<li>Comprehensive documentation</li>
+<li>CLI improvements</li>
+<li>Example workflows</li>
+</ul>
+</li>
+<li>
+<p><strong>Claude Code Integration</strong> (Week 3)</p>
+<ul>
+<li>Custom prompts and templates</li>
+<li>Workflow automation</li>
+<li>Best practices guide</li>
+<li>Video tutorials</li>
+</ul>
+</li>
+</ol>
+<p><strong>Deliverables</strong>:</p>
+<ul>
+<li>Performance benchmarks and optimizations</li>
+<li>User documentation and guides</li>
+<li>Claude Code integration templates</li>
+<li>Adoption resources</li>
+</ul>
+<h2>Implementation Timeline</h2>
+<ul>
+<li><strong>Phase 1</strong> (Steps 5-8): Core infrastructure - 2 weeks</li>
+<li><strong>Phase 2</strong> (Steps 9-11): Document access and search - 1.5 weeks</li>
+<li><strong>Phase 3</strong> (Steps 12-16): Link management and advanced features - 2.5 weeks</li>
+<li><strong>Phase 4</strong> (Steps 17-19): Advanced operations - 2 weeks</li>
+<li><strong>Phase 5</strong> (Step 22): Enhancement and optimization - 3 weeks</li>
+</ul>
+<p><strong>Total Timeline</strong>: Approximately 11 weeks</p>
+<h2>Key Principles</h2>
+<ol>
+<li><strong>Security First</strong>: All file operations must respect CONTEXT_ROOT boundaries</li>
+<li><strong>Type Safety</strong>: Leverage TypeScript for compile-time guarantees</li>
+<li><strong>Testability</strong>: Every component must be thoroughly tested</li>
+<li><strong>Performance</strong>: Optimize for large knowledge bases (10,000+ documents)</li>
+<li><strong>User Experience</strong>: Clear error messages and intuitive interfaces</li>
+<li><strong>Modularity</strong>: Each component should be independently usable</li>
+</ol>
+<h2>Success Metrics</h2>
+<ul>
+<li>100% test coverage for core components</li>
+<li>Sub-100ms search response times for 10,000 documents</li>
+<li>Zero security vulnerabilities</li>
+<li>Complete MCP protocol compliance</li>
+<li>Comprehensive documentation</li>
+<li>High adoption rate among Claude Code users</li>
+</ul>
+<h2>Next Steps</h2>
+<ol>
+<li>Begin with Phase 1 implementation (Steps 5-8)</li>
+<li>Set up CI/CD pipeline early</li>
+<li>Establish performance benchmarks</li>
+<li>Create documentation as you build</li>
+<li>Gather feedback from early adopters</li>
+</ol>
+<p>This consolidated plan provides a complete roadmap for building a production-ready MCP server for context management.</p>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by PARA SSG</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleNav() {
+            var navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var navMenu = document.getElementById('navMenu');
+            var navToggle = document.querySelector('.nav-toggle');
+            if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

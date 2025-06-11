@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>project-specification - PARA SSG</title>
+    <style>
+        
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #fff;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Header and Navigation */
+    header {
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 0;
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    header h1 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .nav-menu {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .nav-menu a {
+        color: #666;
+        text-decoration: none;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #333;
+        border-bottom-color: #333;
+    }
+    
+    /* Main content */
+    main {
+        min-height: calc(100vh - 200px);
+        padding: 2rem 0;
+    }
+    
+    /* Document styles */
+    .document h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .document-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .document-meta .author,
+    .document-meta time,
+    .document-meta .status {
+        display: inline-block;
+    }
+    
+    .document-meta .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .tag {
+        background-color: #f0f0f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 3px;
+        font-size: 0.85rem;
+    }
+    
+    .document-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
+    
+    .document-content h1,
+    .document-content h2,
+    .document-content h3,
+    .document-content h4,
+    .document-content h5,
+    .document-content h6 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .document-content ul,
+    .document-content ol {
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+    }
+    
+    .document-content pre {
+        background-color: #f5f5f5;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content code {
+        background-color: #f5f5f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.9em;
+    }
+    
+    .document-content pre code {
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    .document-content blockquote {
+        border-left: 4px solid #e0e0e0;
+        padding-left: 1rem;
+        margin: 1rem 0;
+        color: #666;
+    }
+    
+    .document-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content th,
+    .document-content td {
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem;
+        text-align: left;
+    }
+    
+    .document-content th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        margin-bottom: 2rem;
+    }
+    
+    .breadcrumbs ol {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumbs li {
+        display: inline;
+    }
+    
+    .breadcrumbs a {
+        color: #666;
+        text-decoration: none;
+    }
+    
+    .breadcrumbs a:hover {
+        color: #333;
+        text-decoration: underline;
+    }
+    
+    .breadcrumbs .separator {
+        margin: 0 0.5rem;
+        color: #999;
+    }
+    
+    .breadcrumbs .current {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    /* Category pages */
+    .category-index h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-description {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-count {
+        font-size: 0.95rem;
+        color: #999;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    
+    .document-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .document-entry {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-entry:last-child {
+        border-bottom: none;
+    }
+    
+    .document-entry h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-entry h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .document-entry h2 a:hover {
+        color: #666;
+    }
+    
+    .entry-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary {
+        color: #555;
+        line-height: 1.6;
+    }
+    
+    /* Home page */
+    .home-page h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .home-page > p {
+        font-size: 1.2rem;
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+    
+    .search-placeholder {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .search-placeholder input {
+        width: 100%;
+        max-width: 500px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        background-color: #f8f8f8;
+        color: #999;
+        cursor: not-allowed;
+    }
+    
+    .category-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    
+    .category-card {
+        background-color: #f8f8f8;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .category-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-card h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .category-card p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .document-count {
+        font-size: 0.9rem;
+        color: #999;
+    }
+    
+    /* Footer */
+    footer {
+        background-color: #f8f8f8;
+        border-top: 1px solid #e0e0e0;
+        padding: 2rem 0;
+        margin-top: 4rem;
+        text-align: center;
+        color: #666;
+    }
+    
+    /* Hamburger menu button */
+    .nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
+    .nav-toggle span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        margin: 5px 0;
+        transition: 0.3s;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .nav-toggle {
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .nav-menu {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-menu a {
+            padding: 0.75rem 1rem;
+            border-bottom: none;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            border-left-color: #333;
+            background-color: #f0f0f0;
+        }
+        
+        .document h1 {
+            font-size: 2rem;
+        }
+        
+        .home-page h1 {
+            font-size: 2rem;
+        }
+        
+        .category-overview {
+            grid-template-columns: 1fr;
+        }
+        
+        .breadcrumbs {
+            font-size: 0.85rem;
+        }
+        
+        .container {
+            padding: 0 15px;
+        }
+    }
+    
+    /* Links */
+    a {
+        color: #0066cc;
+    }
+    
+    a:hover {
+        color: #0052a3;
+    }
+    
+    /* Status indicators */
+    .status-draft {
+        color: #ff6600;
+    }
+    
+    .status-published {
+        color: #00aa00;
+    }
+    
+    /* Wiki links */
+    .wiki-link {
+        color: #0066cc;
+        text-decoration: none;
+        border-bottom: 1px dashed #0066cc;
+    }
+    
+    .wiki-link:hover {
+        color: #0052a3;
+        border-bottom-style: solid;
+    }
+    
+    .wiki-link.broken {
+        color: #cc0000;
+        border-bottom-color: #cc0000;
+        cursor: help;
+    }
+    
+    .wiki-link.broken:hover {
+        color: #990000;
+    }
+    
+    /* Backlinks section (for Phase 2) */
+    .backlinks {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .backlinks h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">PARA Knowledge Base</a></h1>
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/projects/" class="">Projects</a></li>
+                    <li><a href="/areas/" class="">Areas</a></li>
+                    <li><a href="/resources/" class="active">Resources</a></li>
+                    <li><a href="/archives/" class="">Archives</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/resources/">Resources</a></li><li class="separator">/</li><li class="current">project-specification</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>project-specification</h1>
+        
+    </header>
+    
+    <div class="document-content">
+        <h1>Project Documentation &amp; Journaling System Specification</h1>
+<h2>Overview</h2>
+<p>A comprehensive documentation and journaling system designed to capture all aspects of project development, using markdown files with frontmatter for metadata and wiki-style links to create a knowledge graph.</p>
+<h2>Core Concept</h2>
+<p>The system enables thorough project documentation through structured markdown files organized using the PARA method (Projects, Areas, Resources, Archives), with automatic linking and relationship tracking to build a searchable knowledge base.</p>
+<h2>Technical Architecture</h2>
+<h3>Storage &amp; Organization</h3>
+<ul>
+<li><strong>Format</strong>: Markdown files with YAML frontmatter</li>
+<li><strong>Organization</strong>: PARA methodology using folder structure
+<ul>
+<li><code>/Projects/</code> - Active development features and sprints</li>
+<li><code>/Areas/</code> - Ongoing concerns (security, performance, architecture)</li>
+<li><code>/Resources/</code> - Reference materials, templates, design patterns</li>
+<li><code>/Archives/</code> - Completed features, deprecated decisions, old notes</li>
+</ul>
+</li>
+<li><strong>Linking</strong>: Wiki-style <code>&lt;span class="wiki-link broken" title="Link target not found: double bracket"&gt;double bracket&lt;/span&gt;</code> links for cross-referencing</li>
+<li><strong>Naming Convention</strong>: Descriptive names for topic-based files, ISO dates for journal entries</li>
+</ul>
+<h3>Frontmatter Schema</h3>
+<h4>Required Fields</h4>
+<pre><code class="language-yaml">created_date: 2024-01-15T10:30:00Z # ISO timestamp
+tags: [authentication, security] # Array for topic clustering
+summary: Brief one-line description # For quick context scanning
+</code></pre>
+<h4>Optional Fields</h4>
+<pre><code class="language-yaml">context: Background information about why this document exists
+decisions:
+  - Key architectural choice made
+  - Another important decision
+status: active|resolved|deprecated
+stakeholders: [alice, bob] # People mentioned/involved
+related: ['&lt;span class="wiki-link broken" title="Link target not found: API Design"&gt;API Design&lt;/span&gt;', '&lt;span class="wiki-link broken" title="Link target not found: Auth Flow"&gt;Auth Flow&lt;/span&gt;'] # Explicit connections
+priority: high|medium|low # For attention routing
+next_actions:
+  - Review security implications
+  - Update integration tests
+</code></pre>
+<h3>MCP Server Interface</h3>
+<p>The system will be accessed through an MCP (Model Context Protocol) server built using the official TypeScript SDK (@modelcontextprotocol/sdk) that Claude Code can interact with on behalf of the user. This MCP server will be located at <code>code/mcp/</code> and will contain ALL tools created for this project, serving as the central interface for all capabilities.</p>
+<h4>Core Capabilities (Phase 1 - MVP)</h4>
+<ol>
+<li>
+<p><strong>Create Operations</strong></p>
+<ul>
+<li>New journal entries with validated frontmatter</li>
+<li>Auto-generate daily journal entries</li>
+<li>Create documents from templates</li>
+</ul>
+</li>
+<li>
+<p><strong>Read Operations</strong></p>
+<ul>
+<li>Search by tags and content</li>
+<li>Parse and follow wiki-style links</li>
+<li>Retrieve documents with full context</li>
+</ul>
+</li>
+<li>
+<p><strong>Basic PARA Structure</strong></p>
+<ul>
+<li>Proper folder organization</li>
+<li>Path validation for PARA categories</li>
+</ul>
+</li>
+</ol>
+<h4>Enhanced Capabilities (Phase 2)</h4>
+<ol>
+<li>
+<p><strong>Update Operations</strong></p>
+<ul>
+<li>Modify documents while preserving structure</li>
+<li>Update frontmatter fields</li>
+<li>Maintain link integrity</li>
+</ul>
+</li>
+<li>
+<p><strong>Relationship Management</strong></p>
+<ul>
+<li>Backlink detection and indexing</li>
+<li>Query relationships between documents</li>
+<li>Find all documents linking to a specific topic</li>
+</ul>
+</li>
+</ol>
+<h4>Advanced Capabilities (Phase 3)</h4>
+<ol>
+<li>
+<p><strong>Workflow Automation</strong></p>
+<ul>
+<li>Move items between PARA categories</li>
+<li>Archive completed projects</li>
+<li>Bulk tag management</li>
+</ul>
+</li>
+<li>
+<p><strong>Knowledge Graph Features</strong></p>
+<ul>
+<li>Export graph data (JSON/GraphML format)</li>
+<li>Visualize document relationships</li>
+<li>Generate connection reports</li>
+</ul>
+</li>
+<li>
+<p><strong>Smart Features</strong></p>
+<ul>
+<li>Template system for different document types</li>
+<li>Auto-suggest related documents</li>
+<li>Intelligent search with context awareness</li>
+</ul>
+</li>
+</ol>
+<h2>Implementation Details</h2>
+<h3>Document Types</h3>
+<ul>
+<li><strong>Daily Journals</strong>: Time-based entries for progress tracking</li>
+<li><strong>Decision Records</strong>: Architectural and technical decisions with rationale</li>
+<li><strong>Meeting Notes</strong>: Discussions and outcomes</li>
+<li><strong>Feature Specs</strong>: Detailed feature documentation</li>
+<li><strong>Problem Reports</strong>: Issues encountered and solutions</li>
+<li><strong>Reference Docs</strong>: Reusable patterns and guidelines</li>
+</ul>
+<h3>Search &amp; Discovery</h3>
+<ul>
+<li>Full-text search across all documents</li>
+<li>Tag-based filtering</li>
+<li>Date range queries</li>
+<li>Link traversal for related content</li>
+<li>Status-based filtering (active, deprecated, etc.)</li>
+</ul>
+<h3>Data Model</h3>
+<pre><code class="language-typescript">interface Document {
+  path: string; // File path within PARA structure
+  frontmatter: {
+    created_date: string;
+    tags: string[];
+    summary: string;
+    [key: string]: any; // Optional fields
+  };
+  content: string; // Markdown body
+  links: string[]; // Extracted &lt;span class="wiki-link broken" title="Link target not found: wiki-links"&gt;wiki-links&lt;/span&gt;
+  backlinks: string[]; // Documents linking to this one
+}
+</code></pre>
+<h3>MCP Server Implementation</h3>
+<p>The server will be implemented in TypeScript at <code>code/mcp/</code> using @modelcontextprotocol/sdk with the following tools:</p>
+<h4>MCP Tools</h4>
+<ul>
+<li><code>context_create</code> - Create new documents with validated frontmatter</li>
+<li><code>context_read</code> - Read document content and metadata</li>
+<li><code>context_update</code> - Update documents while preserving structure</li>
+<li><code>context_search</code> - Search by tags, content, or relationships</li>
+<li><code>context_query_links</code> - Get related documents and backlinks</li>
+<li><code>context_move</code> - Move documents between PARA categories</li>
+<li><code>context_graph</code> - Export knowledge graph data</li>
+</ul>
+<p>All future tools for the forge project will be added to this same MCP server, making it the unified interface for all project capabilities.</p>
+<h3>Self-Verification Testing</h3>
+<p>The MCP server will include automated self-verification using Claude Code’s headless mode:</p>
+<h4>Headless Testing Approach</h4>
+<ol>
+<li><strong>Test Scripts</strong>: Each MCP tool will have corresponding test scripts that invoke Claude using <code>claude -p</code> commands</li>
+<li><strong>Verification Flow</strong>:
+<ul>
+<li>Start MCP server in test mode</li>
+<li>Execute headless Claude commands that use the MCP tools</li>
+<li>Verify tool outputs and side effects</li>
+<li>Assert expected behaviors and error handling</li>
+</ul>
+</li>
+</ol>
+<h4>Example Test Pattern</h4>
+<pre><code class="language-bash"># Test context_create tool
+claide -p "Use the context_create MCP tool to create a new document in Projects with title 'Test Doc', tags ['test', 'verification'], and summary 'Self-verification test document'"
+
+# Verify document was created
+claide -p "Use the context_read MCP tool to read the document at Projects/test-doc.md and confirm it exists with correct metadata"
+
+# Test error handling
+claide -p "Use the context_create MCP tool with invalid input and verify it returns appropriate error messages"
+</code></pre>
+<h4>Verification Criteria</h4>
+<ul>
+<li>All tools respond correctly to valid inputs</li>
+<li>Error messages are clear and actionable</li>
+<li>Tool permissions are properly enforced</li>
+<li>CONTEXT_ROOT boundaries are maintained</li>
+<li>Performance meets specified thresholds</li>
+</ul>
+<h2>Benefits</h2>
+<ol>
+<li><strong>Comprehensive History</strong>: Every decision, discussion, and development step is captured</li>
+<li><strong>Contextual Intelligence</strong>: LLMs can quickly understand project state and history</li>
+<li><strong>Knowledge Preservation</strong>: Institutional knowledge is maintained even as team members change</li>
+<li><strong>Efficient Onboarding</strong>: New team members can self-serve historical context</li>
+<li><strong>Decision Traceability</strong>: Understand not just what was built, but why</li>
+</ol>
+<h2>Success Metrics</h2>
+<ul>
+<li>All project activities have corresponding documentation</li>
+<li>Average document retrieval time &lt; 100ms</li>
+<li>Cross-reference accuracy &gt; 95%</li>
+<li>LLM context retrieval relevance &gt; 90%</li>
+<li>Zero documentation loss through system operations</li>
+</ul>
+<h2>Future Considerations</h2>
+<ul>
+<li>Integration with version control for automatic commit documentation</li>
+<li>Real-time collaboration features</li>
+<li>Export to other knowledge management systems</li>
+<li>AI-powered summarization and insight generation</li>
+<li>Mobile access for on-the-go documentation</li>
+</ul>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by PARA SSG</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleNav() {
+            var navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var navMenu = document.getElementById('navMenu');
+            var navToggle = document.querySelector('.nav-toggle');
+            if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

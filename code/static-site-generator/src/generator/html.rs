@@ -70,7 +70,7 @@ impl HtmlGenerator {
         )?;
 
         // Generate breadcrumbs
-        let breadcrumbs = self.generate_breadcrumbs(&doc.relative_path);
+        let breadcrumbs = self.generate_breadcrumbs_for_document(doc);
         let breadcrumb_html = self.template_engine.render_breadcrumbs(&breadcrumbs)?;
 
         // Determine active category
@@ -159,6 +159,10 @@ impl HtmlGenerator {
             <h1>PARA Knowledge Base</h1>
             <p>Welcome to your personal knowledge management system organized using the PARA method.</p>
             
+            <div class="search-placeholder">
+                <input type="text" placeholder="Search documentation... (coming soon)" disabled />
+            </div>
+            
             <div class="category-overview">
         "#,
         );
@@ -219,15 +223,15 @@ impl HtmlGenerator {
         Ok(())
     }
 
-    /// Generate breadcrumbs from a relative path
-    fn generate_breadcrumbs(&self, relative_path: &Path) -> Vec<BreadcrumbItem> {
+    /// Generate breadcrumbs for a document
+    pub fn generate_breadcrumbs_for_document(&self, doc: &Document) -> Vec<BreadcrumbItem> {
         let mut breadcrumbs = vec![BreadcrumbItem {
             title: "Home".to_string(),
             url: Some("/".to_string()),
         }];
 
         let mut current_path = PathBuf::new();
-        let components: Vec<_> = relative_path.components().collect();
+        let components: Vec<_> = doc.relative_path.components().collect();
 
         for (i, component) in components.iter().enumerate() {
             if let std::path::Component::Normal(name) = component {
@@ -238,10 +242,9 @@ impl HtmlGenerator {
                 let is_last = i == components.len() - 1;
 
                 if is_last {
-                    // For the document itself, show title without link
-                    let title = name_str.trim_end_matches(".md").trim_end_matches(".html");
+                    // For the document itself, use the actual title
                     breadcrumbs.push(BreadcrumbItem {
-                        title: humanize_filename(title),
+                        title: doc.title().to_string(),
                         url: None,
                     });
                 } else {
@@ -266,6 +269,7 @@ impl HtmlGenerator {
 
         breadcrumbs
     }
+
 }
 
 /// Get human-readable category title
@@ -411,18 +415,26 @@ mod tests {
         assert_eq!(written, content);
     }
 
+
     #[test]
-    fn test_breadcrumb_generation() {
+    fn test_breadcrumb_generation_for_document() {
         let temp_dir = TempDir::new().unwrap();
         let generator = HtmlGenerator::new(temp_dir.path().to_path_buf());
 
-        let breadcrumbs = generator.generate_breadcrumbs(Path::new("projects/rust/test.md"));
+        let mut doc = Document::new(
+            PathBuf::from("/input/projects/rust/test.md"),
+            PathBuf::from("projects/rust/test.md"),
+            "projects".to_string(),
+        );
+        doc.metadata.title = Some("My Rust Project".to_string());
+
+        let breadcrumbs = generator.generate_breadcrumbs_for_document(&doc);
 
         assert_eq!(breadcrumbs.len(), 4);
         assert_eq!(breadcrumbs[0].title, "Home");
         assert_eq!(breadcrumbs[1].title, "Projects");
         assert_eq!(breadcrumbs[2].title, "Rust");
-        assert_eq!(breadcrumbs[3].title, "Test");
-        assert!(breadcrumbs[3].url.is_none()); // Last item has no URL
+        assert_eq!(breadcrumbs[3].title, "My Rust Project"); // Uses document title
+        assert!(breadcrumbs[3].url.is_none());
     }
 }

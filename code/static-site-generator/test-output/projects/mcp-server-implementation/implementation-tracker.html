@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>implementation-tracker - PARA SSG</title>
+    <style>
+        
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #fff;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Header and Navigation */
+    header {
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 0;
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    header h1 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .nav-menu {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .nav-menu a {
+        color: #666;
+        text-decoration: none;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #333;
+        border-bottom-color: #333;
+    }
+    
+    /* Main content */
+    main {
+        min-height: calc(100vh - 200px);
+        padding: 2rem 0;
+    }
+    
+    /* Document styles */
+    .document h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .document-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .document-meta .author,
+    .document-meta time,
+    .document-meta .status {
+        display: inline-block;
+    }
+    
+    .document-meta .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .tag {
+        background-color: #f0f0f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 3px;
+        font-size: 0.85rem;
+    }
+    
+    .document-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
+    
+    .document-content h1,
+    .document-content h2,
+    .document-content h3,
+    .document-content h4,
+    .document-content h5,
+    .document-content h6 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .document-content ul,
+    .document-content ol {
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+    }
+    
+    .document-content pre {
+        background-color: #f5f5f5;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content code {
+        background-color: #f5f5f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.9em;
+    }
+    
+    .document-content pre code {
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    .document-content blockquote {
+        border-left: 4px solid #e0e0e0;
+        padding-left: 1rem;
+        margin: 1rem 0;
+        color: #666;
+    }
+    
+    .document-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content th,
+    .document-content td {
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem;
+        text-align: left;
+    }
+    
+    .document-content th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        margin-bottom: 2rem;
+    }
+    
+    .breadcrumbs ol {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumbs li {
+        display: inline;
+    }
+    
+    .breadcrumbs a {
+        color: #666;
+        text-decoration: none;
+    }
+    
+    .breadcrumbs a:hover {
+        color: #333;
+        text-decoration: underline;
+    }
+    
+    .breadcrumbs .separator {
+        margin: 0 0.5rem;
+        color: #999;
+    }
+    
+    .breadcrumbs .current {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    /* Category pages */
+    .category-index h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-description {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-count {
+        font-size: 0.95rem;
+        color: #999;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    
+    .document-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .document-entry {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-entry:last-child {
+        border-bottom: none;
+    }
+    
+    .document-entry h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-entry h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .document-entry h2 a:hover {
+        color: #666;
+    }
+    
+    .entry-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary {
+        color: #555;
+        line-height: 1.6;
+    }
+    
+    /* Home page */
+    .home-page h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .home-page > p {
+        font-size: 1.2rem;
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+    
+    .search-placeholder {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .search-placeholder input {
+        width: 100%;
+        max-width: 500px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        background-color: #f8f8f8;
+        color: #999;
+        cursor: not-allowed;
+    }
+    
+    .category-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    
+    .category-card {
+        background-color: #f8f8f8;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .category-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-card h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .category-card p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .document-count {
+        font-size: 0.9rem;
+        color: #999;
+    }
+    
+    /* Footer */
+    footer {
+        background-color: #f8f8f8;
+        border-top: 1px solid #e0e0e0;
+        padding: 2rem 0;
+        margin-top: 4rem;
+        text-align: center;
+        color: #666;
+    }
+    
+    /* Hamburger menu button */
+    .nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
+    .nav-toggle span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        margin: 5px 0;
+        transition: 0.3s;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .nav-toggle {
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .nav-menu {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-menu a {
+            padding: 0.75rem 1rem;
+            border-bottom: none;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            border-left-color: #333;
+            background-color: #f0f0f0;
+        }
+        
+        .document h1 {
+            font-size: 2rem;
+        }
+        
+        .home-page h1 {
+            font-size: 2rem;
+        }
+        
+        .category-overview {
+            grid-template-columns: 1fr;
+        }
+        
+        .breadcrumbs {
+            font-size: 0.85rem;
+        }
+        
+        .container {
+            padding: 0 15px;
+        }
+    }
+    
+    /* Links */
+    a {
+        color: #0066cc;
+    }
+    
+    a:hover {
+        color: #0052a3;
+    }
+    
+    /* Status indicators */
+    .status-draft {
+        color: #ff6600;
+    }
+    
+    .status-published {
+        color: #00aa00;
+    }
+    
+    /* Wiki links */
+    .wiki-link {
+        color: #0066cc;
+        text-decoration: none;
+        border-bottom: 1px dashed #0066cc;
+    }
+    
+    .wiki-link:hover {
+        color: #0052a3;
+        border-bottom-style: solid;
+    }
+    
+    .wiki-link.broken {
+        color: #cc0000;
+        border-bottom-color: #cc0000;
+        cursor: help;
+    }
+    
+    .wiki-link.broken:hover {
+        color: #990000;
+    }
+    
+    /* Backlinks section (for Phase 2) */
+    .backlinks {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .backlinks h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">PARA Knowledge Base</a></h1>
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/projects/" class="active">Projects</a></li>
+                    <li><a href="/areas/" class="">Areas</a></li>
+                    <li><a href="/resources/" class="">Resources</a></li>
+                    <li><a href="/archives/" class="">Archives</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/projects/">Projects</a></li><li class="separator">/</li><li><a href="/projects/mcp-server-implementation/">Mcp Server Implementation</a></li><li class="separator">/</li><li class="current">implementation-tracker</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>implementation-tracker</h1>
+        
+    </header>
+    
+    <div class="document-content">
+        <h1>Implementation Progress Tracker</h1>
+<h2>Current Status</h2>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Phase 1: Foundation (Steps 1-6) - 6/6 Complete</li>
+<li><input disabled="" type="checkbox"/>
+Phase 2: Core Operations (Steps 7-11)</li>
+<li><input disabled="" type="checkbox"/>
+Phase 3: Search &amp; Relationships (Steps 12-16)</li>
+<li><input disabled="" type="checkbox"/>
+Phase 4: Advanced Features (Steps 17-22)</li>
+</ul>
+<h2>Detailed Progress</h2>
+<h3>Phase 1: Foundation</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 1: TypeScript Project Setup with Pre-commit Hooks
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Initialize package.json with TypeScript</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Configure tsconfig.json with strict mode</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Set up ESLint with TypeScript plugin</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Configure Prettier</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Install and configure husky</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Set up lint-staged</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Verify pre-commit hooks work</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 2: MCP SDK Integration with TypeScript
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Install @modelcontextprotocol/sdk</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create basic server structure</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement ping tool with types</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Set up Jest with ts-jest</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Write tests for ping tool</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 3: Environment Configuration System
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Create typed config interfaces</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement CONTEXT_ROOT validation</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Support .env files</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add startup validation</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Write configuration tests</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 4: Document Model and Types
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Define Document interface</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create frontmatter types</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement Zod schemas</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add type guards</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Test type validations</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 5: File System Abstraction Layer
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Create IFileSystem interface</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement FileSystem class</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add security validations</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create mock for testing</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Write security tests</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 6: PARA Structure Management
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Define PARACategory enum</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement PARAManager</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add path resolution</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Test category validation</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Verify structure creation</li>
+</ul>
+</li>
+</ul>
+<h3>Phase 2: Core Operations</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 7: Frontmatter Parser with TypeScript
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Create typed interfaces for parsed data</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement YAML parsing from scratch</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Support nested objects and arrays</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add Zod schema validation</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Write comprehensive tests</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 8: Document Creation Tool (context_create)
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement document serializer (YAML frontmatter + content)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create context_create tool handler</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integrate with PARAManager for categorization</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add comprehensive input validation</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Write unit tests with mocks</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Verify TypeScript strict mode compliance</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 9: Document Reading Tool (context_read)
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement document reader with frontmatter parsing</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Support optional content/metadata inclusion</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Handle edge cases and errors gracefully</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add comprehensive unit tests</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integrate with MCP server</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 10: Wiki-Link Parser with TypeScript
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Create typed interfaces for WikiLink structure</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement regex-based parser for <span class="wiki-link broken" title="Link target not found: wiki-links">wiki-links</span></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Support display text and anchors</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Handle code block exclusion properly</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Write comprehensive test suite</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 11: Basic Search Tool (context_search)
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement SearchEngine with document indexing</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create relevance scoring algorithm</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add query validation and normalization</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement search tool with MCP integration</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add comprehensive test coverage</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Support multiple search criteria (tags, content, title, category)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement pagination and date range filtering</li>
+</ul>
+</li>
+</ul>
+<h3>Phase 3: Search &amp; Relationships</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 12: Integration Testing Phase 1</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 13: Backlink Tracking System</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 14: Link Queries Tool (context_query_links)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 15: Document Updates Tool (context_update)
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement DocumentUpdater class with content and metadata updates</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add wiki-link preservation when replacing content</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Support partial metadata updates with field merging</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create atomic file operations to prevent partial updates</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add comprehensive test coverage with edge cases</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integrate with MCP server as context_update tool</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 16: Advanced Search Features</li>
+</ul>
+<h3>Phase 4: Advanced Features</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 17: Integration Testing Phase 2</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 18: Document Movement Tool (context_move)
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement DocumentMover class with atomic operations</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Handle wiki-link updates when documents move</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Support cross-category moves with metadata updates</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add rollback support for failed operations</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create MCP tool interface with proper validation</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Write comprehensive unit and integration tests</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Step 19: Knowledge Graph Builder
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Create typed graph data structure with nodes and edges</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Build from link indexes with full TypeScript type safety</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Add typed metadata to nodes and edges</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Implement graph algorithms (traversal, shortest path, centrality, clustering)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Scope all operations to CONTEXT_ROOT documents</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Test cyclic graph handling</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Create GraphAnalyzer for insights and pattern detection</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"/>
+Step 20: Graph Export Tool (context_graph)</li>
+<li><input disabled="" type="checkbox"/>
+Step 21: Template System with TypeScript</li>
+<li><input disabled="" type="checkbox"/>
+Step 22: Final Integration and Polish</li>
+<li><input disabled="" type="checkbox"/>
+Step 23: Claude Code Self-Verification Suite</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>All implementation must be in TypeScript with strict mode</li>
+<li>Zero <code>any</code> types allowed</li>
+<li>All code must pass pre-commit hooks</li>
+<li>Each step should be fully tested before moving on</li>
+<li>CONTEXT_ROOT security is paramount</li>
+<li>MCP tools must be self-verified using headless Claude (<code>claude -p</code>) executions</li>
+</ul>
+<h2>Self-Verification Testing Tasks</h2>
+<h3>Test Infrastructure</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Create <code>tests/claude/</code> directory for self-verification scripts</li>
+<li><input disabled="" type="checkbox"/>
+Set up test harness for headless Claude executions</li>
+<li><input disabled="" type="checkbox"/>
+Create test data fixtures for verification</li>
+<li><input disabled="" type="checkbox"/>
+Implement test result validation framework</li>
+</ul>
+<h3>Tool-Specific Verification Scripts</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+<code>test-context-create.sh</code> - Verify document creation
+<ul>
+<li><input disabled="" type="checkbox"/>
+Test valid document creation</li>
+<li><input disabled="" type="checkbox"/>
+Test invalid input handling</li>
+<li><input disabled="" type="checkbox"/>
+Test permission requirements</li>
+<li><input disabled="" type="checkbox"/>
+Verify CONTEXT_ROOT boundaries</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"/>
+<code>test-context-read.sh</code> - Verify document reading
+<ul>
+<li><input disabled="" type="checkbox"/>
+Test existing document retrieval</li>
+<li><input disabled="" type="checkbox"/>
+Test non-existent document handling</li>
+<li><input disabled="" type="checkbox"/>
+Test path resolution</li>
+<li><input disabled="" type="checkbox"/>
+Verify output format</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"/>
+<code>test-context-search.sh</code> - Verify search functionality
+<ul>
+<li><input disabled="" type="checkbox"/>
+Test tag-based search</li>
+<li><input disabled="" type="checkbox"/>
+Test content search</li>
+<li><input disabled="" type="checkbox"/>
+Test compound queries</li>
+<li><input disabled="" type="checkbox"/>
+Verify result ranking</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"/>
+<code>test-context-update.sh</code> - Verify document updates
+<ul>
+<li><input disabled="" type="checkbox"/>
+Test frontmatter updates</li>
+<li><input disabled="" type="checkbox"/>
+Test content updates</li>
+<li><input disabled="" type="checkbox"/>
+Test link preservation</li>
+<li><input disabled="" type="checkbox"/>
+Verify atomic operations</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"/>
+<code>test-context-query-links.sh</code> - Verify link queries
+<ul>
+<li><input disabled="" type="checkbox"/>
+Test forward link retrieval</li>
+<li><input disabled="" type="checkbox"/>
+Test backlink detection</li>
+<li><input disabled="" type="checkbox"/>
+Test link graph traversal</li>
+<li><input disabled="" type="checkbox"/>
+Verify link consistency</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"/>
+<code>test-context-move.sh</code> - Verify document movement
+<ul>
+<li><input disabled="" type="checkbox"/>
+Test PARA category moves</li>
+<li><input disabled="" type="checkbox"/>
+Test link updates on move</li>
+<li><input disabled="" type="checkbox"/>
+Test invalid moves</li>
+<li><input disabled="" type="checkbox"/>
+Verify atomic operations</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"/>
+<code>test-context-graph.sh</code> - Verify graph export
+<ul>
+<li><input disabled="" type="checkbox"/>
+Test JSON export format</li>
+<li><input disabled="" type="checkbox"/>
+Test GraphML export</li>
+<li><input disabled="" type="checkbox"/>
+Test filtering options</li>
+<li><input disabled="" type="checkbox"/>
+Verify graph completeness</li>
+</ul>
+</li>
+</ul>
+<h3>Integration Verification</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+<code>test-permissions.sh</code> - Verify permission handling
+<ul>
+<li><input disabled="" type="checkbox"/>
+Test tool permission prompts</li>
+<li><input disabled="" type="checkbox"/>
+Test –dangerously-skip-permissions flag</li>
+<li><input disabled="" type="checkbox"/>
+Verify security boundaries</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"/>
+<code>test-integration.sh</code> - Full workflow verification
+<ul>
+<li><input disabled="" type="checkbox"/>
+Test create-&gt;read-&gt;update-&gt;search flow</li>
+<li><input disabled="" type="checkbox"/>
+Test multi-tool interactions</li>
+<li><input disabled="" type="checkbox"/>
+Verify data consistency</li>
+<li><input disabled="" type="checkbox"/>
+Test error recovery</li>
+</ul>
+</li>
+</ul>
+<h3>CI/CD Integration</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Create GitHub Actions workflow for self-verification</li>
+<li><input disabled="" type="checkbox"/>
+Set up test reporting and metrics</li>
+<li><input disabled="" type="checkbox"/>
+Configure failure notifications</li>
+<li><input disabled="" type="checkbox"/>
+Document self-verification patterns</li>
+</ul>
+<h2>Completion Metrics</h2>
+<ul>
+<li>Total Steps: 23 (including self-verification)</li>
+<li>Completed: 19</li>
+<li>In Progress: 0</li>
+<li>Percentage: 82.6%</li>
+</ul>
+<p>Last Updated: 2025-11-06</p>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by PARA SSG</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleNav() {
+            var navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var navMenu = document.getElementById('navMenu');
+            var navToggle = document.querySelector('.nav-toggle');
+            if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

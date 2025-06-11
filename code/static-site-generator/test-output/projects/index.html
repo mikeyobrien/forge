@@ -1,9 +1,11 @@
-//! ABOUTME: CSS generation and 70s earthy theme implementation
-//! ABOUTME: Creates stylesheets with retro color palette and responsive design
-
-/// Get default CSS styles (basic styling for now, 70s theme in Phase 3)
-pub fn get_default_styles() -> String {
-    r#"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - PARA SSG - PARA SSG</title>
+    <style>
+        
     /* Reset and base styles */
     * {
         margin: 0;
@@ -499,5 +501,142 @@ pub fn get_default_styles() -> String {
         font-size: 1.5rem;
         margin-bottom: 1rem;
     }
-    "#.to_string()
-}
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">PARA Knowledge Base</a></h1>
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/projects/" class="active">Projects</a></li>
+                    <li><a href="/areas/" class="">Areas</a></li>
+                    <li><a href="/resources/" class="">Resources</a></li>
+                    <li><a href="/archives/" class="">Archives</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li class="current">Projects</li>
+    </ol>
+</nav>
+
+            
+<div class="category-index">
+    <h1>Projects</h1>
+    <p class="category-description">Active projects with specific outcomes and deadlines</p>
+    <p class="document-count">10 documents in this category</p>
+    
+    <div class="document-list">
+        
+<div class="document-entry">
+    <h2><a href="/projects/mcp-server-implementation/consolidated-implementation-plan.html">consolidated-implementation-plan</a></h2>
+    
+    <p class="summary">MCP Server Implementation Plan - Consolidated This document consolidates all the individual step plans for the MCP server implementation into a single comprehensive reference. Overview The MCP (Model...</p>
+</div>
+
+
+<div class="document-entry">
+    <h2><a href="/projects/mcp-server-implementation/implementation-tracker.html">implementation-tracker</a></h2>
+    
+    <p class="summary">Implementation Progress Tracker Current Status [ x ]  Phase 1: Foundation (Steps 1-6) - 6/6 Complete [   ]  Phase 2: Core Operations (Steps 7-11) [   ]  Phase 3: Search &amp; Relationships (Steps 12-16) [</p>
+</div>
+
+
+<div class="document-entry">
+    <h2><a href="/projects/mcp-server-implementation/search-tool-complete.html">search-tool-complete</a></h2>
+    
+    <p class="summary">Search Tool Implementation Complete ✅ Summary Successfully implemented and integrated the context_search MCP tool with Claude CLI. Key Accomplishments 1. Implementation ✅ SearchEngine with...</p>
+</div>
+
+
+<div class="document-entry">
+    <h2><a href="/projects/mcp-server-implementation/tdd-implementation-plan.html">tdd-implementation-plan</a></h2>
+    
+    <p class="summary">TDD Implementation Plan for Documentation &amp; Journaling System Overview This plan breaks down the implementation of the MCP-based documentation system into small, testable increments. Each step builds...</p>
+</div>
+
+
+<div class="document-entry">
+    <h2><a href="/projects/mcp-server-implementation/verify-search.html">verify-search</a></h2>
+    
+    <p class="summary">Search Tool Verification The context_search MCP tool has been successfully implemented and tested: Implementation Complete ✓ SearchEngine with document indexing Relevance scoring algorithm Full MCP...</p>
+</div>
+
+
+<div class="document-entry">
+    <h2><a href="/projects/static-website-generator-prompt-plan.html">Prompt Plan: Static Website Generator</a></h2>
+    <div class="entry-meta"><time>2025-06-11</time> <div class="tags"><span class="tag">prompt-plan</span> <span class="tag">systematic</span> <span class="tag">development</span> <span class="tag">rust</span> <span class="tag">static-site-generator</span></div></div>
+    <p class="summary">Prompt Plan: Static Website Generator Created: 2025-01-06 15:30:00 Project Overview Objective Build a static website generator in Rust ( ) that converts PARA-organized markdown documents into a...</p>
+</div>
+
+
+<div class="document-entry">
+    <h2><a href="/projects/static-website-generator-implementation-plan.html">Implementation Plan: Static Website Generator in Rust</a></h2>
+    <div class="entry-meta"><time>2025-06-11</time> <div class="tags"><span class="tag">implementation</span> <span class="tag">rust</span> <span class="tag">static-site-generator</span> <span class="tag">para</span> <span class="tag">planning</span></div></div>
+    <p class="summary">Implementation Plan: Static Website Generator in Rust Project Overview Build a static website generator in Rust that converts PARA-organized markdown documents into a clean, browsable website with...</p>
+</div>
+
+
+<div class="document-entry">
+    <h2><a href="/projects/static-website-generator-brainstorm.html">Brainstorm: Static Website Generator in Rust for PARA Documents</a></h2>
+    <div class="entry-meta"><time>2025-06-11</time> <div class="tags"><span class="tag">brainstorm</span> <span class="tag">planning</span> <span class="tag">rust</span> <span class="tag">static-site-generator</span> <span class="tag">para</span></div></div>
+    <p class="summary">Brainstorm: Static Website Generator in Rust for PARA Documents Created: 2025-01-06 Problem Statement Want to share all documents from this project publicly while making the knowledge base more...</p>
+</div>
+
+
+<div class="document-entry">
+    <h2><a href="/projects/test-project.html">Test Project</a></h2>
+    <div class="entry-meta"><time>2025-06-11</time> <div class="tags"><span class="tag">test</span> <span class="tag">validation</span> <span class="tag">mcp</span></div></div>
+    <p class="summary">This is a test project created for MCP validation.</p>
+</div>
+
+
+<div class="document-entry">
+    <h2><a href="/projects/mcp-server-implementation/search-implementation.html">Search Implementation Project</a></h2>
+    <div class="entry-meta"><time>2025-01-06</time> <div class="tags"><span class="tag">search</span> <span class="tag">implementation</span> <span class="tag">mcp</span></div></div>
+    <p class="summary">Search Implementation Project This document tracks the implementation of the search functionality for the MCP server. Goals Implement context_search tool Support multiple search criteria Enable...</p>
+</div>
+
+
+    </div>
+</div>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by PARA SSG</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleNav() {
+            var navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var navMenu = document.getElementById('navMenu');
+            var navToggle = document.querySelector('.nav-toggle');
+            if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

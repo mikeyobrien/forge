@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Server Troubleshooting Guide for Claude CLI - PARA SSG</title>
+    <style>
+        
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #fff;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Header and Navigation */
+    header {
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 0;
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    header h1 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .nav-menu {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .nav-menu a {
+        color: #666;
+        text-decoration: none;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #333;
+        border-bottom-color: #333;
+    }
+    
+    /* Main content */
+    main {
+        min-height: calc(100vh - 200px);
+        padding: 2rem 0;
+    }
+    
+    /* Document styles */
+    .document h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .document-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .document-meta .author,
+    .document-meta time,
+    .document-meta .status {
+        display: inline-block;
+    }
+    
+    .document-meta .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .tag {
+        background-color: #f0f0f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 3px;
+        font-size: 0.85rem;
+    }
+    
+    .document-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
+    
+    .document-content h1,
+    .document-content h2,
+    .document-content h3,
+    .document-content h4,
+    .document-content h5,
+    .document-content h6 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .document-content ul,
+    .document-content ol {
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+    }
+    
+    .document-content pre {
+        background-color: #f5f5f5;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content code {
+        background-color: #f5f5f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.9em;
+    }
+    
+    .document-content pre code {
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    .document-content blockquote {
+        border-left: 4px solid #e0e0e0;
+        padding-left: 1rem;
+        margin: 1rem 0;
+        color: #666;
+    }
+    
+    .document-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content th,
+    .document-content td {
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem;
+        text-align: left;
+    }
+    
+    .document-content th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        margin-bottom: 2rem;
+    }
+    
+    .breadcrumbs ol {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumbs li {
+        display: inline;
+    }
+    
+    .breadcrumbs a {
+        color: #666;
+        text-decoration: none;
+    }
+    
+    .breadcrumbs a:hover {
+        color: #333;
+        text-decoration: underline;
+    }
+    
+    .breadcrumbs .separator {
+        margin: 0 0.5rem;
+        color: #999;
+    }
+    
+    .breadcrumbs .current {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    /* Category pages */
+    .category-index h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-description {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-count {
+        font-size: 0.95rem;
+        color: #999;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    
+    .document-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .document-entry {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-entry:last-child {
+        border-bottom: none;
+    }
+    
+    .document-entry h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-entry h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .document-entry h2 a:hover {
+        color: #666;
+    }
+    
+    .entry-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary {
+        color: #555;
+        line-height: 1.6;
+    }
+    
+    /* Home page */
+    .home-page h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .home-page > p {
+        font-size: 1.2rem;
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+    
+    .search-placeholder {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .search-placeholder input {
+        width: 100%;
+        max-width: 500px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        background-color: #f8f8f8;
+        color: #999;
+        cursor: not-allowed;
+    }
+    
+    .category-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    
+    .category-card {
+        background-color: #f8f8f8;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .category-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-card h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .category-card p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .document-count {
+        font-size: 0.9rem;
+        color: #999;
+    }
+    
+    /* Footer */
+    footer {
+        background-color: #f8f8f8;
+        border-top: 1px solid #e0e0e0;
+        padding: 2rem 0;
+        margin-top: 4rem;
+        text-align: center;
+        color: #666;
+    }
+    
+    /* Hamburger menu button */
+    .nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
+    .nav-toggle span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        margin: 5px 0;
+        transition: 0.3s;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .nav-toggle {
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .nav-menu {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-menu a {
+            padding: 0.75rem 1rem;
+            border-bottom: none;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            border-left-color: #333;
+            background-color: #f0f0f0;
+        }
+        
+        .document h1 {
+            font-size: 2rem;
+        }
+        
+        .home-page h1 {
+            font-size: 2rem;
+        }
+        
+        .category-overview {
+            grid-template-columns: 1fr;
+        }
+        
+        .breadcrumbs {
+            font-size: 0.85rem;
+        }
+        
+        .container {
+            padding: 0 15px;
+        }
+    }
+    
+    /* Links */
+    a {
+        color: #0066cc;
+    }
+    
+    a:hover {
+        color: #0052a3;
+    }
+    
+    /* Status indicators */
+    .status-draft {
+        color: #ff6600;
+    }
+    
+    .status-published {
+        color: #00aa00;
+    }
+    
+    /* Wiki links */
+    .wiki-link {
+        color: #0066cc;
+        text-decoration: none;
+        border-bottom: 1px dashed #0066cc;
+    }
+    
+    .wiki-link:hover {
+        color: #0052a3;
+        border-bottom-style: solid;
+    }
+    
+    .wiki-link.broken {
+        color: #cc0000;
+        border-bottom-color: #cc0000;
+        cursor: help;
+    }
+    
+    .wiki-link.broken:hover {
+        color: #990000;
+    }
+    
+    /* Backlinks section (for Phase 2) */
+    .backlinks {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .backlinks h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">PARA Knowledge Base</a></h1>
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/projects/" class="">Projects</a></li>
+                    <li><a href="/areas/" class="">Areas</a></li>
+                    <li><a href="/resources/" class="active">Resources</a></li>
+                    <li><a href="/archives/" class="">Archives</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/resources/">Resources</a></li><li class="separator">/</li><li class="current">MCP Server Troubleshooting Guide for Claude CLI</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>MCP Server Troubleshooting Guide for Claude CLI</h1>
+        <div class="document-meta"><time class="date">2025-01-06</time>
+<div class="tags"><span class="tag">mcp</span> <span class="tag">troubleshooting</span> <span class="tag">claude-cli</span> <span class="tag">debugging</span> <span class="tag">stdio</span></div></div>
+    </header>
+    
+    <div class="document-content">
+        <h1>MCP Server Troubleshooting Guide for Claude CLI</h1>
+<p>This comprehensive guide covers common issues and solutions when developing and debugging MCP (Model Context Protocol) servers with Claude CLI.</p>
+<h2>Common Issues and Solutions</h2>
+<h3>1. Timeout Errors</h3>
+<h4>Symptoms</h4>
+<ul>
+<li>Claude CLI hangs or times out after 30-60 seconds</li>
+<li>Error: “Command timed out after Xs”</li>
+<li>MCP tools don’t appear in Claude’s tool list</li>
+</ul>
+<h4>Root Causes</h4>
+<ul>
+<li>Console output interfering with stdio communication</li>
+<li>Server not starting properly</li>
+<li>Missing or incorrect configuration</li>
+</ul>
+<h4>Solutions</h4>
+<p><strong>Remove ALL Console Output</strong></p>
+<pre><code class="language-javascript">// BAD - This will break stdio MCP servers
+console.log('Server started');
+console.error('Debug info');
+
+// GOOD - Use a proper logger that writes to stderr only
+class Logger {
+  debug(msg) {
+    if (process.env.MCP_ENABLE_LOGGING === 'true') {
+      process.stderr.write(`[DEBUG] ${msg}\n`);
+    }
+  }
+}
+</code></pre>
+<p><strong>Test Server Directly</strong></p>
+<pre><code class="language-bash"># Test with direct JSON-RPC input
+echo '{"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"2024-11-05","clientInfo":{"name":"test","version":"1.0.0"},"capabilities":{}},"id":1}' | node dist/index.js
+</code></pre>
+<h3>2. Configuration Issues</h3>
+<h4>File Locations</h4>
+<p>Claude CLI looks for configuration in multiple places:</p>
+<ul>
+<li><code>.mcp.json</code> in current directory</li>
+<li><code>.claude_project</code> in project root</li>
+<li>Local config via <code>claude mcp add</code></li>
+</ul>
+<h4>Proper Configuration Format</h4>
+<p><strong>.mcp.json Example</strong></p>
+<pre><code class="language-json">{
+  "mcpServers": {
+    "your-server-name": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["-r", "dotenv/config", "/absolute/path/to/dist/index.js"],
+      "env": {
+        "CONTEXT_ROOT": "/absolute/path/to/context",
+        "LOG_LEVEL": "error",
+        "MCP_ENABLE_LOGGING": "false"
+      }
+    }
+  }
+}
+</code></pre>
+<p><strong>Important Configuration Tips</strong></p>
+<ul>
+<li>Always use absolute paths</li>
+<li>Set <code>MCP_ENABLE_LOGGING</code> to “false” for production</li>
+<li>Use a wrapper script if needed for complex startup</li>
+</ul>
+<h3>3. Permission Issues</h3>
+<h4>Symptoms</h4>
+<ul>
+<li>“I need permission to use this tool”</li>
+<li>Tools appear but Claude won’t execute them</li>
+</ul>
+<h4>Solutions</h4>
+<p><strong>Bypass Permissions (Development Only)</strong></p>
+<pre><code class="language-bash">claude --dangerously-skip-permissions -p "Your prompt here"
+</code></pre>
+<p><strong>Grant Permanent Permissions</strong></p>
+<ul>
+<li>Click “Allow always” when prompted in Claude Desktop</li>
+<li>Use <code>/permissions</code> command to add trusted domains</li>
+</ul>
+<h3>4. Tool Registration Problems</h3>
+<h4>Symptoms</h4>
+<ul>
+<li>Tools don’t appear in Claude’s tool list</li>
+<li>Tools appear with wrong names (e.g., <code>mcp__servername__toolname</code>)</li>
+</ul>
+<h4>Debugging Steps</h4>
+<ol>
+<li><strong>List Available Tools</strong></li>
+</ol>
+<pre><code class="language-bash">claude -p "List all available tools including MCP tools"
+</code></pre>
+<ol start="2">
+<li><strong>Check Server Registration</strong></li>
+</ol>
+<pre><code class="language-bash">claude mcp list
+</code></pre>
+<ol start="3">
+<li><strong>Verify Tool Schema</strong>
+Ensure your tool returns proper JSON Schema:</li>
+</ol>
+<pre><code class="language-javascript">{
+  name: 'your_tool',
+  description: 'What it does',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      // Your parameters
+    },
+    required: ['param1']
+  }
+}
+</code></pre>
+<h3>5. Debugging Techniques</h3>
+<h4>Enable Debug Logging (Carefully)</h4>
+<pre><code class="language-bash"># Only for debugging - disable for production
+export MCP_ENABLE_LOGGING=true
+export LOG_LEVEL=debug
+</code></pre>
+<h4>Monitor Server Startup</h4>
+<pre><code class="language-bash"># Create a debug wrapper
+#!/bin/bash
+echo "Starting MCP server..." &gt;&amp;2
+cd /path/to/server
+exec node -r dotenv/config dist/index.js
+</code></pre>
+<h4>Test JSON-RPC Communication</h4>
+<pre><code class="language-javascript">// test-mcp.js
+const { spawn } = require('child_process');
+
+const server = spawn('node', ['dist/index.js'], {
+  stdio: ['pipe', 'pipe', 'pipe'],
+});
+
+// Send initialize request
+server.stdin.write(
+  JSON.stringify({
+    jsonrpc: '2.0',
+    method: 'initialize',
+    params: {
+      protocolVersion: '2024-11-05',
+      clientInfo: { name: 'test', version: '1.0' },
+      capabilities: {},
+    },
+    id: 1,
+  }) + '\n',
+);
+
+// Read response
+server.stdout.on('data', (data) =&gt; {
+  console.log('Response:', data.toString());
+});
+</code></pre>
+<h3>6. Common Mistakes to Avoid</h3>
+<h4>Don’t Use Console for Debugging</h4>
+<pre><code class="language-javascript">// WRONG - Breaks stdio
+console.log('Debug:', data);
+
+// RIGHT - Use stderr
+process.stderr.write(`Debug: ${JSON.stringify(data)}\n`);
+</code></pre>
+<h4>Don’t Forget Error Handling</h4>
+<pre><code class="language-javascript">// Always wrap tool execution
+async execute(params) {
+  try {
+    // Your tool logic
+    return { success: true, result: data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+</code></pre>
+<h4>Don’t Use Relative Paths</h4>
+<pre><code class="language-javascript">// WRONG
+const config = require('./config.json');
+
+// RIGHT
+const config = require(path.resolve(__dirname, 'config.json'));
+</code></pre>
+<h3>7. Testing Checklist</h3>
+<p>Before deploying your MCP server:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Remove ALL console.log/error/warn statements</li>
+<li><input disabled="" type="checkbox"/>
+Test with direct JSON-RPC input</li>
+<li><input disabled="" type="checkbox"/>
+Verify tool schemas are valid</li>
+<li><input disabled="" type="checkbox"/>
+Check all paths are absolute</li>
+<li><input disabled="" type="checkbox"/>
+Test with <code>claude --dangerously-skip-permissions</code></li>
+<li><input disabled="" type="checkbox"/>
+Ensure error handling returns proper JSON</li>
+<li><input disabled="" type="checkbox"/>
+Verify server exits cleanly on errors</li>
+</ul>
+<h3>8. Advanced Debugging</h3>
+<h4>Use MCP Inspector</h4>
+<p>For complex debugging, consider using the MCP Inspector tool to monitor protocol messages.</p>
+<h4>Create Test Harness</h4>
+<pre><code class="language-bash">#!/bin/bash
+# test-harness.sh
+TEST_INPUT='{"jsonrpc":"2.0","method":"tools/list","params":{},"id":1}'
+echo "$TEST_INPUT" | node dist/index.js | jq .
+</code></pre>
+<h4>Monitor File Descriptors</h4>
+<pre><code class="language-bash"># Check if server is reading from stdin
+lsof -p $(pgrep -f "node.*index.js") | grep -E "0r|1w|2w"
+</code></pre>
+<h2>Quick Fixes Reference</h2>
+<table><thead><tr><th>Problem</th><th>Quick Fix</th></tr></thead><tbody>
+<tr><td>Timeout</td><td>Remove all console output</td></tr>
+<tr><td>No tools</td><td>Check <code>claude mcp list</code></td></tr>
+<tr><td>Permission denied</td><td>Use <code>--dangerously-skip-permissions</code></td></tr>
+<tr><td>Tools not working</td><td>Verify JSON schema</td></tr>
+<tr><td>Can’t debug</td><td>Write to stderr only</td></tr>
+</tbody></table>
+<h2>Example Working Setup</h2>
+<ol>
+<li><strong>Server Code (index.js)</strong></li>
+</ol>
+<pre><code class="language-javascript">// No console output!
+const server = new Server({
+  name: 'my-server',
+  version: '1.0.0',
+});
+
+// Tools, handlers, etc.
+server.connect(new StdioServerTransport());
+</code></pre>
+<ol start="2">
+<li><strong>Configuration (.mcp.json)</strong></li>
+</ol>
+<pre><code class="language-json">{
+  "mcpServers": {
+    "my-server": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/absolute/path/to/index.js"]
+    }
+  }
+}
+</code></pre>
+<ol start="3">
+<li><strong>Test Command</strong></li>
+</ol>
+<pre><code class="language-bash">claude --dangerously-skip-permissions -p "Use my_tool to do something"
+</code></pre>
+<p>Remember: The key to MCP server success is <strong>silent operation</strong> - no output to stdout except valid JSON-RPC responses!</p>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by PARA SSG</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleNav() {
+            var navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var navMenu = document.getElementById('navMenu');
+            var navToggle = document.querySelector('.nav-toggle');
+            if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

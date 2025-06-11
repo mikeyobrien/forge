@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementation Plan: Static Website Generator in Rust - PARA SSG</title>
+    <style>
+        
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #fff;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Header and Navigation */
+    header {
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 0;
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    header h1 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .nav-menu {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .nav-menu a {
+        color: #666;
+        text-decoration: none;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #333;
+        border-bottom-color: #333;
+    }
+    
+    /* Main content */
+    main {
+        min-height: calc(100vh - 200px);
+        padding: 2rem 0;
+    }
+    
+    /* Document styles */
+    .document h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .document-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .document-meta .author,
+    .document-meta time,
+    .document-meta .status {
+        display: inline-block;
+    }
+    
+    .document-meta .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .tag {
+        background-color: #f0f0f0;
+        padding: 0.2rem 0.6rem;
+        border-radius: 3px;
+        font-size: 0.85rem;
+    }
+    
+    .document-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
+    
+    .document-content h1,
+    .document-content h2,
+    .document-content h3,
+    .document-content h4,
+    .document-content h5,
+    .document-content h6 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .document-content ul,
+    .document-content ol {
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+    }
+    
+    .document-content pre {
+        background-color: #f5f5f5;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content code {
+        background-color: #f5f5f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 0.9em;
+    }
+    
+    .document-content pre code {
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    .document-content blockquote {
+        border-left: 4px solid #e0e0e0;
+        padding-left: 1rem;
+        margin: 1rem 0;
+        color: #666;
+    }
+    
+    .document-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .document-content th,
+    .document-content td {
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem;
+        text-align: left;
+    }
+    
+    .document-content th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        margin-bottom: 2rem;
+    }
+    
+    .breadcrumbs ol {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumbs li {
+        display: inline;
+    }
+    
+    .breadcrumbs a {
+        color: #666;
+        text-decoration: none;
+    }
+    
+    .breadcrumbs a:hover {
+        color: #333;
+        text-decoration: underline;
+    }
+    
+    .breadcrumbs .separator {
+        margin: 0 0.5rem;
+        color: #999;
+    }
+    
+    .breadcrumbs .current {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    /* Category pages */
+    .category-index h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-description {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-count {
+        font-size: 0.95rem;
+        color: #999;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    
+    .document-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .document-entry {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .document-entry:last-child {
+        border-bottom: none;
+    }
+    
+    .document-entry h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-entry h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .document-entry h2 a:hover {
+        color: #666;
+    }
+    
+    .entry-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary {
+        color: #555;
+        line-height: 1.6;
+    }
+    
+    /* Home page */
+    .home-page h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .home-page > p {
+        font-size: 1.2rem;
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+    
+    .search-placeholder {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .search-placeholder input {
+        width: 100%;
+        max-width: 500px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        background-color: #f8f8f8;
+        color: #999;
+        cursor: not-allowed;
+    }
+    
+    .category-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    
+    .category-card {
+        background-color: #f8f8f8;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .category-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-card h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .category-card p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .document-count {
+        font-size: 0.9rem;
+        color: #999;
+    }
+    
+    /* Footer */
+    footer {
+        background-color: #f8f8f8;
+        border-top: 1px solid #e0e0e0;
+        padding: 2rem 0;
+        margin-top: 4rem;
+        text-align: center;
+        color: #666;
+    }
+    
+    /* Hamburger menu button */
+    .nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
+    .nav-toggle span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        margin: 5px 0;
+        transition: 0.3s;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .nav-toggle {
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .nav-menu {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-menu a {
+            padding: 0.75rem 1rem;
+            border-bottom: none;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            border-left-color: #333;
+            background-color: #f0f0f0;
+        }
+        
+        .document h1 {
+            font-size: 2rem;
+        }
+        
+        .home-page h1 {
+            font-size: 2rem;
+        }
+        
+        .category-overview {
+            grid-template-columns: 1fr;
+        }
+        
+        .breadcrumbs {
+            font-size: 0.85rem;
+        }
+        
+        .container {
+            padding: 0 15px;
+        }
+    }
+    
+    /* Links */
+    a {
+        color: #0066cc;
+    }
+    
+    a:hover {
+        color: #0052a3;
+    }
+    
+    /* Status indicators */
+    .status-draft {
+        color: #ff6600;
+    }
+    
+    .status-published {
+        color: #00aa00;
+    }
+    
+    /* Wiki links */
+    .wiki-link {
+        color: #0066cc;
+        text-decoration: none;
+        border-bottom: 1px dashed #0066cc;
+    }
+    
+    .wiki-link:hover {
+        color: #0052a3;
+        border-bottom-style: solid;
+    }
+    
+    .wiki-link.broken {
+        color: #cc0000;
+        border-bottom-color: #cc0000;
+        cursor: help;
+    }
+    
+    .wiki-link.broken:hover {
+        color: #990000;
+    }
+    
+    /* Backlinks section (for Phase 2) */
+    .backlinks {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .backlinks h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">PARA Knowledge Base</a></h1>
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/projects/" class="active">Projects</a></li>
+                    <li><a href="/areas/" class="">Areas</a></li>
+                    <li><a href="/resources/" class="">Resources</a></li>
+                    <li><a href="/archives/" class="">Archives</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/projects/">Projects</a></li><li class="separator">/</li><li class="current">Implementation Plan: Static Website Generator in Rust</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>Implementation Plan: Static Website Generator in Rust</h1>
+        <div class="document-meta"><time class="date">2025-06-11</time>
+<span class="status status-active">active</span>
+<div class="tags"><span class="tag">implementation</span> <span class="tag">rust</span> <span class="tag">static-site-generator</span> <span class="tag">para</span> <span class="tag">planning</span></div></div>
+    </header>
+    
+    <div class="document-content">
+        <h1>Implementation Plan: Static Website Generator in Rust</h1>
+<h2>Project Overview</h2>
+<p>Build a static website generator in Rust that converts PARA-organized markdown documents into a clean, browsable website with search functionality and Obsidian-compatible wiki links.</p>
+<h2>Architecture</h2>
+<h3>Core Components</h3>
+<ol>
+<li>
+<p><strong>Document Parser</strong> (<code>src/parser/</code>)</p>
+<ul>
+<li>Markdown parsing with frontmatter support</li>
+<li>Wiki link extraction and resolution</li>
+<li>PARA structure detection</li>
+</ul>
+</li>
+<li>
+<p><strong>Site Generator</strong> (<code>src/generator/</code>)</p>
+<ul>
+<li>HTML template engine</li>
+<li>Static asset generation</li>
+<li>Search index builder</li>
+</ul>
+</li>
+<li>
+<p><strong>Theme System</strong> (<code>src/theme/</code>)</p>
+<ul>
+<li>70s earthy color palette CSS</li>
+<li>Responsive layout templates</li>
+<li>JavaScript for search functionality</li>
+</ul>
+</li>
+<li>
+<p><strong>CLI Interface</strong> (<code>src/main.rs</code>)</p>
+<ul>
+<li>Command-line argument parsing</li>
+<li>Build orchestration</li>
+<li>Error handling and logging</li>
+</ul>
+</li>
+</ol>
+<h2>Implementation Phases</h2>
+<h3>Phase 1: Foundation (MVP)</h3>
+<p><strong>Goal:</strong> Basic markdown-to-HTML conversion with PARA structure</p>
+<h4>Tasks:</h4>
+<ol>
+<li>
+<p><strong>Project Setup</strong></p>
+<ul>
+<li>Initialize Cargo project in <code>code/static-site-generator/</code></li>
+<li>Configure allowed dependencies (serde, basic markdown parser)</li>
+<li>Set up directory structure</li>
+</ul>
+</li>
+<li>
+<p><strong>Document Discovery</strong></p>
+<ul>
+<li>Recursive directory traversal of <code>context/</code></li>
+<li>PARA category detection (projects/, areas/, resources/, archives/)</li>
+<li>File filtering (.md files only)</li>
+</ul>
+</li>
+<li>
+<p><strong>Basic Markdown Processing</strong></p>
+<ul>
+<li>Frontmatter parsing (title, tags, dates, etc.)</li>
+<li>Markdown-to-HTML conversion</li>
+<li>Document metadata extraction</li>
+</ul>
+</li>
+<li>
+<p><strong>Simple HTML Generation</strong></p>
+<ul>
+<li>Basic HTML template structure</li>
+<li>Navigation generation from directory structure</li>
+<li>Individual page generation</li>
+</ul>
+</li>
+</ol>
+<h4>Deliverable:</h4>
+<p>Static HTML files that preserve PARA structure with basic styling.</p>
+<h3>Phase 2: Wiki Links &amp; Navigation</h3>
+<p><strong>Goal:</strong> Obsidian-compatible linking and improved navigation</p>
+<h4>Tasks:</h4>
+<ol>
+<li>
+<p><strong>Wiki Link Parser</strong></p>
+<ul>
+<li>Regex-based <code>&lt;span class="wiki-link broken" title="Link target not found: document-name"&gt;document-name&lt;/span&gt;</code> detection</li>
+<li>Link resolution to actual file paths</li>
+<li>Broken link detection and warnings</li>
+</ul>
+</li>
+<li>
+<p><strong>Cross-Reference System</strong></p>
+<ul>
+<li>Backlink generation</li>
+<li>Document relationship mapping</li>
+<li>Link validation</li>
+</ul>
+</li>
+<li>
+<p><strong>Enhanced Navigation</strong></p>
+<ul>
+<li>Breadcrumb generation</li>
+<li>Category-based navigation menus</li>
+<li>Document listing pages for each PARA category</li>
+</ul>
+</li>
+</ol>
+<h4>Deliverable:</h4>
+<p>Fully linked website with working internal navigation.</p>
+<h3>Phase 3: Search &amp; Theme</h3>
+<p><strong>Goal:</strong> Client-side search and 70s earthy design</p>
+<h4>Tasks:</h4>
+<ol>
+<li>
+<p><strong>Search System</strong></p>
+<ul>
+<li>JSON index generation (title, path, excerpt, tags)</li>
+<li>Client-side JavaScript search implementation</li>
+<li>Search results page and interface</li>
+</ul>
+</li>
+<li>
+<p><strong>70s Earthy Theme</strong></p>
+<ul>
+<li>CSS color palette design</li>
+<li>Typography and layout</li>
+<li>Responsive design for mobile/desktop</li>
+</ul>
+</li>
+<li>
+<p><strong>Asset Management</strong></p>
+<ul>
+<li>CSS/JS embedding or external files</li>
+<li>Font selection and loading</li>
+<li>Icon system (if needed)</li>
+</ul>
+</li>
+</ol>
+<h4>Deliverable:</h4>
+<p>Fully functional static website with search and polished design.</p>
+<h3>Phase 4: Polish &amp; Optimization</h3>
+<p><strong>Goal:</strong> Production-ready generator with extensibility</p>
+<h4>Tasks:</h4>
+<ol>
+<li>
+<p><strong>Performance Optimization</strong></p>
+<ul>
+<li>Build time optimization</li>
+<li>Generated file size optimization</li>
+<li>Search index compression</li>
+</ul>
+</li>
+<li>
+<p><strong>Error Handling</strong></p>
+<ul>
+<li>Comprehensive error messages</li>
+<li>Graceful handling of malformed documents</li>
+<li>Build validation and warnings</li>
+</ul>
+</li>
+<li>
+<p><strong>Documentation</strong></p>
+<ul>
+<li>README with usage instructions</li>
+<li>Configuration options</li>
+<li>Hosting deployment guide</li>
+</ul>
+</li>
+</ol>
+<h4>Deliverable:</h4>
+<p>Production-ready static site generator.</p>
+<h2>Technical Specifications</h2>
+<h3>Dependencies</h3>
+<pre><code class="language-toml">[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+pulldown-cmark = "0.9"  # Basic markdown parser
+toml = "0.8"  # For frontmatter parsing
+</code></pre>
+<h3>Directory Structure</h3>
+<pre><code>code/static-site-generator/
+├── src/
+│   ├── main.rs              # CLI entry point
+│   ├── lib.rs               # Library exports
+│   ├── parser/
+│   │   ├── mod.rs
+│   │   ├── markdown.rs      # Markdown processing
+│   │   ├── frontmatter.rs   # YAML frontmatter parsing
+│   │   └── wiki_links.rs    # Wiki link resolution
+│   ├── generator/
+│   │   ├── mod.rs
+│   │   ├── html.rs          # HTML generation
+│   │   ├── search.rs        # Search index building
+│   │   └── assets.rs        # Static asset handling
+│   ├── theme/
+│   │   ├── mod.rs
+│   │   ├── templates.rs     # HTML templates
+│   │   └── styles.rs        # CSS generation
+│   └── utils/
+│       ├── mod.rs
+│       ├── fs.rs            # File system utilities
+│       └── para.rs          # PARA structure detection
+├── assets/
+│   ├── style.css            # 70s earthy theme
+│   └── search.js            # Client-side search
+├── templates/
+│   ├── base.html            # Base HTML template
+│   ├── document.html        # Document page template
+│   └── index.html           # Category index template
+└── Cargo.toml
+</code></pre>
+<h3>Configuration</h3>
+<pre><code class="language-toml"># site.toml (optional configuration file)
+[site]
+title = "Knowledge Base"
+description = "PARA-organized documentation"
+base_url = "/"
+
+[build]
+input_dir = "context"
+output_dir = "dist"
+clean_output = true
+
+[theme]
+palette = "earthy-70s"
+font_family = "system"
+</code></pre>
+<h3>Color Palette (70s Earthy)</h3>
+<pre><code class="language-css">:root {
+  --primary: #8b4513; /* Saddle Brown */
+  --secondary: #cd853f; /* Peru */
+  --accent: #daa520; /* Goldenrod */
+  --background: #f5f5dc; /* Beige */
+  --surface: #faebd7; /* Antique White */
+  --text: #2f2f2f; /* Dark Gray */
+  --text-muted: #8b7355; /* Dark Khaki */
+  --border: #d2b48c; /* Tan */
+  --success: #6b8e23; /* Olive Drab */
+  --warning: #ff8c00; /* Dark Orange */
+}
+</code></pre>
+<h2>Success Metrics</h2>
+<ol>
+<li>
+<p><strong>Functionality</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+All markdown files converted to HTML</li>
+<li><input disabled="" type="checkbox"/>
+Wiki links working correctly</li>
+<li><input disabled="" type="checkbox"/>
+Search finds relevant documents</li>
+<li><input disabled="" type="checkbox"/>
+PARA structure preserved in navigation</li>
+</ul>
+</li>
+<li>
+<p><strong>Performance</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Build completes in under 10 seconds for current document set</li>
+<li><input disabled="" type="checkbox"/>
+Generated site loads quickly in browser</li>
+<li><input disabled="" type="checkbox"/>
+Search responds instantly for typical queries</li>
+</ul>
+</li>
+<li>
+<p><strong>Usability</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Clean, readable design</li>
+<li><input disabled="" type="checkbox"/>
+Mobile-responsive layout</li>
+<li><input disabled="" type="checkbox"/>
+Intuitive navigation</li>
+<li><input disabled="" type="checkbox"/>
+Easy to deploy and host</li>
+</ul>
+</li>
+</ol>
+<h2>Getting Started</h2>
+<ol>
+<li>Create project structure: <code>cargo new code/static-site-generator</code></li>
+<li>Begin with Phase 1: Foundation</li>
+<li>Test iteratively with small document subset</li>
+<li>Follow TDD principles with comprehensive testing</li>
+</ol>
+<h2>Next Steps</h2>
+<ul>
+<li>Begin Phase 1 implementation</li>
+<li>Set up basic project structure</li>
+<li>Implement document discovery and parsing</li>
+<li>Create initial HTML generation pipeline</li>
+</ul>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by PARA SSG</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleNav() {
+            var navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var navMenu = document.getElementById('navMenu');
+            var navToggle = document.querySelector('.nav-toggle');
+            if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
