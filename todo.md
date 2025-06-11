@@ -52,7 +52,12 @@
 
 ### Phase 2: Core Operations
 
-- [ ] Step 7: Frontmatter Parser with TypeScript
+- [x] Step 7: Frontmatter Parser with TypeScript
+  - [x] Create typed interfaces for parsed data
+  - [x] Implement YAML parsing from scratch
+  - [x] Support nested objects and arrays
+  - [x] Add Zod schema validation
+  - [x] Write comprehensive tests
 - [ ] Step 8: Document Creation Tool (context_create)
 - [ ] Step 9: Document Reading Tool (context_read)
 - [ ] Step 10: Wiki-Link Parser with TypeScript
