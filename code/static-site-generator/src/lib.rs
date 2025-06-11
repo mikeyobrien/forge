@@ -11,20 +11,29 @@ use std::path::{Path, PathBuf};
 /// Error types for para-ssg operations
 #[derive(Debug, thiserror::Error)]
 pub enum ParaSsgError {
+    /// IO operation error
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 
+    /// Invalid path provided
     #[error("Invalid path: {0}")]
     InvalidPath(String),
 
+    /// Directory not found
     #[error("Directory not found: {0}")]
     DirectoryNotFound(String),
 
+    /// Document parsing error
     #[error("Parse error: {0}")]
     ParseError(String),
 
+    /// Site generation error
     #[error("Generation error: {0}")]
     GenerationError(String),
+
+    /// JSON serialization error
+    #[error("JSON serialization error: {0}")]
+    Json(#[from] serde_json::Error),
 }
 
 /// Result type for para-ssg operations
@@ -188,6 +197,10 @@ pub fn generate_site(config: &Config) -> Result<()> {
             link_stats.orphaned_documents.len()
         );
     }
+
+    // Generate search index
+    println!("🔍 Generating search index...");
+    generator::generate_search_index(&documents, output_path)?;
 
     // Generate HTML pages
     println!("🔨 Generating HTML pages...");

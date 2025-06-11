@@ -269,7 +269,6 @@ impl HtmlGenerator {
 
         breadcrumbs
     }
-
 }
 
 /// Get human-readable category title
@@ -414,7 +413,6 @@ mod tests {
         let written = fs::read_to_string(temp_dir.path().join("test.html")).unwrap();
         assert_eq!(written, content);
     }
-
 
     #[test]
     fn test_breadcrumb_generation_for_document() {
