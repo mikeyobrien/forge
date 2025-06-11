@@ -1,9 +1,9 @@
 // ABOUTME: MCP server implementation for context management
 // ABOUTME: Provides tools for managing documents in a PARA structure
 
-import { Server } from '@modelcontextprotocol/sdk/server/index';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
-import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types';
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { handlePing, PingArgs } from './tools/ping';
 import { handleContextCreate, contextCreateTool } from './tools/context-create/index';
 import { configuration, ConfigurationError } from './config/index';
