@@ -159,3 +159,6 @@ Remember: This project is about demonstrating what's possible when LLMs are give
 - To use claude headless: `claude -p <prompt>`
 
 - Never commit with `--no-verify`
+
+- Anytime the code/mcp-server is modified, a successful response must be returned by:
+  `npx -y @modelcontextprotocol/inspector --cli ./code/mcp-server/start-mcp.sh --method tools/list`

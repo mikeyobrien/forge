@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-06-11T20:30:01.944Z",
+  "index": {
+    "/Users/mobrienv/Code/why/code/mcp-server/resources/projects/test-project.md": [
+      {
+        "sourcePath": "resources/test-resource.md",
+        "targetPath": "/Users/mobrienv/Code/why/code/mcp-server/resources/projects/test-project.md",
+        "context": "...e resource with links to [[projects/test-project]] and [[areas/test-area]].",
+        "lineNumber": 1,
+        "linkType": "wiki"
+      }
+    ],
+    "/Users/mobrienv/Code/why/code/mcp-server/resources/areas/test-area.md": [
+      {
+        "sourcePath": "resources/test-resource.md",
+        "targetPath": "/Users/mobrienv/Code/why/code/mcp-server/resources/areas/test-area.md",
+        "context": "...jects/test-project]] and [[areas/test-area]].",
+        "lineNumber": 1,
+        "linkType": "wiki"
+      },
+      {
+        "sourcePath": "resources/test-links.md",
+        "targetPath": "/Users/mobrienv/Code/why/code/mcp-server/resources/areas/test-area.md",
+        "context": "This document links to [[areas/test-area]] which we'll move next.",
+        "lineNumber": 1,
+        "linkType": "wiki"
+      }
+    ]
+  },
+  "metadata": {
+    "documentCount": 4,
+    "linkCount": 3
+  }
+}

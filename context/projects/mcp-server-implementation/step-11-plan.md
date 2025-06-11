@@ -1,9 +1,11 @@
 # Step 11: Basic Search Tool (context_search) Implementation Plan
 
 ## Objective
+
 Implement a search tool that allows searching documents by tags, content, and metadata within the context management system.
 
 ## Key Requirements
+
 1. Search by tags (exact match and partial match)
 2. Search by content (case-insensitive substring search)
 3. Search by document metadata (title, created date, etc.)
@@ -16,24 +18,25 @@ Implement a search tool that allows searching documents by tags, content, and me
 ## Implementation Components
 
 ### 1. Search Types and Interfaces
+
 ```typescript
 interface SearchQuery {
-  tags?: string[];          // Tags to match
-  content?: string;         // Content substring search
-  title?: string;           // Title search
-  category?: PARACategory;  // Filter by PARA category
+  tags?: string[]; // Tags to match
+  content?: string; // Content substring search
+  title?: string; // Title search
+  category?: PARACategory; // Filter by PARA category
   dateRange?: {
     start?: Date;
     end?: Date;
   };
-  operator?: 'AND' | 'OR';  // How to combine criteria (default: AND)
+  operator?: 'AND' | 'OR'; // How to combine criteria (default: AND)
 }
 
 interface SearchResult {
-  path: string;             // Document path relative to CONTEXT_ROOT
+  path: string; // Document path relative to CONTEXT_ROOT
   title: string;
-  relevanceScore: number;   // 0-100 score
-  snippet?: string;         // Content snippet with search term highlighted
+  relevanceScore: number; // 0-100 score
+  snippet?: string; // Content snippet with search term highlighted
   tags: string[];
   category: PARACategory;
   metadata: {
@@ -50,6 +53,7 @@ interface SearchResponse {
 ```
 
 ### 2. Search Engine Implementation
+
 - Create `SearchEngine` class that:
   - Indexes documents on startup (in-memory for now)
   - Implements search algorithms
@@ -57,6 +61,7 @@ interface SearchResponse {
   - Handles query parsing and validation
 
 ### 3. Search Algorithm
+
 - Tag matching: Exact and prefix matching
 - Content search: Boyer-Moore or simple substring for now
 - Relevance scoring:
@@ -66,6 +71,7 @@ interface SearchResponse {
   - Recent documents: slight boost based on modified date
 
 ### 4. MCP Tool Handler
+
 - Create `context_search` tool handler that:
   - Accepts search parameters
   - Validates input
@@ -73,6 +79,7 @@ interface SearchResponse {
   - Returns formatted results
 
 ### 5. Testing Strategy
+
 - Unit tests for:
   - Query parsing and validation
   - Individual search criteria (tags, content, etc.)
@@ -84,6 +91,7 @@ interface SearchResponse {
   - Edge cases (empty results, invalid queries)
 
 ## File Structure
+
 ```
 code/mcp-server/src/
 ├── search/
@@ -102,6 +110,7 @@ code/mcp-server/src/
 ```
 
 ## Implementation Steps
+
 1. Create search type definitions
 2. Implement basic SearchEngine class structure
 3. Add document indexing capability
@@ -114,6 +123,7 @@ code/mcp-server/src/
 10. Integrate with main server
 
 ## Success Criteria
+
 - All tests pass
 - No TypeScript errors or warnings
 - Search returns relevant results quickly

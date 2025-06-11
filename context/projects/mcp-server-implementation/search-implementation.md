@@ -10,12 +10,14 @@ modified: 2025-01-06T15:00:00Z
 This document tracks the implementation of the search functionality for the MCP server.
 
 ## Goals
+
 - Implement context_search tool
 - Support multiple search criteria
 - Enable relevance scoring
 - Add pagination support
 
 ## Progress
+
 - [x] Created search types
 - [x] Implemented relevance scoring
 - [x] Built SearchEngine class

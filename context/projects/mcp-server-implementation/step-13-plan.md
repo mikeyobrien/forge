@@ -16,6 +16,7 @@ Implement a robust backlink tracking system that automatically tracks which docu
 ### 1. Core Components
 
 #### BacklinkIndex Interface
+
 ```typescript
 interface BacklinkIndex {
   // Map from document path to array of documents that link to it
@@ -23,14 +24,15 @@ interface BacklinkIndex {
 }
 
 interface BacklinkEntry {
-  sourcePath: string;  // Document containing the link
-  targetPath: string;  // Document being linked to
-  linkText?: string;   // Display text of the link
-  context?: string;    // Surrounding text for context
+  sourcePath: string; // Document containing the link
+  targetPath: string; // Document being linked to
+  linkText?: string; // Display text of the link
+  context?: string; // Surrounding text for context
 }
 ```
 
 #### BacklinkManager Class
+
 - Responsible for maintaining the backlink index
 - Handles index updates on document changes
 - Provides query methods for backlink retrieval
@@ -39,30 +41,35 @@ interface BacklinkEntry {
 ### 2. Implementation Steps
 
 #### Step 1: Create BacklinkManager
+
 - Implement core class with index management
 - Add methods for adding/removing backlinks
 - Include batch update capabilities
 - Implement index persistence to `.index/backlinks.json`
 
 #### Step 2: Integrate with Document Operations
+
 - Hook into document creation to extract links
 - Update backlinks on document updates
 - Clean up backlinks on document deletion
 - Handle document moves/renames
 
 #### Step 3: Link Extraction Enhancement
+
 - Extend wiki-link parser to extract all links from documents
 - Support both [[wiki-links]] and markdown [links](path)
 - Extract link context for better understanding
 - Handle relative and absolute paths
 
 #### Step 4: Query Interface
+
 - Add getBacklinks(documentPath) method
 - Support filtering by link type
 - Include link context in results
 - Implement efficient caching
 
 #### Step 5: Index Management
+
 - Create index initialization on startup
 - Implement incremental updates
 - Add index rebuild capability
@@ -86,20 +93,24 @@ src/
 ### 4. Integration Points
 
 #### Document Creation (context_create)
+
 - Extract links from new documents
 - Update backlink index
 - Validate link targets exist
 
 #### Document Updates (future context_update)
+
 - Diff old vs new links
 - Update affected backlinks
 - Maintain index consistency
 
 #### Document Deletion (future)
+
 - Remove all backlinks from deleted document
 - Clean up references to deleted document
 
 #### Search Enhancement
+
 - Include backlink count in search results
 - Support searching by link relationships
 - Enable graph-based queries
@@ -107,18 +118,21 @@ src/
 ### 5. Testing Strategy
 
 #### Unit Tests
+
 - BacklinkManager CRUD operations
 - Link extraction accuracy
 - Index persistence/loading
 - Edge cases (circular links, self-links)
 
 #### Integration Tests
+
 - Document lifecycle with backlinks
 - Multi-document link networks
 - Performance with large link graphs
 - Concurrent update handling
 
 #### Performance Tests
+
 - Index lookup speed
 - Update performance
 - Memory usage with large graphs
@@ -127,6 +141,7 @@ src/
 ### 6. Implementation Details
 
 #### Index Storage Format
+
 ```json
 {
   "version": "1.0.0",
@@ -144,6 +159,7 @@ src/
 ```
 
 #### Performance Optimizations
+
 - In-memory index for fast lookups
 - Lazy loading of full backlink data
 - Batch updates to reduce I/O

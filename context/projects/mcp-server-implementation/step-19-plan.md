@@ -20,7 +20,7 @@ Implement a Knowledge Graph Builder that creates a typed graph data structure fr
 ```typescript
 // src/graph/types.ts
 interface GraphNode {
-  id: string;                    // Document path
+  id: string; // Document path
   title: string;
   category: PARACategory;
   metadata: DocumentMetadata;
@@ -30,15 +30,15 @@ interface GraphNode {
 }
 
 interface GraphEdge {
-  id: string;                    // Unique edge ID
-  source: string;                // Source document path
-  target: string;                // Target document path
+  id: string; // Unique edge ID
+  source: string; // Source document path
+  target: string; // Target document path
   type: 'wiki-link' | 'tag-relation' | 'category-relation';
-  weight: number;                // For weighted algorithms
+  weight: number; // For weighted algorithms
   metadata?: {
-    anchorText?: string;         // Display text from wiki-link
-    anchor?: string;             // Anchor fragment
-    context?: string;            // Surrounding text snippet
+    anchorText?: string; // Display text from wiki-link
+    anchor?: string; // Anchor fragment
+    context?: string; // Surrounding text snippet
   };
 }
 
@@ -68,12 +68,12 @@ class GraphBuilder {
   private linkIndexer: LinkIndexer;
   private paraManager: PARAManager;
   private searchEngine: SearchEngine;
-  
+
   async buildGraph(options?: GraphBuildOptions): Promise<Graph>;
   async buildFromCategory(category: PARACategory): Promise<Graph>;
   async buildFromTags(tags: string[]): Promise<Graph>;
   async buildSubgraph(rootPaths: string[], depth: number): Promise<Graph>;
-  
+
   private createNode(doc: Document): GraphNode;
   private createEdge(from: string, to: string, link: WikiLink): GraphEdge;
   private addTagRelations(graph: Graph): void;
@@ -89,24 +89,24 @@ class GraphAlgorithms {
   // Traversal
   depthFirstSearch(graph: Graph, start: string, visitor: (node: GraphNode) => void): void;
   breadthFirstSearch(graph: Graph, start: string, visitor: (node: GraphNode) => void): void;
-  
+
   // Path finding
   shortestPath(graph: Graph, start: string, end: string): string[] | null;
   allPaths(graph: Graph, start: string, end: string, maxLength?: number): string[][];
-  
+
   // Connectivity
   findConnectedComponents(graph: Graph): GraphNode[][];
   isReachable(graph: Graph, start: string, end: string): boolean;
-  
+
   // Cycle detection
   detectCycles(graph: Graph): string[][];
   topologicalSort(graph: Graph): string[] | null;
-  
+
   // Centrality metrics
   degreeCentrality(graph: Graph): Map<string, number>;
   betweennessCentrality(graph: Graph): Map<string, number>;
   pageRank(graph: Graph, iterations?: number): Map<string, number>;
-  
+
   // Clustering
   findClusters(graph: Graph, method: 'louvain' | 'label-propagation'): Map<string, number>;
   clusteringCoefficient(graph: Graph, node?: string): number;
@@ -119,7 +119,7 @@ class GraphAlgorithms {
 // src/graph/GraphAnalyzer.ts
 class GraphAnalyzer {
   constructor(private algorithms: GraphAlgorithms) {}
-  
+
   analyzeGraph(graph: Graph): GraphAnalysis {
     return {
       stats: this.calculateStats(graph),
@@ -130,22 +130,24 @@ class GraphAnalyzer {
       bridgeNodes: this.findBridgeNodes(graph),
     };
   }
-  
+
   findInfluencers(graph: Graph, limit: number): GraphNode[];
   findRelatedDocuments(graph: Graph, docPath: string, limit: number): GraphNode[];
-  suggestConnections(graph: Graph): Array<{from: string, to: string, reason: string}>;
+  suggestConnections(graph: Graph): Array<{ from: string; to: string; reason: string }>;
 }
 ```
 
 ### 5. Testing Strategy
 
 1. **Unit Tests**
+
    - Test graph construction with various document sets
    - Test each algorithm with known graph structures
    - Test cycle detection with cyclic and acyclic graphs
    - Test edge cases (empty graph, single node, disconnected components)
 
 2. **Integration Tests**
+
    - Test building graphs from actual document structures
    - Test integration with LinkIndexer and SearchEngine
    - Test performance with large document sets

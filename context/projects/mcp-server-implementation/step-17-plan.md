@@ -9,17 +9,20 @@ This step focuses on comprehensive integration testing of all Phase 3 features (
 ### From Phase 3 Implementation
 
 1. **Backlink Tracking System** (Step 13)
+
    - Automatic backlink detection
    - Backlink updates on document changes
    - Orphaned link detection
 
 2. **Link Queries Tool** (Step 14)
+
    - Forward link queries
    - Backlink queries
    - Link graph traversal
    - Broken link detection
 
 3. **Document Updates Tool** (Step 15)
+
    - Content updates with link preservation
    - Metadata updates
    - Atomic operations
@@ -36,6 +39,7 @@ This step focuses on comprehensive integration testing of all Phase 3 features (
 ### 1. Document Lifecycle Integration
 
 **Test: Complete Document Workflow**
+
 - Create a document with wiki-links
 - Verify backlinks are automatically tracked
 - Update the document content
@@ -48,6 +52,7 @@ This step focuses on comprehensive integration testing of all Phase 3 features (
 ### 2. Link Graph Integrity
 
 **Test: Multi-Document Link Network**
+
 - Create a network of 10+ interconnected documents
 - Verify all forward and backward links
 - Update multiple documents in sequence
@@ -58,6 +63,7 @@ This step focuses on comprehensive integration testing of all Phase 3 features (
 ### 3. Search and Relationship Integration
 
 **Test: Search with Link Context**
+
 - Create documents with specific link patterns
 - Search for documents by content
 - Use link queries to find related documents
@@ -68,6 +74,7 @@ This step focuses on comprehensive integration testing of all Phase 3 features (
 ### 4. Concurrent Operations
 
 **Test: Parallel Document Operations**
+
 - Simulate concurrent document updates
 - Test atomic operation guarantees
 - Verify no data corruption
@@ -77,6 +84,7 @@ This step focuses on comprehensive integration testing of all Phase 3 features (
 ### 5. Error Handling and Recovery
 
 **Test: Graceful Degradation**
+
 - Corrupt a document's frontmatter
 - Verify system continues functioning
 - Test recovery mechanisms
@@ -86,6 +94,7 @@ This step focuses on comprehensive integration testing of all Phase 3 features (
 ### 6. Performance at Scale
 
 **Test: Large Document Set Operations**
+
 - Create 1000+ documents with links
 - Measure search performance
 - Test link query response times
@@ -97,29 +106,31 @@ This step focuses on comprehensive integration testing of all Phase 3 features (
 ### Test Infrastructure
 
 1. **Test Data Generator**
+
    ```typescript
    class TestDataGenerator {
-     generateDocumentNetwork(size: number): Document[]
-     generateSearchableContent(): string
-     generateLinkPatterns(): WikiLink[]
+     generateDocumentNetwork(size: number): Document[];
+     generateSearchableContent(): string;
+     generateLinkPatterns(): WikiLink[];
    }
    ```
 
 2. **Integration Test Harness**
+
    ```typescript
    class IntegrationTestHarness {
-     setup(): Promise<void>
-     teardown(): Promise<void>
-     executeScenario(scenario: TestScenario): Promise<TestResult>
+     setup(): Promise<void>;
+     teardown(): Promise<void>;
+     executeScenario(scenario: TestScenario): Promise<TestResult>;
    }
    ```
 
 3. **Assertion Helpers**
    ```typescript
    class IntegrationAssertions {
-     assertLinkConsistency(docs: Document[]): void
-     assertSearchResults(query: string, expected: string[]): void
-     assertBacklinks(doc: string, expected: string[]): void
+     assertLinkConsistency(docs: Document[]): void;
+     assertSearchResults(query: string, expected: string[]): void;
+     assertBacklinks(doc: string, expected: string[]): void;
    }
    ```
 
@@ -156,37 +167,39 @@ code/mcp-server/src/__tests__/integration/
 ### Tool Interaction Scenarios
 
 1. **Create → Read → Update → Search Flow**
+
    ```typescript
    // Create document with links
-   await context_create({ path: "doc1", content: "Links to [[doc2]]" })
-   
+   await context_create({ path: 'doc1', content: 'Links to [[doc2]]' });
+
    // Read and verify
-   const doc = await context_read({ path: "doc1" })
-   
+   const doc = await context_read({ path: 'doc1' });
+
    // Update with link preservation
-   await context_update({ path: "doc1", content: "Updated [[doc2]] [[doc3]]" })
-   
+   await context_update({ path: 'doc1', content: 'Updated [[doc2]] [[doc3]]' });
+
    // Search for documents
-   const results = await context_search({ content: "doc2" })
-   
+   const results = await context_search({ content: 'doc2' });
+
    // Query links
-   const links = await context_query_links({ path: "doc1", type: "forward" })
+   const links = await context_query_links({ path: 'doc1', type: 'forward' });
    ```
 
 2. **Complex Search with Facets**
+
    ```typescript
    // Create diverse document set
-   await createTestDocuments(100)
-   
+   await createTestDocuments(100);
+
    // Search with advanced syntax
    const results = await context_search({
      rawQuery: '(javascript OR typescript) AND testing -"unit test"',
      requestedFacets: ['category', 'tags'],
-     fuzzyTolerance: 0.8
-   })
-   
+     fuzzyTolerance: 0.8,
+   });
+
    // Verify facets
-   expect(results.facets).toContainKeys(['category', 'tags'])
+   expect(results.facets).toContainKeys(['category', 'tags']);
    ```
 
 ## Performance Benchmarks
@@ -194,16 +207,19 @@ code/mcp-server/src/__tests__/integration/
 ### Target Metrics
 
 1. **Document Operations**
+
    - Create: < 50ms per document
    - Update: < 100ms per document
    - Read: < 20ms per document
 
 2. **Search Operations**
+
    - Simple search: < 100ms for 1000 documents
    - Complex query: < 200ms for 1000 documents
    - Faceted search: < 150ms for 1000 documents
 
 3. **Link Operations**
+
    - Link query: < 50ms per document
    - Backlink update: < 100ms per change
    - Graph traversal: < 200ms for 100 nodes
@@ -216,16 +232,19 @@ code/mcp-server/src/__tests__/integration/
 ## Error Scenarios to Test
 
 1. **File System Errors**
+
    - Disk full
    - Permission denied
    - File locked by another process
 
 2. **Data Corruption**
+
    - Invalid YAML frontmatter
    - Circular link references
    - Missing linked documents
 
 3. **Concurrent Access**
+
    - Multiple updates to same document
    - Search during index update
    - Link updates during traversal

@@ -169,7 +169,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       if (!contextMoveTool) {
         throw new Error('Move tool not initialized');
       }
-      return await contextMoveTool.handler(args);
+      if (!args) {
+        throw new Error('Missing arguments');
+      }
+      return await contextMoveTool.handler({
+        sourcePath: args['sourcePath'] as string,
+        destinationPath: args['destinationPath'] as string,
+        updateLinks: args['updateLinks'] as boolean,
+        overwrite: args['overwrite'] as boolean,
+      });
     }
 
     default:
@@ -199,7 +207,7 @@ async function main(): Promise<void> {
     paraManager = new PARAManager(config.contextRoot, fileSystem);
     searchEngine = new AdvancedSearchEngine(fileSystem, paraManager, config.contextRoot);
     backlinkManager = new BacklinkManager(fileSystem, config.contextRoot);
-    documentUpdater = new DocumentUpdater(fileSystem, paraManager, backlinkManager);
+    documentUpdater = new DocumentUpdater(fileSystem, paraManager);
 
     // Initialize search engine and backlink manager
     await searchEngine.initialize();
@@ -209,7 +217,13 @@ async function main(): Promise<void> {
     // Create tools
     searchTool = createAdvancedSearchTool(searchEngine);
     contextUpdateTool = createContextUpdateTool(fileSystem, paraManager);
-    contextMoveTool = createContextMoveTool(fileSystem, paraManager, backlinkManager, documentUpdater, config.contextRoot);
+    contextMoveTool = createContextMoveTool(
+      fileSystem,
+      paraManager,
+      backlinkManager,
+      documentUpdater,
+      config.contextRoot,
+    );
 
     // Start the transport
     const transport = new StdioServerTransport();

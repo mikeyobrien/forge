@@ -173,7 +173,7 @@ export async function handleContextRead(
     // Include backlinks if requested and manager is available
     if (validatedArgs.include_backlinks && backlinkManager) {
       const fullPath = fileSystem.resolvePath(normalizedPath);
-      const backlinksResult = backlinkManager.getBacklinks(fullPath, {
+      const backlinksResult = backlinkManager.getDetailedBacklinks(fullPath, {
         includeContext: true,
         limit: 10,
       });

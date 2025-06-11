@@ -7,11 +7,13 @@ Implement a document movement tool that safely moves documents between PARA cate
 ## Requirements
 
 1. **Tool Definition**
+
    - Name: `context_move`
    - Purpose: Move documents between PARA categories or within categories
    - Must update all wiki-links pointing to the moved document
 
 2. **Core Functionality**
+
    - Move document from source path to destination path
    - Update the document's category in metadata if moving between PARA categories
    - Find all documents that link to the moved document
@@ -19,25 +21,29 @@ Implement a document movement tool that safely moves documents between PARA cate
    - Ensure atomic operation (all-or-nothing)
 
 3. **Type Safety**
+
    - Full TypeScript implementation with strict mode
    - No `any` types allowed
    - Proper error types for various failure scenarios
 
 4. **Input Schema**
+
    ```typescript
    {
-     sourcePath: string;        // Current document path
-     destinationPath: string;   // New document path (can be just filename)
-     updateLinks: boolean;      // Whether to update incoming links (default: true)
+     sourcePath: string; // Current document path
+     destinationPath: string; // New document path (can be just filename)
+     updateLinks: boolean; // Whether to update incoming links (default: true)
    }
    ```
 
 5. **Security**
+
    - Both source and destination must be within CONTEXT_ROOT
    - Validate paths to prevent directory traversal
    - Check permissions before moving
 
 6. **Link Updates**
+
    - Use BacklinkManager to find all documents linking to source
    - Parse each linking document to find wiki-links
    - Replace old path with new path in wiki-links
@@ -75,13 +81,13 @@ class DocumentMover {
     private fs: IFileSystem,
     private para: PARAManager,
     private backlinks: BacklinkManager,
-    private updater: DocumentUpdater
+    private updater: DocumentUpdater,
   ) {}
 
   async moveDocument(
     sourcePath: string,
     destinationPath: string,
-    options: MoveOptions = {}
+    options: MoveOptions = {},
   ): Promise<MoveResult> {
     // Implementation
   }
@@ -134,7 +140,7 @@ private async executeAtomicMove(
 const moveInputSchema = z.object({
   sourcePath: z.string(),
   destinationPath: z.string(),
-  updateLinks: z.boolean().default(true)
+  updateLinks: z.boolean().default(true),
 });
 
 export const contextMoveToolDefinition = {
@@ -143,7 +149,7 @@ export const contextMoveToolDefinition = {
   inputSchema: moveInputSchema,
   handler: async (input: MoveInput): Promise<MoveResult> => {
     // Implementation using DocumentMover
-  }
+  },
 };
 ```
 
@@ -152,18 +158,21 @@ export const contextMoveToolDefinition = {
 ### Unit Tests
 
 1. **Path Validation**
+
    - Valid source and destination paths
    - Paths outside CONTEXT_ROOT
    - Non-existent source
    - Existing destination
 
 2. **Category Moves**
+
    - Projects → Areas
    - Resources → Archives
    - Within same category
    - Invalid category names
 
 3. **Link Updates**
+
    - Simple wiki-links: `[[old-path]]` → `[[new-path]]`
    - Links with display text: `[[old-path|Display]]` → `[[new-path|Display]]`
    - Multiple links in same document
@@ -179,6 +188,7 @@ export const contextMoveToolDefinition = {
 ### Integration Tests
 
 1. **Full Move Flow**
+
    - Create document with links
    - Create documents linking to it
    - Move document
@@ -186,6 +196,7 @@ export const contextMoveToolDefinition = {
    - Verify backlink index updated
 
 2. **Cross-Category Move**
+
    - Move from Projects to Archives
    - Verify metadata updated
    - Verify PARA structure maintained

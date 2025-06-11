@@ -2,7 +2,10 @@
 // ABOUTME: Provides interfaces for nodes, edges, graphs, and analysis results
 
 import { PARACategory } from '../para/types.js';
-import { DocumentMetadata } from '../models/types.js';
+import { DocumentFrontmatter } from '../models/types.js';
+
+// DocumentMetadata is an alias for DocumentFrontmatter
+export type DocumentMetadata = DocumentFrontmatter;
 
 /**
  * Represents a node in the knowledge graph (a document)
