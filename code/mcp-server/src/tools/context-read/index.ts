@@ -6,6 +6,7 @@ import { PARACategory, DocumentFrontmatter } from '../../models/types.js';
 import { FrontmatterParser } from '../../parsers/frontmatter.js';
 import { documentFrontmatterSchema } from '../../models/schemas.js';
 import { FileSystem } from '../../filesystem/FileSystem.js';
+import { BacklinkManager } from '../../backlinks/BacklinkManager.js';
 import { getConfigSync } from '../../config/index.js';
 
 /**
@@ -23,6 +24,11 @@ export const contextReadArgsSchema = z.object({
     .optional()
     .default(true)
     .describe('Whether to include parsed frontmatter metadata (default: true)'),
+  include_backlinks: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe('Whether to include backlink information (default: false)'),
 });
 
 export type ContextReadArgs = z.infer<typeof contextReadArgsSchema>;
@@ -37,6 +43,14 @@ export interface ReadDocument {
   frontmatter?: DocumentFrontmatter;
   category: PARACategory;
   exists: boolean;
+  backlinks?: {
+    count: number;
+    sources: Array<{
+      path: string;
+      linkText?: string;
+      context?: string;
+    }>;
+  };
 }
 
 /**
@@ -53,7 +67,10 @@ export interface ContextReadResult {
  * Handler for the context_read tool
  * Reads a document from the knowledge base and returns its content and metadata
  */
-export async function handleContextRead(args: unknown): Promise<string> {
+export async function handleContextRead(
+  args: unknown,
+  backlinkManager?: BacklinkManager,
+): Promise<string> {
   try {
     // Validate arguments
     const validatedArgs = contextReadArgsSchema.parse(args);
@@ -153,6 +170,24 @@ export async function handleContextRead(args: unknown): Promise<string> {
       document.title = filename.replace('.md', '').replace(/-/g, ' ');
     }
 
+    // Include backlinks if requested and manager is available
+    if (validatedArgs.include_backlinks && backlinkManager) {
+      const fullPath = fileSystem.resolvePath(normalizedPath);
+      const backlinksResult = await backlinkManager.getBacklinks(fullPath, {
+        includeContext: true,
+        limit: 10,
+      });
+
+      document.backlinks = {
+        count: backlinksResult.totalCount,
+        sources: backlinksResult.backlinks.map((bl) => ({
+          path: bl.sourcePath,
+          linkText: bl.linkText,
+          context: bl.context,
+        })),
+      };
+    }
+
     return JSON.stringify({
       success: true,
       document,
@@ -197,6 +232,11 @@ export const contextReadTool = {
         type: 'boolean',
         description: 'Whether to include parsed frontmatter metadata (default: true)',
         default: true,
+      },
+      include_backlinks: {
+        type: 'boolean',
+        description: 'Whether to include backlink information (default: false)',
+        default: false,
       },
     },
     required: ['path'],

@@ -84,9 +84,7 @@ describe('Search Query Validation', () => {
           end: new Date('2024-01-01'),
         },
       };
-      expect(() => validateSearchQuery(query)).toThrow(
-        'Start date must be before end date',
-      );
+      expect(() => validateSearchQuery(query)).toThrow('Start date must be before end date');
     });
 
     it('should reject query with zero limit', () => {

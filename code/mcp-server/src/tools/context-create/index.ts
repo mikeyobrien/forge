@@ -7,6 +7,7 @@ import { createPARADocument } from '../../models/factories.js';
 import { serializeDocument } from '../../parsers/serializer.js';
 import { PARAManager } from '../../para/PARAManager.js';
 import { FileSystem } from '../../filesystem/FileSystem.js';
+import { BacklinkManager } from '../../backlinks/BacklinkManager.js';
 import { getConfigSync } from '../../config/index.js';
 
 /**
@@ -47,7 +48,10 @@ export interface ContextCreateResult {
  * Handler for the context_create tool
  * Creates a new document with proper PARA categorization and frontmatter
  */
-export async function handleContextCreate(args: unknown): Promise<string> {
+export async function handleContextCreate(
+  args: unknown,
+  backlinkManager?: BacklinkManager,
+): Promise<string> {
   try {
     // Validate arguments
     const validatedArgs = contextCreateArgsSchema.parse(args);
@@ -121,6 +125,11 @@ export async function handleContextCreate(args: unknown): Promise<string> {
 
     // Write the file
     await fileSystem.writeFile(normalizedPath, markdown);
+
+    // Update backlinks if manager is available
+    if (backlinkManager && document.content) {
+      await backlinkManager.updateDocumentLinks(normalizedPath, document.content);
+    }
 
     return JSON.stringify({
       success: true,

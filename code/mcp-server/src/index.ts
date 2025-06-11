@@ -11,6 +11,7 @@ import { createSearchTool } from './tools/context_search';
 import { SearchEngine } from './search/index';
 import { FileSystem } from './filesystem/FileSystem';
 import { PARAManager } from './para/PARAManager';
+import { BacklinkManager } from './backlinks/BacklinkManager';
 import { configuration, ConfigurationError } from './config/index';
 
 // Create server instance
@@ -77,7 +78,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     case 'context_create': {
-      const result = await handleContextCreate(args);
+      const result = await handleContextCreate(args, backlinkManager);
       return {
         content: [
           {
@@ -89,7 +90,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     case 'context_read': {
-      const result = await handleContextRead(args);
+      const result = await handleContextRead(args, backlinkManager);
       return {
         content: [
           {
@@ -120,9 +121,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
-// Initialize search engine
+// Initialize search engine and backlink manager
 let searchEngine: SearchEngine;
 let searchTool: ReturnType<typeof createSearchTool> | undefined;
+let backlinkManager: BacklinkManager;
 
 // Start the server
 async function main(): Promise<void> {
@@ -135,10 +137,12 @@ async function main(): Promise<void> {
     const fileSystem = new FileSystem(config.contextRoot);
     const paraManager = new PARAManager(config.contextRoot, fileSystem);
     searchEngine = new SearchEngine(fileSystem, paraManager, config.contextRoot);
+    backlinkManager = new BacklinkManager(fileSystem, config.contextRoot);
 
-    // Initialize search engine
+    // Initialize search engine and backlink manager
     await searchEngine.initialize();
-    // Search engine initialized
+    await backlinkManager.initialize();
+    // Search engine and backlink manager initialized
 
     // Create search tool
     searchTool = createSearchTool(searchEngine);
