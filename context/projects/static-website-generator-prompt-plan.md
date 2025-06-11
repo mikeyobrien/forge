@@ -617,3 +617,34 @@ Set up the complete Rust project structure for para-ssg in code/static-site-gene
 
 **Completion**: 2025-01-06 16:10:00
 **Notes**: Successfully implemented complete project structure with 8 modules, robust CLI with comprehensive error handling using thiserror, 6 unit tests covering all CLI validation scenarios, and proper Rust conventions. All tests pass, code compiles cleanly, and changes committed with commit hash 9595df7.
+
+#### Prompt 1.2: Document Discovery & PARA Structure Detection
+
+**Status**: ✅ Complete
+**Objective**: Implement directory traversal and PARA category detection
+**Dependencies**: [Requires Prompt 1.1]
+**Deliverables**:
+
+- [x] Recursive directory traversal utility
+- [x] PARA category detection (projects/, areas/, resources/, archives/)
+- [x] Document metadata extraction
+- [x] Integration tests with sample documents
+
+**Prompt**:
+
+```
+Implement document discovery system in src/utils/para.rs and src/utils/fs.rs. Create functions to recursively traverse the context directory, detect PARA categories, and collect all .md files with their metadata. Include proper error handling for file system operations and comprehensive integration tests using tempfile to create test directory structures.
+```
+
+**Success Criteria**:
+
+- [x] Recursive directory traversal working correctly
+- [x] PARA categories properly detected and categorized
+- [x] File filtering for .md files only
+- [x] Integration tests with sample directory structures
+- [x] Error handling for permission issues and invalid paths
+- [x] Tests pass: `cargo test`
+- [x] Changes committed to git
+
+**Completion**: 2025-01-06 16:25:00
+**Notes**: Successfully implemented document discovery with DocumentInfo struct, PARA category detection with constants, ParaStatistics for counting documents by category, recursive directory traversal that skips hidden directories, and comprehensive integration tests using tempfile. All 16 tests pass. CLI now discovers 33 documents in the actual context directory with proper PARA categorization. Commit: b47dea7

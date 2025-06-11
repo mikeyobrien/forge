@@ -75,8 +75,8 @@ pub fn generate_site(config: &Config) -> Result<()> {
     let input_path = Path::new(&config.input_dir);
     println!("📂 Discovering documents in '{}'...", config.input_dir);
 
-    let documents = utils::traverse_directory(input_path)?;
-    let stats = utils::ParaStatistics::from_documents(&documents);
+    let document_infos = utils::traverse_directory(input_path)?;
+    let stats = utils::ParaStatistics::from_documents(&document_infos);
 
     println!("📊 Found {} documents:", stats.total_count);
     if stats.projects_count > 0 {
@@ -105,7 +105,75 @@ pub fn generate_site(config: &Config) -> Result<()> {
     utils::create_output_directory(output_path)?;
     println!("✅ Created output directory: {}", config.output_dir);
 
-    println!("🚧 HTML generation coming in next prompts...");
+    // Parse all documents
+    println!("📝 Parsing documents...");
+    let mut documents = Vec::new();
+    let mut parse_errors = 0;
+
+    for doc_info in &document_infos {
+        match parser::parse_document(
+            &doc_info.path,
+            &doc_info.relative_path,
+            doc_info.category.clone(),
+        ) {
+            Ok(doc) => documents.push(doc),
+            Err(e) => {
+                eprintln!("⚠️  Failed to parse '{}': {}", doc_info.path.display(), e);
+                parse_errors += 1;
+            }
+        }
+    }
+
+    if parse_errors > 0 {
+        println!("⚠️  {} document(s) failed to parse", parse_errors);
+    }
+    println!("✅ Successfully parsed {} documents", documents.len());
+
+    // Generate HTML pages
+    println!("🔨 Generating HTML pages...");
+    let generator = generator::HtmlGenerator::new(output_path.to_path_buf());
+
+    // Group documents by category
+    let mut categories: std::collections::HashMap<String, Vec<parser::Document>> =
+        std::collections::HashMap::new();
+    for doc in documents {
+        categories
+            .entry(doc.effective_category().to_string())
+            .or_insert_with(Vec::new)
+            .push(doc);
+    }
+
+    // Generate individual document pages
+    let mut generated_count = 0;
+    for (_category, docs) in &categories {
+        for doc in docs {
+            let html = generator.generate_document_page(doc)?;
+            generator.write_page(&doc.output_path, &html)?;
+            generated_count += 1;
+        }
+    }
+
+    // Generate category index pages
+    for category in &["projects", "areas", "resources", "archives"] {
+        if let Some(docs) = categories.get(*category) {
+            let html = generator.generate_category_page(category, docs)?;
+            let index_path = Path::new(category).join("index.html");
+            generator.write_page(&index_path, &html)?;
+        }
+    }
+
+    // Generate home page
+    let mut category_counts = std::collections::HashMap::new();
+    category_counts.insert("projects".to_string(), stats.projects_count);
+    category_counts.insert("areas".to_string(), stats.areas_count);
+    category_counts.insert("resources".to_string(), stats.resources_count);
+    category_counts.insert("archives".to_string(), stats.archives_count);
+
+    let home_html = generator.generate_home_page(&category_counts)?;
+    generator.write_page(Path::new("index.html"), &home_html)?;
+
+    println!("✅ Generated {} HTML pages", generated_count);
+    println!("🎉 Site generation complete! Output: {}", config.output_dir);
 
     Ok(())
 }
