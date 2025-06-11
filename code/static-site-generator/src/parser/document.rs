@@ -33,6 +33,23 @@ pub struct Document {
     /// Resolved wiki links in this document
     #[serde(skip)]
     pub wiki_links: Vec<ResolvedLink>,
+
+    /// Documents that link to this document
+    #[serde(skip)]
+    pub backlinks: Vec<BacklinkReference>,
+}
+
+/// Reference to a document that links to this document
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BacklinkReference {
+    /// Path to the source document containing the link
+    pub source_path: PathBuf,
+
+    /// Title of the source document
+    pub source_title: String,
+
+    /// Context around the link (surrounding text)
+    pub link_context: Option<String>,
 }
 
 /// Document metadata typically found in YAML frontmatter
@@ -88,6 +105,7 @@ impl Document {
             html_content: String::new(),
             category,
             wiki_links: Vec::new(),
+            backlinks: Vec::new(),
         }
     }
 

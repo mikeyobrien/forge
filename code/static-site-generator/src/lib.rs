@@ -167,6 +167,28 @@ pub fn generate_site(config: &Config) -> Result<()> {
         println!("✅ All wiki links resolved successfully");
     }
 
+    // Build backlink index
+    println!("🔙 Building backlinks...");
+    let backlink_index = generator::build_backlink_index(&documents);
+    generator::apply_backlinks_to_documents(&mut documents, backlink_index);
+
+    // Calculate and display link statistics
+    let link_stats = generator::calculate_link_statistics(&documents);
+    println!("📊 Link statistics:");
+    println!("   - Total links: {}", link_stats.total_links);
+    println!("   - Valid links: {}", link_stats.valid_links);
+    println!("   - Broken links: {}", link_stats.broken_links);
+    println!(
+        "   - Documents with backlinks: {}",
+        link_stats.documents_with_backlinks
+    );
+    if link_stats.orphaned_documents.len() > 0 {
+        println!(
+            "   - Orphaned documents: {}",
+            link_stats.orphaned_documents.len()
+        );
+    }
+
     // Generate HTML pages
     println!("🔨 Generating HTML pages...");
     let generator = generator::HtmlGenerator::new(output_path.to_path_buf());

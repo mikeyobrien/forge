@@ -44,12 +44,29 @@ impl HtmlGenerator {
             tags: doc.metadata.tags.clone(),
         };
 
+        // Convert backlinks to HTML format
+        let backlinks_html = if !doc.backlinks.is_empty() {
+            let mut backlinks_list = String::from("<ul class=\"backlinks-list\">");
+            for bl in &doc.backlinks {
+                let url = format!("/{}", bl.source_path.with_extension("html").display());
+                backlinks_list.push_str(&format!(
+                    r#"<li><a href="{}">{}</a></li>"#,
+                    url,
+                    html_escape(&bl.source_title)
+                ));
+            }
+            backlinks_list.push_str("</ul>");
+            Some(backlinks_list)
+        } else {
+            None
+        };
+
         // Generate document HTML
         let doc_content = self.template_engine.render_document(
             doc.title(),
             &doc.html_content,
             &template_meta,
-            None, // Backlinks will be added in Phase 2
+            backlinks_html.as_deref(),
         )?;
 
         // Generate breadcrumbs
@@ -288,6 +305,15 @@ fn humanize_filename(filename: &str) -> String {
         })
         .collect::<Vec<_>>()
         .join(" ")
+}
+
+/// HTML escape special characters
+fn html_escape(text: &str) -> String {
+    text.replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+        .replace('\'', "&#39;")
 }
 
 #[cfg(test)]

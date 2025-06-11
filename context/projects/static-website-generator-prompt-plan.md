@@ -688,3 +688,44 @@ Implement markdown parsing in src/parser/. Create frontmatter.rs for YAML parsin
 - **Completed**: 5 ✅
 - **In Progress**: 0 🔄
 - **Not Started**: 11 ⏳
+
+#### Prompt 2.1: Wiki Link Parsing & Resolution
+
+**Status**: ✅ Complete
+**Objective**: Parse [[wiki-links]] and resolve them to actual file paths
+**Dependencies**: [Requires Prompt 1.4]
+**Deliverables**:
+
+- [x] Wiki link regex parser
+- [x] Link resolution algorithm
+- [x] Broken link detection and warnings
+- [x] Link replacement in HTML output
+
+**Prompt**:
+
+```
+Implement wiki link system in src/parser/wiki_links.rs. Create robust regex-based parser for [[document-name]] patterns, implement link resolution algorithm that finds target documents by title or filename, and add broken link detection with helpful warnings. Update HTML generation to replace wiki links with proper <a> tags pointing to generated HTML files.
+```
+
+**Success Criteria**:
+
+- [x] Wiki links correctly parsed from markdown content
+- [x] Links resolved to actual file paths
+- [x] Broken links detected and reported as warnings
+- [x] HTML output contains proper <a> tags
+- [x] Case-insensitive link matching works
+- [x] Unit tests cover various link formats and edge cases
+- [x] Tests pass: `cargo test`
+- [x] Changes committed to git
+
+**Completion**: 2025-06-11 15:18:00
+**Notes**: Implemented complete wiki link system with regex parser, case-insensitive resolution, broken link detection, and HTML generation with relative paths. Added 10 comprehensive tests. Successfully detects and reports broken links during site generation.
+
+---
+
+### Overall Progress
+
+- **Total Prompts**: 16
+- **Completed**: 6 ✅
+- **In Progress**: 0 🔄
+- **Not Started**: 10 ⏳
