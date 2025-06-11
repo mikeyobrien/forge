@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-06-11T20:30:01.944Z",
+  "lastUpdated": "2025-06-11T21:59:28.322Z",
   "index": {
     "/Users/mobrienv/Code/why/code/mcp-server/resources/projects/test-project.md": [
       {
@@ -26,10 +26,19 @@
         "lineNumber": 1,
         "linkType": "wiki"
       }
+    ],
+    "/Users/mobrienv/Code/why/code/mcp-server/projects/wiki-links.md": [
+      {
+        "sourcePath": "projects/static-website-generator-prompt-plan.md",
+        "targetPath": "/Users/mobrienv/Code/why/code/mcp-server/projects/wiki-links.md",
+        "context": "...ted **Objective**: Parse [[wiki-links]] and resolve them to actu...",
+        "lineNumber": 146,
+        "linkType": "wiki"
+      }
     ]
   },
   "metadata": {
-    "documentCount": 4,
-    "linkCount": 3
+    "documentCount": 6,
+    "linkCount": 4
   }
 }

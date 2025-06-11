@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../../context:/context
+    environment:
+      - CONTEXT_ROOT=/context
+      - LOG_LEVEL=info
+    # MCP servers typically run via stdio, not HTTP
+    # Remove ports if not needed for your setup
+    stdin_open: true
+    tty: true

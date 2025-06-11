@@ -162,3 +162,34 @@ Remember: This project is about demonstrating what's possible when LLMs are give
 
 - Anytime the code/mcp-server is modified, a successful response must be returned by:
   `npx -y @modelcontextprotocol/inspector --cli ./code/mcp-server/start-mcp.sh --method tools/list`
+
+## MCP Server Docker Usage
+
+To ensure stability and prevent breaking changes when using the MCP server with Claude Code:
+
+### Building Versioned Images
+
+```bash
+# Build and tag with git commit hash
+cd code/mcp-server
+./build-docker.sh
+
+# Build with custom tag for stable release
+./build-docker.sh v1.0.0
+```
+
+### Using with Claude Code
+
+```bash
+# Pin to specific commit for stability
+docker run -v $(pwd)/context:/context mcp-server:abc1234
+
+# Use docker-compose for development
+cd code/mcp-server
+docker-compose up
+
+# List available versions
+docker images mcp-server
+```
+
+This allows Claude Code users to pin to known working versions while development continues.

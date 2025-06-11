@@ -71,9 +71,41 @@ impl Config {
 pub fn generate_site(config: &Config) -> Result<()> {
     config.validate()?;
 
-    println!("🚧 Site generation coming soon!");
-    println!("Input: {}", config.input_dir);
-    println!("Output: {}", config.output_dir);
+    // Discover all markdown documents
+    let input_path = Path::new(&config.input_dir);
+    println!("📂 Discovering documents in '{}'...", config.input_dir);
+
+    let documents = utils::traverse_directory(input_path)?;
+    let stats = utils::ParaStatistics::from_documents(&documents);
+
+    println!("📊 Found {} documents:", stats.total_count);
+    if stats.projects_count > 0 {
+        println!("   - Projects: {}", stats.projects_count);
+    }
+    if stats.areas_count > 0 {
+        println!("   - Areas: {}", stats.areas_count);
+    }
+    if stats.resources_count > 0 {
+        println!("   - Resources: {}", stats.resources_count);
+    }
+    if stats.archives_count > 0 {
+        println!("   - Archives: {}", stats.archives_count);
+    }
+    if stats.root_count > 0 {
+        println!("   - Root: {}", stats.root_count);
+    }
+
+    // Check for PARA structure
+    if !utils::has_para_structure(input_path) {
+        println!("⚠️  Warning: No PARA structure detected in input directory");
+    }
+
+    // Create output directory
+    let output_path = Path::new(&config.output_dir);
+    utils::create_output_directory(output_path)?;
+    println!("✅ Created output directory: {}", config.output_dir);
+
+    println!("🚧 HTML generation coming in next prompts...");
 
     Ok(())
 }
@@ -145,13 +177,22 @@ mod tests {
     #[test]
     fn test_generate_site_valid_config() {
         let temp_dir = TempDir::new().unwrap();
+        let output_dir = TempDir::new().unwrap();
+
+        // Create a test markdown file
+        let test_file = temp_dir.path().join("test.md");
+        fs::write(&test_file, "# Test Document\n\nContent here.").unwrap();
+
         let config = Config::new(
             temp_dir.path().to_string_lossy().to_string(),
-            "/output".to_string(),
+            output_dir.path().to_string_lossy().to_string(),
         );
 
         let result = generate_site(&config);
         assert!(result.is_ok());
+
+        // Verify output directory was created
+        assert!(output_dir.path().exists());
     }
 
     #[test]

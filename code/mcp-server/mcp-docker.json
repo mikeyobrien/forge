@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "context-manager": {
+      "command": "./start-mcp-docker.sh",
+      "args": ["latest"],
+      "cwd": "/Users/mobrienv/Code/why/code/mcp-server",
+      "env": {
+        "DOCKER_DEFAULT_PLATFORM": "linux/amd64"
+      }
+    }
+  }
+}
