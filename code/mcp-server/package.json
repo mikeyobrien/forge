@@ -28,8 +28,5 @@
     "@types/node": "^24.0.0",
     "dotenv": "^16.5.0",
     "zod": "^3.25.58"
-  },
-  "devDependencies": {
-    "@modelcontextprotocol/inspector": "^0.14.0"
   }
 }

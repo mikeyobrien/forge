@@ -14,7 +14,7 @@ const moveInputSchema = z.object({
   sourcePath: z.string().min(1, 'Source path is required'),
   destinationPath: z.string().min(1, 'Destination path is required'),
   updateLinks: z.boolean().default(true).describe('Whether to update incoming wiki-links'),
-  overwrite: z.boolean().default(false).describe('Whether to overwrite existing destination')
+  overwrite: z.boolean().default(false).describe('Whether to overwrite existing destination'),
 });
 
 type MoveInput = z.infer<typeof moveInputSchema>;
@@ -27,15 +27,49 @@ export function createContextMoveTool(
   para: PARAManager,
   backlinks: BacklinkManager,
   updater: DocumentUpdater,
-  contextRoot: string
-) {
+  contextRoot: string,
+): {
+  name: string;
+  description: string;
+  inputSchema: object;
+  handler: (
+    input: MoveInput,
+  ) => Promise<{ content: Array<{ type: 'text'; text: string }>; isError?: boolean }>;
+} {
   const mover = new DocumentMover(fs, para, backlinks, updater, contextRoot);
 
   return {
     name: 'context_move',
     description: 'Move a document to a new location, optionally updating all incoming wiki-links',
-    inputSchema: moveInputSchema,
-    handler: async (input: MoveInput) => {
+    inputSchema: {
+      type: 'object',
+      properties: {
+        sourcePath: {
+          type: 'string',
+          description: 'Source path of the document to move',
+          minLength: 1,
+        },
+        destinationPath: {
+          type: 'string',
+          description: 'Destination path for the document',
+          minLength: 1,
+        },
+        updateLinks: {
+          type: 'boolean',
+          description: 'Whether to update incoming wiki-links',
+          default: true,
+        },
+        overwrite: {
+          type: 'boolean',
+          description: 'Whether to overwrite existing destination',
+          default: false,
+        },
+      },
+      required: ['sourcePath', 'destinationPath'],
+    },
+    handler: async (
+      input: MoveInput,
+    ): Promise<{ content: Array<{ type: 'text'; text: string }>; isError?: boolean }> => {
       logger.info('context_move tool invoked', { input });
 
       try {
@@ -48,8 +82,8 @@ export function createContextMoveTool(
           validatedInput.destinationPath,
           {
             updateLinks: validatedInput.updateLinks,
-            overwrite: validatedInput.overwrite
-          }
+            overwrite: validatedInput.overwrite,
+          },
         );
 
         // Format the response
@@ -60,43 +94,42 @@ export function createContextMoveTool(
           ...(result.oldCategory && { oldCategory: result.oldCategory }),
           ...(result.newCategory && { newCategory: result.newCategory }),
           linksUpdated: result.totalLinksUpdated,
-          updatedDocuments: result.updatedLinks.map(update => ({
+          updatedDocuments: result.updatedLinks.map((update) => ({
             path: update.documentPath,
-            linksUpdated: update.linksUpdated
-          }))
+            linksUpdated: update.linksUpdated,
+          })),
         };
 
         logger.info('Document moved successfully', {
           from: result.oldPath,
           to: result.newPath,
-          linksUpdated: result.totalLinksUpdated
+          linksUpdated: result.totalLinksUpdated,
         });
 
         return {
           content: [
             {
               type: 'text' as const,
-              text: formatMoveResult(response)
-            }
-          ]
+              text: formatMoveResult(response),
+            },
+          ],
         };
-
       } catch (error) {
         logger.error('Failed to move document:', error);
 
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-        
+
         return {
           content: [
             {
               type: 'text' as const,
-              text: `Failed to move document: ${errorMessage}`
-            }
+              text: `Failed to move document: ${errorMessage}`,
+            },
           ],
-          isError: true
+          isError: true,
         };
       }
-    }
+    },
   };
 }
 
@@ -125,10 +158,14 @@ function formatMoveResult(result: {
 
   if (result.linksUpdated > 0) {
     lines.push(`## Link Updates\n`);
-    lines.push(`Updated ${result.linksUpdated} link${result.linksUpdated === 1 ? '' : 's'} across ${result.updatedDocuments.length} document${result.updatedDocuments.length === 1 ? '' : 's'}:\n`);
-    
+    lines.push(
+      `Updated ${result.linksUpdated} link${result.linksUpdated === 1 ? '' : 's'} across ${result.updatedDocuments.length} document${result.updatedDocuments.length === 1 ? '' : 's'}:\n`,
+    );
+
     for (const doc of result.updatedDocuments) {
-      lines.push(`- \`${doc.path}\`: ${doc.linksUpdated} link${doc.linksUpdated === 1 ? '' : 's'} updated`);
+      lines.push(
+        `- \`${doc.path}\`: ${doc.linksUpdated} link${doc.linksUpdated === 1 ? '' : 's'} updated`,
+      );
     }
   } else {
     lines.push(`## No Link Updates Required\n`);

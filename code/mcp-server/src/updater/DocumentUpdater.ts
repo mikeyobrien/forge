@@ -5,7 +5,7 @@ import { IFileSystem } from '../filesystem/IFileSystem.js';
 import { PARAManager } from '../para/PARAManager.js';
 import { parseWikiLinks } from '../parser/wiki-link.js';
 import { parseFrontmatter, serializeDocument } from '../parsers/index.js';
-import { documentFrontmatterSchema } from '../models/schemas.js';
+import { partialDocumentFrontmatterSchema } from '../models/schemas.js';
 import {
   Document,
   DocumentMetadata,
@@ -217,16 +217,15 @@ export class DocumentUpdater {
   /**
    * Validates that an update is valid
    */
-  private validateUpdate(document: Document, params: UpdateDocumentParams): void {
+  private validateUpdate(_document: Document, params: UpdateDocumentParams): void {
     // Validate metadata if provided
     if (params.metadata) {
       try {
-        // Create a test metadata object to validate
-        const testMetadata = { ...document.metadata, ...params.metadata };
-        documentFrontmatterSchema.parse(testMetadata);
+        // Validate only the update metadata, not the full merged result
+        partialDocumentFrontmatterSchema.parse(params.metadata);
       } catch (error) {
         throw new DocumentUpdateError(
-          `Invalid metadata: ${String(error)}`,
+          `Invalid metadata format: ${String(error)}`,
           DocumentUpdateErrorCode.INVALID_METADATA,
         );
       }

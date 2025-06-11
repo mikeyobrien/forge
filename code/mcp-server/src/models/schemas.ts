@@ -131,8 +131,23 @@ export const documentFrontmatterSchema = documentFrontmatterBaseSchema.refine(
 
 /**
  * Partial document frontmatter schema for updates
+ * Allows all known fields to be optional and arbitrary additional fields
  */
-export const partialDocumentFrontmatterSchema = documentFrontmatterBaseSchema.partial();
+export const partialDocumentFrontmatterSchema = z
+  .object({
+    title: z.string().min(1).optional(),
+    tags: z.array(tag).optional(),
+    created: isoDateString.optional(),
+    modified: isoDateString.optional(),
+    aliases: z.array(z.string()).optional(),
+    category: paraCategorySchema.optional(),
+    status: z.string().optional(), // Allow any string for status to support arbitrary values
+    due_date: isoDateString.optional(),
+    parent: documentId.optional(),
+    links_to: z.array(documentId).optional(),
+    backlinks: z.array(documentId).optional(),
+  })
+  .catchall(z.unknown()); // Allow any additional fields
 
 /**
  * Document stats schema
