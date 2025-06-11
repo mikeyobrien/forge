@@ -65,9 +65,9 @@ export function validatePort(port: number): void {
     throw new ConfigurationError('port', 'Port must be between 1 and 65535');
   }
 
-  // Warn about privileged ports
+  // Note: Port is privileged but we can't warn in stdio mode
   if (port < 1024) {
-    console.warn(`Warning: Port ${port} is a privileged port and may require elevated permissions`);
+    // Port ${port} is a privileged port and may require elevated permissions
   }
 }
 

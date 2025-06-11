@@ -156,3 +156,4 @@ When beginning a new framework:
 Remember: This project is about demonstrating what's possible when LLMs are given the freedom to create, not just assist.
 
 - Use `npm run lint -- --fix` to fix typescript format issues
+- To use claude headless: `claude -p <prompt>`

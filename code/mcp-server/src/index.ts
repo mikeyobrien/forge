@@ -129,10 +129,7 @@ async function main(): Promise<void> {
   try {
     // Load and validate configuration
     const config = await configuration.load();
-    console.error(`Configuration loaded successfully:`);
-    console.error(`  CONTEXT_ROOT: ${config.contextRoot}`);
-    console.error(`  Log level: ${config.logLevel}`);
-    console.error(`  Environment: ${config.nodeEnv}`);
+    // Configuration loaded successfully - no output for stdio server
 
     // Initialize components
     const fileSystem = new FileSystem(config.contextRoot);
@@ -141,7 +138,7 @@ async function main(): Promise<void> {
 
     // Initialize search engine
     await searchEngine.initialize();
-    console.error('Search engine initialized');
+    // Search engine initialized
 
     // Create search tool
     searchTool = createSearchTool(searchEngine);
@@ -149,19 +146,19 @@ async function main(): Promise<void> {
     // Start the transport
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error('MCP server started successfully');
+    // MCP server started successfully
   } catch (error) {
     if (error instanceof ConfigurationError) {
-      console.error(`Configuration error: ${error.message}`);
-      console.error(`Please check your environment variables and try again.`);
+      // Configuration error - exit silently for stdio server
+      // Error details: ${error.message}
     } else {
-      console.error('Failed to start server:', error);
+      // Failed to start server - exit silently
     }
     process.exit(1);
   }
 }
 
-main().catch((error) => {
-  console.error('Server error:', error);
+main().catch(() => {
+  // Server error - exit silently for stdio server
   process.exit(1);
 });
