@@ -250,6 +250,15 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Create deployment documentation
 - Full system integration tests
 
+### Step 23: Claude Code Self-Verification Suite
+
+- Create test harness for headless Claude executions
+- Write self-verification scripts for each MCP tool
+- Test permission prompts and security boundaries
+- Validate tool interactions and error handling
+- Create CI/CD integration for automated testing
+- Document self-verification patterns
+
 ## Testing Strategy
 
 ### Unit Tests
@@ -275,6 +284,13 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Stress testing with typed thresholds
 - CONTEXT_ROOT isolation verification
 
+### Self-Verification Tests with Claude Code
+
+- Headless Claude executions using `claude -p` flag
+- Automated MCP tool testing through Claude CLI
+- Permission and security validation
+- Real-world usage simulation
+
 ## TypeScript Configuration
 
 ### tsconfig.json Requirements
@@ -294,7 +310,182 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - ts-prune for unused exports
 - TypeScript compiler for type checking
 
+## Self-Verification Testing Strategy
+
+### Headless Claude Testing
+
+Each MCP tool will be tested using Claude Code's headless mode (`claude -p`) to ensure real-world functionality:
+
+1. **Test Structure**:
+
+   ```bash
+   # Start MCP server
+   npm run dev &
+   SERVER_PID=$!
+
+   # Run headless tests
+   claude -p "Test context_create tool..."
+   claude -p "Verify created document..."
+
+   # Cleanup
+   kill $SERVER_PID
+   ```
+
+2. **Test Categories**:
+
+   - **Functional Tests**: Verify each tool works correctly
+   - **Permission Tests**: Ensure proper permission handling
+   - **Error Tests**: Validate error messages and recovery
+   - **Integration Tests**: Test tool interactions
+   - **Performance Tests**: Measure response times
+
+3. **Verification Scripts**:
+
+   - `tests/claude/test-context-create.sh`
+   - `tests/claude/test-context-read.sh`
+   - `tests/claude/test-context-search.sh`
+   - `tests/claude/test-permissions.sh`
+   - `tests/claude/test-integration.sh`
+
+4. **Expected Outputs**:
+   Each test script will validate:
+
+   - Tool execution success/failure
+   - Output format and content
+   - Side effects (file creation/modification)
+   - Error handling behavior
+
+5. **CI/CD Integration**:
+   - Run self-verification on every commit
+   - Generate test reports
+   - Flag any deviations from expected behavior
+
 ## Implementation Prompts
+
+### Prompt 23: Claude Code Self-Verification Test Suite
+
+````text
+Create a self-verification test suite that uses Claude Code's headless mode to test MCP tools.
+
+Requirements:
+1. Create tests/claude/ directory structure:
+   - test-helpers.sh - Common test functions
+   - run-all-tests.sh - Main test runner
+   - Individual test scripts for each tool
+
+2. Implement test-helpers.sh:
+   ```bash
+   #!/bin/bash
+
+   # Start MCP server and get PID
+   start_mcp_server() {
+     cd code/mcp
+     npm run dev > /tmp/mcp-test.log 2>&1 &
+     echo $!
+   }
+
+   # Execute headless Claude command
+   test_claude_command() {
+     local command="$1"
+     local expected_pattern="$2"
+
+     output=$(claude -p "$command" 2>&1)
+     if echo "$output" | grep -q "$expected_pattern"; then
+       echo "✓ Test passed: $command"
+       return 0
+     else
+       echo "✗ Test failed: $command"
+       echo "Expected pattern: $expected_pattern"
+       echo "Actual output: $output"
+       return 1
+     fi
+   }
+````
+
+3. Example test-context-create.sh:
+
+   ```bash
+   #!/bin/bash
+   source ./test-helpers.sh
+
+   # Start server
+   SERVER_PID=$(start_mcp_server)
+   sleep 2
+
+   # Test 1: Create valid document
+   test_claude_command \
+     "Use the context_create MCP tool to create a document in Projects with title 'Test Document', tags ['test', 'verification'], and summary 'Testing MCP tool'" \
+     "successfully created"
+
+   # Test 2: Verify document exists
+   test_claude_command \
+     "Use the context_read MCP tool to read Projects/test-document.md" \
+     "Test Document"
+
+   # Test 3: Test invalid input
+   test_claude_command \
+     "Use the context_create MCP tool with empty title" \
+     "error\|failed\|invalid"
+
+   # Cleanup
+   kill $SERVER_PID
+   rm -rf "$CONTEXT_ROOT/Projects/test-document.md"
+   ```
+
+4. Create TypeScript test validator:
+
+   ```typescript
+   // tests/claude/validate-results.ts
+   interface TestResult {
+     tool: string;
+     test: string;
+     passed: boolean;
+     output: string;
+     expectedPattern: string;
+   }
+
+   class TestValidator {
+     validateToolOutput(result: TestResult): void {
+       // Validate tool response format
+       // Check for required fields
+       // Verify error handling
+     }
+   }
+   ```
+
+5. CI/CD integration (.github/workflows/self-verify.yml):
+
+   ```yaml
+   name: Self-Verification Tests
+   on: [push, pull_request]
+
+   jobs:
+     test:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v3
+         - name: Setup Node.js
+           uses: actions/setup-node@v3
+         - name: Install dependencies
+           run: cd code/mcp && npm install
+         - name: Run self-verification
+           run: |
+             export CONTEXT_ROOT=/tmp/test-context
+             cd tests/claude
+             ./run-all-tests.sh
+   ```
+
+6. Test patterns to verify:
+   - Tool execution success
+   - Permission handling
+   - Error messages
+   - Output format consistency
+   - CONTEXT_ROOT enforcement
+   - Tool interaction flows
+
+This creates a comprehensive self-verification system using Claude's own capabilities.
+
+````
 
 ### Prompt 1: TypeScript Project with Pre-commit Hooks
 
@@ -338,7 +529,7 @@ Requirements:
    - Tests pass
 
 This ensures code quality from the start.
-```
+````
 
 ### Prompt 2: MCP SDK Integration with TypeScript Types
 

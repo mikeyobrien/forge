@@ -11,20 +11,20 @@
 
 ### Phase 1: Foundation
 
-- [ ] Step 1: TypeScript Project Setup with Pre-commit Hooks
-  - [ ] Initialize package.json with TypeScript
-  - [ ] Configure tsconfig.json with strict mode
-  - [ ] Set up ESLint with TypeScript plugin
-  - [ ] Configure Prettier
-  - [ ] Install and configure husky
-  - [ ] Set up lint-staged
-  - [ ] Verify pre-commit hooks work
-- [ ] Step 2: MCP SDK Integration with TypeScript
-  - [ ] Install @modelcontextprotocol/sdk
-  - [ ] Create basic server structure
-  - [ ] Implement ping tool with types
-  - [ ] Set up Jest with ts-jest
-  - [ ] Write tests for ping tool
+- [x] Step 1: TypeScript Project Setup with Pre-commit Hooks
+  - [x] Initialize package.json with TypeScript
+  - [x] Configure tsconfig.json with strict mode
+  - [x] Set up ESLint with TypeScript plugin
+  - [x] Configure Prettier
+  - [x] Install and configure husky
+  - [x] Set up lint-staged
+  - [x] Verify pre-commit hooks work
+- [x] Step 2: MCP SDK Integration with TypeScript
+  - [x] Install @modelcontextprotocol/sdk
+  - [x] Create basic server structure
+  - [x] Implement ping tool with types
+  - [x] Set up Jest with ts-jest
+  - [x] Write tests for ping tool
 - [ ] Step 3: Environment Configuration System
   - [ ] Create typed config interfaces
   - [ ] Implement CONTEXT_ROOT validation
@@ -74,6 +74,7 @@
 - [ ] Step 20: Graph Export Tool (context_graph)
 - [ ] Step 21: Template System with TypeScript
 - [ ] Step 22: Final Integration and Polish
+- [ ] Step 23: Claude Code Self-Verification Suite
 
 ## Notes
 
@@ -82,12 +83,79 @@
 - All code must pass pre-commit hooks
 - Each step should be fully tested before moving on
 - CONTEXT_ROOT security is paramount
+- MCP tools must be self-verified using headless Claude (`claude -p`) executions
+
+## Self-Verification Testing Tasks
+
+### Test Infrastructure
+
+- [ ] Create `tests/claude/` directory for self-verification scripts
+- [ ] Set up test harness for headless Claude executions
+- [ ] Create test data fixtures for verification
+- [ ] Implement test result validation framework
+
+### Tool-Specific Verification Scripts
+
+- [ ] `test-context-create.sh` - Verify document creation
+  - [ ] Test valid document creation
+  - [ ] Test invalid input handling
+  - [ ] Test permission requirements
+  - [ ] Verify CONTEXT_ROOT boundaries
+- [ ] `test-context-read.sh` - Verify document reading
+  - [ ] Test existing document retrieval
+  - [ ] Test non-existent document handling
+  - [ ] Test path resolution
+  - [ ] Verify output format
+- [ ] `test-context-search.sh` - Verify search functionality
+  - [ ] Test tag-based search
+  - [ ] Test content search
+  - [ ] Test compound queries
+  - [ ] Verify result ranking
+- [ ] `test-context-update.sh` - Verify document updates
+  - [ ] Test frontmatter updates
+  - [ ] Test content updates
+  - [ ] Test link preservation
+  - [ ] Verify atomic operations
+- [ ] `test-context-query-links.sh` - Verify link queries
+  - [ ] Test forward link retrieval
+  - [ ] Test backlink detection
+  - [ ] Test link graph traversal
+  - [ ] Verify link consistency
+- [ ] `test-context-move.sh` - Verify document movement
+  - [ ] Test PARA category moves
+  - [ ] Test link updates on move
+  - [ ] Test invalid moves
+  - [ ] Verify atomic operations
+- [ ] `test-context-graph.sh` - Verify graph export
+  - [ ] Test JSON export format
+  - [ ] Test GraphML export
+  - [ ] Test filtering options
+  - [ ] Verify graph completeness
+
+### Integration Verification
+
+- [ ] `test-permissions.sh` - Verify permission handling
+  - [ ] Test tool permission prompts
+  - [ ] Test --dangerously-skip-permissions flag
+  - [ ] Verify security boundaries
+- [ ] `test-integration.sh` - Full workflow verification
+  - [ ] Test create->read->update->search flow
+  - [ ] Test multi-tool interactions
+  - [ ] Verify data consistency
+  - [ ] Test error recovery
+
+### CI/CD Integration
+
+- [ ] Create GitHub Actions workflow for self-verification
+- [ ] Set up test reporting and metrics
+- [ ] Configure failure notifications
+- [ ] Document self-verification patterns
 
 ## Completion Metrics
 
-- Total Steps: 22
-- Completed: 0
+- Total Steps: 23 (including self-verification)
+- Completed: 2
 - In Progress: 0
-- Percentage: 0%
+- Percentage: 8.7%
 
-Last Updated: [Will be updated as progress is made]
+Last Updated: 2025-01-10

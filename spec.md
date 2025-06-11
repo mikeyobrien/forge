@@ -153,6 +153,40 @@ The server will be implemented in TypeScript at `code/mcp/` using @modelcontextp
 
 All future tools for the forge project will be added to this same MCP server, making it the unified interface for all project capabilities.
 
+### Self-Verification Testing
+
+The MCP server will include automated self-verification using Claude Code's headless mode:
+
+#### Headless Testing Approach
+
+1. **Test Scripts**: Each MCP tool will have corresponding test scripts that invoke Claude using `claude -p` commands
+2. **Verification Flow**:
+   - Start MCP server in test mode
+   - Execute headless Claude commands that use the MCP tools
+   - Verify tool outputs and side effects
+   - Assert expected behaviors and error handling
+
+#### Example Test Pattern
+
+```bash
+# Test context_create tool
+claide -p "Use the context_create MCP tool to create a new document in Projects with title 'Test Doc', tags ['test', 'verification'], and summary 'Self-verification test document'"
+
+# Verify document was created
+claide -p "Use the context_read MCP tool to read the document at Projects/test-doc.md and confirm it exists with correct metadata"
+
+# Test error handling
+claide -p "Use the context_create MCP tool with invalid input and verify it returns appropriate error messages"
+```
+
+#### Verification Criteria
+
+- All tools respond correctly to valid inputs
+- Error messages are clear and actionable
+- Tool permissions are properly enforced
+- CONTEXT_ROOT boundaries are maintained
+- Performance meets specified thresholds
+
 ## Benefits
 
 1. **Comprehensive History**: Every decision, discussion, and development step is captured

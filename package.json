@@ -21,5 +21,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --build --verbose"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1"
   }
 }
