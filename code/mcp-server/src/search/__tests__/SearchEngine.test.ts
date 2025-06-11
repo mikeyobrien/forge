@@ -495,15 +495,18 @@ Test content`);
       await searchEngine.initialize();
 
       // Force an error during search
-      const originalMatchesFilters = (searchEngine as any).matchesFilters;
-      (searchEngine as any).matchesFilters = jest.fn().mockImplementation(() => {
+      const engineWithPrivate = searchEngine as unknown as {
+        matchesFilters: (doc: unknown, query: unknown) => boolean;
+      };
+      const originalMatchesFilters = engineWithPrivate.matchesFilters;
+      engineWithPrivate.matchesFilters = jest.fn().mockImplementation(() => {
         throw new Error('Unexpected error');
       });
 
       await expect(searchEngine.search({ content: 'test' })).rejects.toThrow(SearchError);
 
       // Restore original method
-      (searchEngine as any).matchesFilters = originalMatchesFilters;
+      engineWithPrivate.matchesFilters = originalMatchesFilters;
     });
 
     it('should include execution time in response', async () => {

@@ -307,6 +307,40 @@ export class MockFileSystem implements IFileSystem {
     this.directories.add(path);
   }
 
+  // Synchronous helper methods for testing
+  writeFileSync(path: string, content: string): void {
+    const resolvedPath = this.resolvePath(path);
+    this.files.set(resolvedPath, content);
+
+    // Update mtime, preserve birthtime for existing files
+    const stats = this.fileStats.get(resolvedPath);
+    if (stats) {
+      stats.mtime = new Date();
+    } else {
+      this.fileStats.set(resolvedPath, { mtime: new Date(), birthtime: new Date() });
+    }
+
+    // Ensure parent directories exist
+    const parts = resolvedPath.split('/');
+    let currentPath = '';
+    for (let i = 0; i < parts.length - 1; i++) {
+      if (parts[i]) {
+        currentPath += '/' + parts[i];
+        this.directories.add(currentPath);
+      }
+    }
+  }
+
+  deleteFileSync(path: string): void {
+    const resolvedPath = this.resolvePath(path);
+    this.files.delete(resolvedPath);
+    this.fileStats.delete(resolvedPath);
+  }
+
+  deleteFile(path: string): void {
+    this.deleteFileSync(path);
+  }
+
   clear(): void {
     this.files.clear();
     this.directories.clear();

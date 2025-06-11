@@ -17,7 +17,7 @@ jest.mock('../../utils/logger', () => ({
 
 describe('context_search tool', () => {
   let searchEngine: SearchEngine;
-  let searchTool: any;
+  let searchTool: ReturnType<typeof createSearchTool>;
   let mockSearch: jest.Mock;
 
   beforeEach(() => {
@@ -47,8 +47,8 @@ describe('context_search tool', () => {
 
     it('should have valid input schema', () => {
       expect(searchTool.inputSchema).toBeDefined();
-      expect(searchTool.inputSchema.type).toBe('object'); // JSON Schema
-      expect(searchTool.inputSchema.properties).toBeDefined();
+      expect(searchTool.inputSchema['type']).toBe('object'); // JSON Schema
+      expect(searchTool.inputSchema['properties']).toBeDefined();
     });
   });
 
@@ -88,7 +88,7 @@ describe('context_search tool', () => {
 
       expect(result.success).toBe(true);
       expect(result.results).toHaveLength(1);
-      expect(result.results[0]).toMatchObject({
+      expect(result.results?.[0]).toMatchObject({
         path: 'projects/test.md',
         title: 'Test Document',
         score: 85,
@@ -223,8 +223,8 @@ describe('context_search tool', () => {
       const input = { content: 'test' };
       const result = await searchTool.execute(input);
 
-      expect(result.results[0].created).toBe('2024-01-01T00:00:00.000Z');
-      expect(result.results[0].modified).toBe('2024-01-15T00:00:00.000Z');
+      expect(result.results?.[0]?.created).toBe('2024-01-01T00:00:00.000Z');
+      expect(result.results?.[0]?.modified).toBe('2024-01-15T00:00:00.000Z');
     });
   });
 
@@ -322,7 +322,7 @@ describe('context_search tool', () => {
     });
 
     it('should handle search errors with type', async () => {
-      const searchError = new Error('Permission denied') as any;
+      const searchError = new Error('Permission denied') as Error & { type: string };
       searchError.type = 'PERMISSION_DENIED';
       mockSearch.mockRejectedValue(searchError);
 

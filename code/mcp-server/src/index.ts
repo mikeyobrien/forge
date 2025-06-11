@@ -8,6 +8,7 @@ import { handlePing, PingArgs } from './tools/ping';
 import { handleContextCreate, contextCreateTool } from './tools/context-create/index';
 import { handleContextRead, contextReadTool } from './tools/context-read/index';
 import { createSearchTool } from './tools/context_search';
+import { queryLinks, contextQueryLinksToolDefinition } from './tools/context-query-links/index';
 import { SearchEngine } from './search/index';
 import { FileSystem } from './filesystem/FileSystem';
 import { PARAManager } from './para/PARAManager';
@@ -45,6 +46,7 @@ server.setRequestHandler(ListToolsRequestSchema, () => {
     },
     contextCreateTool,
     contextReadTool,
+    contextQueryLinksToolDefinition,
   ];
 
   // Add search tool if initialized
@@ -116,12 +118,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       };
     }
 
+    case 'context_query_links': {
+      const result = await queryLinks(args, fileSystem);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+
     default:
       throw new Error(`Unknown tool: ${name}`);
   }
 });
 
-// Initialize search engine and backlink manager
+// Initialize components
+let fileSystem: FileSystem;
 let searchEngine: SearchEngine;
 let searchTool: ReturnType<typeof createSearchTool> | undefined;
 let backlinkManager: BacklinkManager;
@@ -134,7 +149,7 @@ async function main(): Promise<void> {
     // Configuration loaded successfully - no output for stdio server
 
     // Initialize components
-    const fileSystem = new FileSystem(config.contextRoot);
+    fileSystem = new FileSystem(config.contextRoot);
     const paraManager = new PARAManager(config.contextRoot, fileSystem);
     searchEngine = new SearchEngine(fileSystem, paraManager, config.contextRoot);
     backlinkManager = new BacklinkManager(fileSystem, config.contextRoot);

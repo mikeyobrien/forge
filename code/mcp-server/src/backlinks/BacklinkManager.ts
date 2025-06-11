@@ -23,7 +23,7 @@ export class BacklinkManager {
   private index: BacklinkIndex = {};
   private indexPath: string;
   private isDirty = false;
-  private saveDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private saveDebounceTimer: NodeJS.Timeout | null = null;
   private readonly SAVE_DEBOUNCE_MS = 1000;
   private readonly INDEX_VERSION = '1.0.0';
 
@@ -183,8 +183,8 @@ export class BacklinkManager {
   async updateDocumentLinks(documentPath: string, content: string): Promise<void> {
     logger.debug('Updating links for document:', documentPath);
 
-    // Remove old backlinks from this document
-    this.removeDocumentFromIndex(documentPath);
+    // Remove old outgoing links from this document
+    this.removeOutgoingLinks(documentPath);
 
     // Extract and add new links
     const extraction = await this.extractLinks(documentPath, content);
@@ -214,14 +214,17 @@ export class BacklinkManager {
         this.index[link.targetPath] = [];
       }
 
-      this.index[link.targetPath].push(entry);
+      const targetIndex = this.index[link.targetPath];
+      if (targetIndex) {
+        targetIndex.push(entry);
+      }
     }
 
     this.markDirty();
   }
 
   /**
-   * Remove a document from the index (when deleted or before update)
+   * Remove a document from the index completely (when deleted)
    */
   removeDocumentFromIndex(documentPath: string): void {
     // Remove as a source (all outgoing links)
@@ -240,6 +243,26 @@ export class BacklinkManager {
     // Remove as a target (the document itself)
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete this.index[documentPath];
+
+    this.markDirty();
+  }
+
+  /**
+   * Remove only outgoing links from a document (before update)
+   */
+  private removeOutgoingLinks(documentPath: string): void {
+    // Remove only as a source (all outgoing links)
+    for (const targetPath in this.index) {
+      const entries = this.index[targetPath];
+      if (!entries) continue;
+      this.index[targetPath] = entries.filter((entry) => entry.sourcePath !== documentPath);
+
+      // Clean up empty arrays
+      if (this.index[targetPath].length === 0) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete this.index[targetPath];
+      }
+    }
 
     this.markDirty();
   }

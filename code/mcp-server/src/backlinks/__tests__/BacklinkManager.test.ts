@@ -44,7 +44,7 @@ describe('BacklinkManager', () => {
 
       await manager.initialize();
 
-      const result = await manager.getBacklinks('/test/context/target.md');
+      const result = manager.getBacklinks('/test/context/target.md');
       expect(result.backlinks).toHaveLength(1);
       expect(result.backlinks[0]?.sourcePath).toBe('/test/context/source.md');
     });
@@ -134,11 +134,11 @@ Line 4 with [[link2]]`;
 
       await manager.updateDocumentLinks(sourcePath, content);
 
-      const result1 = await manager.getBacklinks('/test/context/target1.md');
+      const result1 = manager.getBacklinks('/test/context/target1.md');
       expect(result1.backlinks).toHaveLength(1);
       expect(result1.backlinks[0]?.sourcePath).toBe(sourcePath);
 
-      const result2 = await manager.getBacklinks('/test/context/target2.md');
+      const result2 = manager.getBacklinks('/test/context/target2.md');
       expect(result2.backlinks).toHaveLength(1);
     });
 
@@ -148,7 +148,7 @@ Line 4 with [[link2]]`;
 
       await manager.updateDocumentLinks(sourcePath, content);
 
-      const result = await manager.getBacklinks('/test/context/important-link.md');
+      const result = manager.getBacklinks('/test/context/important-link.md');
       expect(result.backlinks[0]?.context).toContain('text before');
       expect(result.backlinks[0]?.context).toContain('and some text');
     });
@@ -161,10 +161,10 @@ Line 4 with [[link2]]`;
       await manager.updateDocumentLinks(sourcePath, content1);
       await manager.updateDocumentLinks(sourcePath, content2);
 
-      const oldResult = await manager.getBacklinks('/test/context/old-target.md');
+      const oldResult = manager.getBacklinks('/test/context/old-target.md');
       expect(oldResult.backlinks).toHaveLength(0);
 
-      const newResult = await manager.getBacklinks('/test/context/new-target.md');
+      const newResult = manager.getBacklinks('/test/context/new-target.md');
       expect(newResult.backlinks).toHaveLength(1);
     });
   });
@@ -181,10 +181,10 @@ Line 4 with [[link2]]`;
       await manager.updateDocumentLinks(sourcePath, content);
       manager.removeDocumentFromIndex(sourcePath);
 
-      const result1 = await manager.getBacklinks('/test/context/target1.md');
+      const result1 = manager.getBacklinks('/test/context/target1.md');
       expect(result1.backlinks).toHaveLength(0);
 
-      const result2 = await manager.getBacklinks('/test/context/target2.md');
+      const result2 = manager.getBacklinks('/test/context/target2.md');
       expect(result2.backlinks).toHaveLength(0);
     });
 
@@ -196,12 +196,12 @@ Line 4 with [[link2]]`;
       await manager.updateDocumentLinks(source1, 'Links to [[target]].');
       await manager.updateDocumentLinks(source2, 'Also links to [[target]].');
 
-      const before = await manager.getBacklinks(target);
+      const before = manager.getBacklinks(target);
       expect(before.backlinks).toHaveLength(2);
 
       manager.removeDocumentFromIndex(target);
 
-      const after = await manager.getBacklinks(target);
+      const after = manager.getBacklinks(target);
       expect(after.backlinks).toHaveLength(0);
     });
   });
@@ -218,15 +218,15 @@ Line 4 with [[link2]]`;
       await manager.updateDocumentLinks('/test/context/source2.md', 'Another [[target]] link.');
     });
 
-    it('should return all backlinks by default', async () => {
-      const result = await manager.getBacklinks('/test/context/target.md');
+    it('should return all backlinks by default', () => {
+      const result = manager.getBacklinks('/test/context/target.md');
 
       expect(result.backlinks).toHaveLength(3);
       expect(result.totalCount).toBe(3);
     });
 
-    it('should filter by link type', async () => {
-      const result = await manager.getBacklinks('/test/context/target.md', {
+    it('should filter by link type', () => {
+      const result = manager.getBacklinks('/test/context/target.md', {
         linkType: 'wiki',
       });
 
@@ -234,8 +234,8 @@ Line 4 with [[link2]]`;
       expect(result.backlinks.every((link) => link.linkType === 'wiki')).toBe(true);
     });
 
-    it('should support pagination', async () => {
-      const page1 = await manager.getBacklinks('/test/context/target.md', {
+    it('should support pagination', () => {
+      const page1 = manager.getBacklinks('/test/context/target.md', {
         limit: 2,
         offset: 0,
       });
@@ -243,7 +243,7 @@ Line 4 with [[link2]]`;
       expect(page1.backlinks).toHaveLength(2);
       expect(page1.totalCount).toBe(3);
 
-      const page2 = await manager.getBacklinks('/test/context/target.md', {
+      const page2 = manager.getBacklinks('/test/context/target.md', {
         limit: 2,
         offset: 2,
       });
@@ -252,8 +252,8 @@ Line 4 with [[link2]]`;
       expect(page2.totalCount).toBe(3);
     });
 
-    it('should exclude context when requested', async () => {
-      const result = await manager.getBacklinks('/test/context/target.md', {
+    it('should exclude context when requested', () => {
+      const result = manager.getBacklinks('/test/context/target.md', {
         includeContext: false,
       });
 
@@ -288,10 +288,10 @@ Line 4 with [[link2]]`;
       expect(stats.linkCount).toBeGreaterThanOrEqual(4); // At least 4 links
       expect(stats.documentCount).toBeGreaterThanOrEqual(3); // At least hub + 2 spokes that have content
 
-      expect(stats.mostLinkedDocuments[0]).toMatchObject({
-        path: '/test/context/hub.md',
-        incomingLinkCount: 2,
-      });
+      // Both hub and spoke1 have 2 incoming links, so either could be first
+      const topLinked = stats.mostLinkedDocuments[0];
+      expect(topLinked?.incomingLinkCount).toBe(2);
+      expect(['/test/context/hub.md', '/test/context/spoke1.md']).toContain(topLinked?.path);
     });
   });
 
@@ -314,9 +314,9 @@ Line 4 with [[link2]]`;
       const stats = manager.getStats();
 
       // Let's check what documents were found
-      const doc1Links = await manager.getBacklinks('/test/context/doc1.md');
-      const doc2Links = await manager.getBacklinks('/test/context/doc2.md');
-      const doc3Links = await manager.getBacklinks('/test/context/doc3.md');
+      const doc1Links = manager.getBacklinks('/test/context/doc1.md');
+      const doc2Links = manager.getBacklinks('/test/context/doc2.md');
+      const doc3Links = manager.getBacklinks('/test/context/doc3.md');
 
       // The issue might be that doc2 isn't tracked because it has no incoming links
       // in the simple test. Let's adjust our expectations
@@ -389,7 +389,7 @@ Line 4 with [[link2]]`;
       await manager.updateDocumentLinks('/test/context/source.md', 'Links to [[target]].');
 
       // Wait for debounced save
-      await new Promise<void>((resolve) => setTimeout(resolve, 1500));
+      await new Promise<void>((resolve) => setTimeout(() => resolve(), 1500));
 
       const indexPath = path.join(contextRoot, '.index', 'backlinks.json');
       const saved = await fileSystem.readFile(indexPath);
@@ -416,7 +416,7 @@ Line 4 with [[link2]]`;
       await manager.initialize();
 
       // Should have rebuilt with new data
-      const result = await manager.getBacklinks('/test/context/link.md');
+      const result = manager.getBacklinks('/test/context/link.md');
       expect(result.backlinks).toHaveLength(1);
     });
   });

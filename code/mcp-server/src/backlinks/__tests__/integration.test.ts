@@ -4,11 +4,27 @@
 import { BacklinkManager } from '../BacklinkManager';
 import { FileSystem } from '../../filesystem/FileSystem';
 import { PARAManager } from '../../para/PARAManager';
+import { PARACategory } from '../../para/types';
 import { SearchEngine } from '../../search/SearchEngine';
 import { serializeDocument } from '../../parsers/serializer';
+import { DocumentFrontmatter } from '../../models/types';
 import path from 'path';
 import fs from 'fs/promises';
 import os from 'os';
+
+// Helper to create test documents
+function createTestDocument(
+  frontmatter: Partial<DocumentFrontmatter> & { title: string },
+  content: string,
+): string {
+  const doc = {
+    id: 'test.md',
+    path: '/test.md',
+    frontmatter: frontmatter as DocumentFrontmatter,
+    content,
+  };
+  return serializeDocument(doc);
+}
 
 describe('Backlink Integration Tests', () => {
   let tempDir: string;
@@ -40,11 +56,13 @@ describe('Backlink Integration Tests', () => {
     it('should track backlinks through document creation and updates', async () => {
       // Create first document
       const doc1Path = path.join(tempDir, 'projects', 'project1.md');
-      const doc1Content = serializeDocument({
-        title: 'Project 1',
-        tags: ['project'],
-        content: 'This project depends on [[Project 2]] for completion.',
-      });
+      const doc1Content = createTestDocument(
+        {
+          title: 'Project 1',
+          tags: ['project'],
+        },
+        'This project depends on [[project2]] for completion.',
+      );
 
       await fileSystem.mkdir(path.join(tempDir, 'projects'), true);
       await fileSystem.writeFile(doc1Path, doc1Content);
@@ -52,56 +70,62 @@ describe('Backlink Integration Tests', () => {
 
       // Create second document that links back
       const doc2Path = path.join(tempDir, 'projects', 'project2.md');
-      const doc2Content = serializeDocument({
-        title: 'Project 2',
-        tags: ['project', 'dependency'],
-        content: 'This is referenced by [[Project 1]] and contains [[resources/tool]].',
-      });
+      const doc2Content = createTestDocument(
+        {
+          title: 'Project 2',
+          tags: ['project', 'dependency'],
+        },
+        'This is referenced by [[project1]] and contains [[resources/tool]].',
+      );
 
       await fileSystem.writeFile(doc2Path, doc2Content);
       await backlinkManager.updateDocumentLinks(doc2Path, doc2Content);
 
       // Check backlinks
-      const project1Backlinks = await backlinkManager.getBacklinks(doc1Path);
+      const project1Backlinks = backlinkManager.getBacklinks(doc1Path);
       expect(project1Backlinks.backlinks).toHaveLength(1);
       expect(project1Backlinks.backlinks[0]?.sourcePath).toBe(doc2Path);
 
-      const project2Backlinks = await backlinkManager.getBacklinks(doc2Path);
+      const project2Backlinks = backlinkManager.getBacklinks(doc2Path);
       expect(project2Backlinks.backlinks).toHaveLength(1);
       expect(project2Backlinks.backlinks[0]?.sourcePath).toBe(doc1Path);
 
       // Update first document to remove link
-      const updatedDoc1Content = serializeDocument({
-        title: 'Project 1',
-        tags: ['project'],
-        content: 'This project is now independent.',
-      });
+      const updatedDoc1Content = createTestDocument(
+        {
+          title: 'Project 1',
+          tags: ['project'],
+        },
+        'This project is now independent.',
+      );
 
       await fileSystem.writeFile(doc1Path, updatedDoc1Content);
       await backlinkManager.updateDocumentLinks(doc1Path, updatedDoc1Content);
 
       // Verify backlink was removed
-      const updatedProject2Backlinks = await backlinkManager.getBacklinks(doc2Path);
+      const updatedProject2Backlinks = backlinkManager.getBacklinks(doc2Path);
       expect(updatedProject2Backlinks.backlinks).toHaveLength(0);
     });
 
     it('should handle complex link networks', async () => {
       // Create a hub document
       const hubPath = path.join(tempDir, 'areas', 'knowledge-hub.md');
-      const hubContent = serializeDocument({
-        title: 'Knowledge Hub',
-        tags: ['hub', 'index'],
-        content: `# Knowledge Hub
+      const hubContent = createTestDocument(
+        {
+          title: 'Knowledge Hub',
+          tags: ['hub', 'index'],
+        },
+        `# Knowledge Hub
       
 Key projects:
-- [[projects/web-app]] - Main application
-- [[projects/mobile-app]] - Mobile version
-- [[projects/api]] - Backend API
+- [[/projects/web-app]] - Main application
+- [[/projects/mobile-app]] - Mobile version
+- [[/projects/api]] - Backend API
 
 Key resources:
-- [[resources/design-system]] - UI components
-- [[resources/database-schema]] - Data models`,
-      });
+- [[/resources/design-system]] - UI components
+- [[/resources/database-schema]] - Data models`,
+      );
 
       await fileSystem.mkdir(path.join(tempDir, 'areas'), true);
       await fileSystem.mkdir(path.join(tempDir, 'projects'), true);
@@ -111,22 +135,25 @@ Key resources:
 
       // Create linked documents
       const webAppPath = path.join(tempDir, 'projects', 'web-app.md');
-      const webAppContent = serializeDocument({
-        title: 'Web Application',
-        tags: ['project', 'frontend'],
-        content: 'Uses [[resources/design-system]] and connects to [[projects/api]].',
-      });
+      const webAppContent = createTestDocument(
+        {
+          title: 'Web Application',
+          tags: ['project', 'frontend'],
+        },
+        'Uses [[/resources/design-system]] and connects to [[/projects/api]].',
+      );
 
       await fileSystem.writeFile(webAppPath, webAppContent);
       await backlinkManager.updateDocumentLinks(webAppPath, webAppContent);
 
       const apiPath = path.join(tempDir, 'projects', 'api.md');
-      const apiContent = serializeDocument({
-        title: 'Backend API',
-        tags: ['project', 'backend'],
-        content:
-          'Implements [[resources/database-schema]] for [[projects/web-app]] and [[projects/mobile-app]].',
-      });
+      const apiContent = createTestDocument(
+        {
+          title: 'Backend API',
+          tags: ['project', 'backend'],
+        },
+        'Implements [[/resources/database-schema]] for [[/projects/web-app]] and [[/projects/mobile-app]].',
+      );
 
       await fileSystem.writeFile(apiPath, apiContent);
       await backlinkManager.updateDocumentLinks(apiPath, apiContent);
@@ -137,7 +164,7 @@ Key resources:
       expect(stats.linkCount).toBeGreaterThanOrEqual(8);
 
       // Verify hub is most linked to
-      const designSystemBacklinks = await backlinkManager.getBacklinks(
+      const designSystemBacklinks = backlinkManager.getBacklinks(
         path.join(tempDir, 'resources', 'design-system.md'),
       );
       expect(designSystemBacklinks.backlinks).toHaveLength(2); // hub + web-app
@@ -151,12 +178,12 @@ Key resources:
         {
           path: 'projects/main-project.md',
           frontmatter: { title: 'Main Project', tags: ['important'] },
-          content: 'This is the main project that references [[shared-resource]].',
+          content: 'This is the main project that references [[/resources/shared-resource]].',
         },
         {
           path: 'projects/side-project.md',
           frontmatter: { title: 'Side Project', tags: ['experimental'] },
-          content: 'A side project that also uses [[shared-resource]].',
+          content: 'A side project that also uses [[/resources/shared-resource]].',
         },
         {
           path: 'resources/shared-resource.md',
@@ -166,7 +193,7 @@ Key resources:
         {
           path: 'areas/planning.md',
           frontmatter: { title: 'Planning', tags: ['process'] },
-          content: 'Planning document that tracks [[main-project]] progress.',
+          content: 'Planning document that tracks [[/projects/main-project]] progress.',
         },
       ];
 
@@ -175,36 +202,37 @@ Key resources:
         const dir = path.dirname(fullPath);
         await fileSystem.mkdir(path.join(tempDir, path.relative(tempDir, dir)), true);
 
-        const serialized = serializeDocument({ ...doc.frontmatter, content: doc.content });
+        const serialized = createTestDocument(doc.frontmatter, doc.content);
         await fileSystem.writeFile(fullPath, serialized);
         await backlinkManager.updateDocumentLinks(fullPath, serialized);
-        await searchEngine.indexDocument(fullPath);
       }
+
+      // Initialize search engine to index documents
+      await searchEngine.initialize();
     });
 
     it('should enrich search results with backlink information', async () => {
       const results = await searchEngine.search({
-        query: 'resource',
+        content: 'resource',
       });
 
       // Find the shared resource in results
-      const sharedResource = results.results.find(
-        (r) => r.document.metadata.title === 'Shared Resource',
-      );
+      const sharedResource = results.results.find((r) => r.title === 'Shared Resource');
 
       expect(sharedResource).toBeDefined();
 
       // Check if it has backlinks
-      const backlinks = await backlinkManager.getBacklinks(sharedResource!.path);
+      const resourceFullPath = sharedResource ? path.join(tempDir, sharedResource.path) : '';
+      const backlinks = backlinkManager.getBacklinks(resourceFullPath);
       expect(backlinks.totalCount).toBe(2); // main and side project
     });
 
-    it('should find documents by backlink count', async () => {
+    it('should find documents by backlink count', () => {
       const stats = backlinkManager.getStats();
 
       // Most linked should be shared-resource
-      expect(stats.mostLinkedDocuments[0].path).toContain('shared-resource.md');
-      expect(stats.mostLinkedDocuments[0].incomingLinkCount).toBe(2);
+      expect(stats.mostLinkedDocuments[0]?.path).toContain('shared-resource.md');
+      expect(stats.mostLinkedDocuments[0]?.incomingLinkCount).toBe(2);
 
       // Most linking should be main-project (if we count outgoing)
       const projectPath = path.join(tempDir, 'projects', 'main-project.md');
@@ -221,25 +249,31 @@ Key resources:
       const resourcePath = path.join(tempDir, 'resources', 'typescript-guide.md');
 
       // Project links to area and resource
-      const projectContent = serializeDocument({
-        title: 'App Development',
-        category: 'projects',
-        content: 'Following [[areas/coding-standards]] and using [[resources/typescript-guide]].',
-      });
+      const projectContent = createTestDocument(
+        {
+          title: 'App Development',
+          category: PARACategory.Projects,
+        },
+        'Following [[/areas/coding-standards]] and using [[/resources/typescript-guide]].',
+      );
 
       // Area links to resource
-      const areaContent = serializeDocument({
-        title: 'Coding Standards',
-        category: 'areas',
-        content: 'Based on [[resources/typescript-guide]] best practices.',
-      });
+      const areaContent = createTestDocument(
+        {
+          title: 'Coding Standards',
+          category: PARACategory.Areas,
+        },
+        'Based on [[/resources/typescript-guide]] best practices.',
+      );
 
       // Resource is standalone
-      const resourceContent = serializeDocument({
-        title: 'TypeScript Guide',
-        category: 'resources',
-        content: 'Comprehensive TypeScript reference.',
-      });
+      const resourceContent = createTestDocument(
+        {
+          title: 'TypeScript Guide',
+          category: PARACategory.Resources,
+        },
+        'Comprehensive TypeScript reference.',
+      );
 
       // Create all documents
       await fileSystem.mkdir(path.join(tempDir, 'projects'), true);
@@ -256,7 +290,7 @@ Key resources:
       await backlinkManager.updateDocumentLinks(resourcePath, resourceContent);
 
       // Check resource has correct backlinks
-      const resourceBacklinks = await backlinkManager.getBacklinks(resourcePath);
+      const resourceBacklinks = backlinkManager.getBacklinks(resourcePath);
       expect(resourceBacklinks.totalCount).toBe(2);
 
       const sources = resourceBacklinks.backlinks.map((bl) => bl.sourcePath).sort();
@@ -269,8 +303,8 @@ Key resources:
       const doc1Path = path.join(tempDir, 'doc1.md');
       const doc2Path = path.join(tempDir, 'doc2.md');
 
-      const doc1 = serializeDocument({ title: 'Doc 1', content: 'Links to [[doc2]].' });
-      const doc2 = serializeDocument({ title: 'Doc 2', content: 'Links back to [[doc1]].' });
+      const doc1 = createTestDocument({ title: 'Doc 1' }, 'Links to [[doc2]].');
+      const doc2 = createTestDocument({ title: 'Doc 2' }, 'Links back to [[doc1]].');
 
       await fileSystem.writeFile(doc1Path, doc1);
       await fileSystem.writeFile(doc2Path, doc2);
@@ -278,8 +312,8 @@ Key resources:
       await backlinkManager.updateDocumentLinks(doc1Path, doc1);
       await backlinkManager.updateDocumentLinks(doc2Path, doc2);
 
-      const doc1Backlinks = await backlinkManager.getBacklinks(doc1Path);
-      const doc2Backlinks = await backlinkManager.getBacklinks(doc2Path);
+      const doc1Backlinks = backlinkManager.getBacklinks(doc1Path);
+      const doc2Backlinks = backlinkManager.getBacklinks(doc2Path);
 
       expect(doc1Backlinks.backlinks).toHaveLength(1);
       expect(doc2Backlinks.backlinks).toHaveLength(1);
@@ -287,25 +321,25 @@ Key resources:
 
     it('should handle self-references', async () => {
       const docPath = path.join(tempDir, 'recursive.md');
-      const content = serializeDocument({
-        title: 'Recursive',
-        content: 'This document links to itself: [[recursive]].',
-      });
+      const content = createTestDocument(
+        { title: 'Recursive' },
+        'This document links to itself: [[recursive]].',
+      );
 
       await fileSystem.writeFile(docPath, content);
       await backlinkManager.updateDocumentLinks(docPath, content);
 
-      const backlinks = await backlinkManager.getBacklinks(docPath);
+      const backlinks = backlinkManager.getBacklinks(docPath);
       expect(backlinks.backlinks).toHaveLength(1);
       expect(backlinks.backlinks[0]?.sourcePath).toBe(docPath);
     });
 
     it('should handle broken links gracefully', async () => {
       const docPath = path.join(tempDir, 'doc-with-broken-links.md');
-      const content = serializeDocument({
-        title: 'Document',
-        content: 'Links to [[non-existent]] and [[also-missing]].',
-      });
+      const content = createTestDocument(
+        { title: 'Document' },
+        'Links to [[non-existent]] and [[also-missing]].',
+      );
 
       await fileSystem.writeFile(docPath, content);
       await backlinkManager.updateDocumentLinks(docPath, content);
@@ -315,7 +349,7 @@ Key resources:
       expect(extraction.links).toHaveLength(2);
 
       // Backlinks for non-existent files should return empty
-      const backlinks = await backlinkManager.getBacklinks(path.join(tempDir, 'non-existent.md'));
+      const backlinks = backlinkManager.getBacklinks(path.join(tempDir, 'non-existent.md'));
       expect(backlinks.backlinks).toHaveLength(1);
     });
   });
@@ -338,15 +372,17 @@ Key resources:
           links.push(`[[${targetCategory}/doc-${targetId}]]`);
         }
 
-        const content = serializeDocument({
-          title: `Document ${i}`,
-          tags: [`tag${i % 10}`],
-          content: `Content with links: ${links.join(', ')}.`,
-        });
+        const content = createTestDocument(
+          {
+            title: `Document ${i}`,
+            tags: [`tag${i % 10}`],
+          },
+          `Content with links: ${links.join(', ')}.`,
+        );
 
         promises.push(
-          (async () => {
-            await fileSystem.mkdir(path.join(tempDir, category), true);
+          (async (): Promise<void> => {
+            await fileSystem.mkdir(path.join(tempDir, category || 'resources'), true);
             await fileSystem.writeFile(docPath, content);
             await backlinkManager.updateDocumentLinks(docPath, content);
           })(),
@@ -361,7 +397,7 @@ Key resources:
       // Test query performance
       const queryStart = Date.now();
       const mostLinked = backlinkManager.getStats().mostLinkedDocuments[0];
-      const backlinks = await backlinkManager.getBacklinks(mostLinked?.path || '');
+      const backlinks = backlinkManager.getBacklinks(mostLinked?.path || '');
       const queryTime = Date.now() - queryStart;
 
       expect(queryTime).toBeLessThan(50); // Queries should be fast

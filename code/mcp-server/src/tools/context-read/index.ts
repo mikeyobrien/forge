@@ -173,18 +173,25 @@ export async function handleContextRead(
     // Include backlinks if requested and manager is available
     if (validatedArgs.include_backlinks && backlinkManager) {
       const fullPath = fileSystem.resolvePath(normalizedPath);
-      const backlinksResult = await backlinkManager.getBacklinks(fullPath, {
+      const backlinksResult = backlinkManager.getBacklinks(fullPath, {
         includeContext: true,
         limit: 10,
       });
 
       document.backlinks = {
         count: backlinksResult.totalCount,
-        sources: backlinksResult.backlinks.map((bl) => ({
-          path: bl.sourcePath,
-          linkText: bl.linkText,
-          context: bl.context,
-        })),
+        sources: backlinksResult.backlinks.map((bl) => {
+          const source: { path: string; linkText?: string; context?: string } = {
+            path: bl.sourcePath,
+          };
+          if (bl.linkText !== undefined) {
+            source.linkText = bl.linkText;
+          }
+          if (bl.context !== undefined) {
+            source.context = bl.context;
+          }
+          return source;
+        }),
       };
     }
 

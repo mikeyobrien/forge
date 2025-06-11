@@ -157,3 +157,5 @@ Remember: This project is about demonstrating what's possible when LLMs are give
 
 - Use `npm run lint -- --fix` to fix typescript format issues
 - To use claude headless: `claude -p <prompt>`
+
+- Never commit with `--no-verify`
