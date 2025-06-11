@@ -2,3 +2,4 @@
 // ABOUTME: Centralizes all parser exports for easy importing
 
 export * from './frontmatter';
+export * from './serializer';

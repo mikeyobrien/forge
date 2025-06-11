@@ -5,6 +5,7 @@ import { Server } from '@modelcontextprotocol/sdk/server/index';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types';
 import { handlePing, PingArgs } from './tools/ping';
+import { handleContextCreate, contextCreateTool } from './tools/context-create/index';
 import { configuration, ConfigurationError } from './config/index';
 
 // Create server instance
@@ -37,17 +38,30 @@ server.setRequestHandler(ListToolsRequestSchema, () => {
           },
         },
       },
+      contextCreateTool,
     ],
   };
 });
 
 // Handle tool calls
-server.setRequestHandler(CallToolRequestSchema, (request) => {
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
   switch (name) {
     case 'ping': {
       const result = handlePing(args as PingArgs);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: result,
+          },
+        ],
+      };
+    }
+
+    case 'context_create': {
+      const result = await handleContextCreate(args);
       return {
         content: [
           {
