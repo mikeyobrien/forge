@@ -159,8 +159,8 @@ impl HtmlGenerator {
             <h1>PARA Knowledge Base</h1>
             <p>Welcome to your personal knowledge management system organized using the PARA method.</p>
             
-            <div class="search-placeholder">
-                <input type="text" placeholder="Search documentation... (coming soon)" disabled />
+            <div class="search-box-container">
+                <input type="text" class="search-box" placeholder="Search documentation... (Ctrl+K)" readonly onclick="openSearch()" />
             </div>
             
             <div class="category-overview">

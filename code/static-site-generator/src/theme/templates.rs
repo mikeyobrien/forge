@@ -1,6 +1,7 @@
 //! ABOUTME: HTML template system for generating static site pages
 //! ABOUTME: Provides string-based templates for documents and navigation
 
+use crate::theme::search::generate_search_script;
 use crate::Result;
 use std::collections::HashMap;
 
@@ -30,6 +31,9 @@ const BASE_TEMPLATE: &str = r#"<!DOCTYPE html>
                     <li><a href="/areas/" class="{areas_active}">Areas</a></li>
                     <li><a href="/resources/" class="{resources_active}">Resources</a></li>
                     <li><a href="/archives/" class="{archives_active}">Archives</a></li>
+                    <li class="nav-search">
+                        <input type="text" class="search-box nav-search-box" placeholder="Search (Ctrl+K)" readonly onclick="openSearch()" />
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -62,6 +66,8 @@ const BASE_TEMPLATE: &str = r#"<!DOCTYPE html>
                 navMenu.classList.remove('active');
             }
         });
+        
+        {search_script}
     </script>
 </body>
 </html>"#;
@@ -140,7 +146,8 @@ impl TemplateEngine {
             .get_template("base")
             .replace("{title}", &html_escape(title))
             .replace("{content}", content)
-            .replace("{styles}", styles);
+            .replace("{styles}", styles)
+            .replace("{search_script}", generate_search_script());
 
         // Set active navigation state
         let categories = ["projects", "areas", "resources", "archives"];

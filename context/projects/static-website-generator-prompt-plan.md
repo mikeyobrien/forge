@@ -811,3 +811,44 @@ Enhance navigation system in src/generator/html.rs. Implement breadcrumb generat
 - **Completed**: 7 ✅
 - **In Progress**: 0 🔄
 - **Not Started**: 9 ⏳
+
+#### Prompt 3.1: Search Index Generation
+
+**Status**: ✅ Complete
+**Objective**: Build JSON search index with document content and metadata
+**Dependencies**: [Requires Prompt 2.3]
+**Deliverables**:
+
+- [x] Search index data structure
+- [x] JSON index generation during build
+- [x] Content excerpting for search results
+- [x] Index optimization for client-side performance
+
+**Prompt**:
+
+```
+Implement search index system in src/generator/search.rs. Create data structures for search index containing document titles, paths, content excerpts, tags, and categories. Generate optimized JSON index during build process with content excerpting for search results. Add functionality to exclude common words and optimize index size for client-side loading.
+```
+
+**Success Criteria**:
+
+- [x] Search index JSON generated during build
+- [x] Index contains all necessary document metadata
+- [x] Content excerpts optimized for search results
+- [x] Index size reasonable for client-side loading
+- [x] Index structure supports efficient searching
+- [x] Unit tests verify index generation
+- [x] Tests pass: `cargo test`
+- [x] Changes committed to git
+
+**Completion**: 2025-06-11 22:45:00
+**Notes**: Successfully implemented complete search index generation with SearchEntry/SearchIndex structs, HTML content extraction, smart excerpt generation, draft filtering, and JSON serialization. Index size ~61KB for 19 documents. All 71 tests passing.
+
+---
+
+### Overall Progress
+
+- **Total Prompts**: 16
+- **Completed**: 8 ✅
+- **In Progress**: 0 🔄
+- **Not Started**: 8 ⏳

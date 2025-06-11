@@ -302,12 +302,12 @@ pub fn get_default_styles() -> String {
         margin-bottom: 2rem;
     }
     
-    .search-placeholder {
+    .search-box-container {
         text-align: center;
         margin-bottom: 3rem;
     }
     
-    .search-placeholder input {
+    .search-box {
         width: 100%;
         max-width: 500px;
         padding: 0.75rem 1.5rem;
@@ -315,8 +315,48 @@ pub fn get_default_styles() -> String {
         border: 2px solid #e0e0e0;
         border-radius: 25px;
         background-color: #f8f8f8;
-        color: #999;
-        cursor: not-allowed;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .search-box:hover {
+        border-color: #cd853f;
+        background-color: #fff;
+    }
+    
+    .nav-search {
+        margin-left: auto;
+        padding: 0 1rem;
+    }
+    
+    .nav-search-box {
+        width: 200px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 20px;
+        background-color: #f8f8f8;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-search-box:hover {
+        border-color: #cd853f;
+        background-color: #fff;
+    }
+    
+    @media (max-width: 768px) {
+        .nav-search {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            margin-left: 0;
+        }
+        
+        .nav-search-box {
+            width: 100%;
+        }
     }
     
     .category-overview {
