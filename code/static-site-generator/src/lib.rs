@@ -6,7 +6,7 @@ pub mod parser;
 pub mod theme;
 pub mod utils;
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 /// Error types for para-ssg operations
 #[derive(Debug, thiserror::Error)]
@@ -105,7 +105,7 @@ pub fn generate_site(config: &Config) -> Result<()> {
     utils::create_output_directory(output_path)?;
     println!("✅ Created output directory: {}", config.output_dir);
 
-    // Parse all documents
+    // Parse all documents (first pass - basic parsing)
     println!("📝 Parsing documents...");
     let mut documents = Vec::new();
     let mut parse_errors = 0;
@@ -128,6 +128,44 @@ pub fn generate_site(config: &Config) -> Result<()> {
         println!("⚠️  {} document(s) failed to parse", parse_errors);
     }
     println!("✅ Successfully parsed {} documents", documents.len());
+
+    // Build document lookup for wiki link resolution
+    println!("🔗 Processing wiki links...");
+    let document_lookup: Vec<(PathBuf, String)> = documents
+        .iter()
+        .map(|doc| (doc.output_path.clone(), doc.title().to_string()))
+        .collect();
+    let lookup_map = parser::build_document_lookup(&document_lookup);
+
+    // Process wiki links in each document (second pass)
+    let mut broken_links_total = 0;
+    for doc in &mut documents {
+        let (html_with_links, resolved_links) = parser::markdown_to_html_with_wiki_links(
+            &doc.raw_content,
+            &doc.output_path,
+            &lookup_map,
+        )?;
+
+        doc.html_content = html_with_links;
+        doc.wiki_links = resolved_links;
+
+        // Count broken links
+        let broken_count = parser::get_broken_links(&doc.wiki_links).len();
+        if broken_count > 0 {
+            println!(
+                "⚠️  {} has {} broken wiki link(s)",
+                doc.relative_path.display(),
+                broken_count
+            );
+            broken_links_total += broken_count;
+        }
+    }
+
+    if broken_links_total > 0 {
+        println!("⚠️  Total broken wiki links: {}", broken_links_total);
+    } else {
+        println!("✅ All wiki links resolved successfully");
+    }
 
     // Generate HTML pages
     println!("🔨 Generating HTML pages...");

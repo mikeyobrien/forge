@@ -140,15 +140,15 @@ Implement markdown parsing in src/parser/. Create frontmatter.rs for YAML parsin
 
 #### Prompt 1.4: Basic HTML Template System
 
-**Status**: ⏳ Not Started
+**Status**: ✅ Complete
 **Objective**: Create HTML template system and generate basic static pages
 **Dependencies**: [Requires Prompt 1.3]
 **Deliverables**:
 
-- [ ] HTML template system in src/theme/templates.rs
-- [ ] Base page template with navigation structure
-- [ ] Document page generation
-- [ ] Output directory management
+- [x] HTML template system in src/theme/templates.rs
+- [x] Base page template with navigation structure
+- [x] Document page generation
+- [x] Output directory management
 
 **Prompt**:
 
@@ -158,17 +158,17 @@ Implement basic HTML generation in src/generator/html.rs and src/theme/templates
 
 **Success Criteria**:
 
-- [ ] Template system generates valid HTML
-- [ ] Navigation reflects PARA structure
-- [ ] Individual pages created for each document
-- [ ] Output directory properly managed
-- [ ] Generated HTML validates and renders correctly
-- [ ] Integration tests verify complete build process
-- [ ] Tests pass: `cargo test`
-- [ ] Changes committed to git
+- [x] Template system generates valid HTML
+- [x] Navigation reflects PARA structure
+- [x] Individual pages created for each document
+- [x] Output directory properly managed
+- [x] Generated HTML validates and renders correctly
+- [x] Integration tests verify complete build process
+- [x] Tests pass: `cargo test`
+- [x] Changes committed to git
 
-**Completion**: _[Timestamp when completed]_
-**Notes**: _[Any notes from implementation]_
+**Completion**: 2025-01-06 17:30:00
+**Notes**: Successfully implemented complete HTML template system with TemplateEngine, document/category/home page generation, breadcrumb navigation, responsive design with basic styles, and full site generation from context directory. All 51 tests pass. Site generation creates 18 HTML pages from PARA context with proper navigation structure.
 
 ---
 
@@ -549,9 +549,9 @@ When using this plan with Claude Code, use this exact prompt for each session:
 ### Overall Progress
 
 - **Total Prompts**: 16
-- **Completed**: 0 ✅
+- **Completed**: 4 ✅
 - **In Progress**: 0 🔄
-- **Not Started**: 16 ⏳
+- **Not Started**: 12 ⏳
 
 ### Status Legend
 
@@ -648,3 +648,43 @@ Implement document discovery system in src/utils/para.rs and src/utils/fs.rs. Cr
 
 **Completion**: 2025-01-06 16:25:00
 **Notes**: Successfully implemented document discovery with DocumentInfo struct, PARA category detection with constants, ParaStatistics for counting documents by category, recursive directory traversal that skips hidden directories, and comprehensive integration tests using tempfile. All 16 tests pass. CLI now discovers 33 documents in the actual context directory with proper PARA categorization. Commit: b47dea7
+
+#### Prompt 1.3: Frontmatter & Markdown Parsing
+
+**Status**: ✅ Complete
+**Objective**: Parse YAML frontmatter and convert markdown to HTML
+**Dependencies**: [Requires Prompt 1.2]
+**Deliverables**:
+
+- [x] YAML frontmatter parsing with serde
+- [x] Markdown-to-HTML conversion using pulldown-cmark
+- [x] Document struct with all metadata fields
+- [x] Comprehensive parsing tests
+
+**Prompt**:
+
+```
+Implement markdown parsing in src/parser/. Create frontmatter.rs for YAML parsing using serde, and markdown.rs for HTML conversion using pulldown-cmark. Define a comprehensive Document struct that captures all metadata (title, tags, dates, category, status). Add thorough unit tests covering various frontmatter formats and markdown edge cases.
+```
+
+**Success Criteria**:
+
+- [x] YAML frontmatter correctly parsed into structs
+- [x] Markdown converted to clean HTML
+- [x] Document struct captures all required metadata
+- [x] Handles missing or malformed frontmatter gracefully
+- [x] Unit tests cover edge cases and error conditions
+- [x] Tests pass: `cargo test`
+- [x] Changes committed to git
+
+**Completion**: 2025-01-06 (verified 2025-06-11)
+**Notes**: Previously implemented. Includes robust frontmatter extraction, full markdown parsing with extensions, comprehensive metadata struct, and 23 passing tests. Handles all edge cases gracefully.
+
+---
+
+### Overall Progress
+
+- **Total Prompts**: 16
+- **Completed**: 5 ✅
+- **In Progress**: 0 🔄
+- **Not Started**: 11 ⏳

@@ -167,7 +167,8 @@ impl HtmlGenerator {
                 description,
                 count,
                 if *count == 1 { "" } else { "s" }
-            ).unwrap();
+            )
+            .unwrap();
         }
 
         content.push_str("</div></div>");

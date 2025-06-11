@@ -1,6 +1,7 @@
 //! ABOUTME: Document structure representing parsed markdown files with metadata
 //! ABOUTME: Combines frontmatter metadata with parsed content
 
+use super::wiki_links::ResolvedLink;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
@@ -28,6 +29,10 @@ pub struct Document {
 
     /// PARA category detected from path
     pub category: String,
+
+    /// Resolved wiki links in this document
+    #[serde(skip)]
+    pub wiki_links: Vec<ResolvedLink>,
 }
 
 /// Document metadata typically found in YAML frontmatter
@@ -82,6 +87,7 @@ impl Document {
             raw_content: String::new(),
             html_content: String::new(),
             category,
+            wiki_links: Vec::new(),
         }
     }
 

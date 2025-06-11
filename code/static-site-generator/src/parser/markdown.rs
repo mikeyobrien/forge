@@ -1,8 +1,13 @@
 //! ABOUTME: Markdown to HTML conversion functionality
 //! ABOUTME: Converts markdown content to clean HTML output
 
+use super::wiki_links::{
+    parse_wiki_links, replace_wiki_links_with_html, resolve_wiki_links, ResolvedLink,
+};
 use crate::Result;
 use pulldown_cmark::{html, Event, Options, Parser, Tag, TagEnd};
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
 
 /// Convert markdown content to HTML
 ///
@@ -94,6 +99,30 @@ fn generate_heading_id(text: &str) -> String {
         .filter(|s| !s.is_empty())
         .collect::<Vec<_>>()
         .join("-")
+}
+
+/// Convert markdown to HTML with wiki link resolution
+///
+/// Processes wiki links and converts them to HTML links
+pub fn markdown_to_html_with_wiki_links(
+    content: &str,
+    current_doc_path: &Path,
+    document_lookup: &HashMap<String, PathBuf>,
+) -> Result<(String, Vec<ResolvedLink>)> {
+    // First, parse wiki links from the raw markdown
+    let wiki_links = parse_wiki_links(content);
+
+    // Resolve wiki links to actual document paths
+    let resolved_links = resolve_wiki_links(wiki_links, document_lookup);
+
+    // Replace wiki links with HTML in the markdown content
+    let content_with_html_links =
+        replace_wiki_links_with_html(content, &resolved_links, current_doc_path)?;
+
+    // Now convert the modified markdown to HTML
+    let html = markdown_to_html(&content_with_html_links)?;
+
+    Ok((html, resolved_links))
 }
 
 /// Extract a plain text summary from markdown content
@@ -218,5 +247,26 @@ mod tests {
         assert!(summary.contains("Text before"));
         assert!(summary.contains("Text after"));
         assert!(!summary.contains("code block"));
+    }
+
+    #[test]
+    fn test_markdown_to_html_with_wiki_links() {
+        let content = "This has a [[test link]] and [[another|display text]].";
+        let current_path = Path::new("index.html");
+
+        let mut lookup = HashMap::new();
+        lookup.insert("test link".to_string(), PathBuf::from("test.html"));
+
+        let (html, resolved) =
+            markdown_to_html_with_wiki_links(content, current_path, &lookup).unwrap();
+
+        // Check HTML output
+        assert!(html.contains(r#"<a href="test.html" class="wiki-link">test link</a>"#));
+        assert!(html.contains(r#"<span class="wiki-link broken" title="Link target not found: another">display text</span>"#));
+
+        // Check resolved links
+        assert_eq!(resolved.len(), 2);
+        assert!(!resolved[0].is_broken);
+        assert!(resolved[1].is_broken);
     }
 }
