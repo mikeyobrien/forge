@@ -20,11 +20,15 @@ import {
   assertPARADocument,
   extractValidFrontmatter,
 } from '../guards';
-import { Document, PARACategory, ProjectStatus, Frontmatter } from '../types';
+import { Document, PARACategory, ProjectStatus, DocumentFrontmatter } from '../types';
 
 // Mock the config module
 jest.mock('../../config', () => ({
   getConfig: (): unknown => ({
+    contextRoot: '/test/context',
+    debug: false,
+  }),
+  getConfigSync: (): unknown => ({
     contextRoot: '/test/context',
     debug: false,
   }),
@@ -375,11 +379,11 @@ describe('Type Guards', () => {
       const doc: Document = {
         id: 'test.md',
         path: '/test/context/test.md',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         frontmatter: {
           // Missing required title - this makes it invalid
           category: PARACategory.Resources,
-        } as unknown as Frontmatter,
+        } as unknown as DocumentFrontmatter,
         content: 'Content',
       };
 

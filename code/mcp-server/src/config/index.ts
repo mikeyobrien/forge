@@ -25,15 +25,24 @@ export {
 } from './validation';
 
 // Helper function to get the configuration
-export function getConfig(): EnvConfig {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-  return configInstance.get();
+export async function getConfig(): Promise<EnvConfig> {
+  return configInstance.load();
+}
+
+// Synchronous version for internal use only (requires config to be loaded first)
+export function getConfigSync(): EnvConfig {
+  const config = configInstance.getUnsafe();
+  if (!config) {
+    throw new Error('Configuration not loaded. Call getConfig() first.');
+  }
+  return config;
 }
 
 // Helper function for checking if path is within CONTEXT_ROOT
 export function isWithinContextRoot(targetPath: string): boolean {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const config = configInstance.get();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+  const config = configInstance.getUnsafe();
+  if (!config) {
+    throw new Error('Configuration not loaded. Call getConfig() first.');
+  }
   return isWithinRootPath(targetPath, config.contextRoot);
 }

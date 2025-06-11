@@ -19,6 +19,10 @@ jest.mock('../../config', () => ({
     contextRoot: '/test/context',
     debug: false,
   }),
+  getConfigSync: (): unknown => ({
+    contextRoot: '/test/context',
+    debug: false,
+  }),
 }));
 
 // Mock date for consistent testing

@@ -2,7 +2,7 @@
 // ABOUTME: Provides a fully functional filesystem that exists only in memory
 
 import * as path from 'path';
-import { IFileSystem, FileStats } from './IFileSystem.js';
+import { IFileSystem, FileStats, DirectoryEntry } from './IFileSystem.js';
 import { validatePath, validateFilename } from './security.js';
 
 interface MockFile {
@@ -275,6 +275,35 @@ export class MockFileSystem implements IFileSystem {
   resolvePath(inputPath: string): string {
     const safePath = validatePath(inputPath, this.contextRoot);
     return path.join(this.contextRoot, safePath);
+  }
+
+  async createDirectory(inputPath: string): Promise<void> {
+    return this.mkdir(inputPath, true);
+  }
+
+  async readDirectory(inputPath: string): Promise<DirectoryEntry[]> {
+    const items = await this.readdir(inputPath);
+    const entries: DirectoryEntry[] = [];
+
+    for (const item of items) {
+      const itemPath = path.join(inputPath, item);
+      try {
+        const stats = await this.stat(itemPath);
+        entries.push({
+          name: item,
+          isFile: stats.isFile(),
+          isDirectory: stats.isDirectory(),
+        });
+      } catch {
+        // Skip items that can't be stat'd
+      }
+    }
+
+    return entries;
+  }
+
+  async move(sourcePath: string, targetPath: string): Promise<void> {
+    return this.rename(sourcePath, targetPath);
   }
 
   // Helper method to normalize paths for consistent storage

@@ -78,4 +78,32 @@ export interface IFileSystem {
    * @returns Absolute path
    */
   resolvePath(path: string): string;
+
+  /**
+   * Create a directory (alias for mkdir for better interface compatibility)
+   * @param path - Path relative to CONTEXT_ROOT
+   * @returns Promise that resolves when directory is created
+   */
+  createDirectory(path: string): Promise<void>;
+
+  /**
+   * Read directory contents with detailed information
+   * @param path - Path relative to CONTEXT_ROOT
+   * @returns Array of directory entries with details
+   */
+  readDirectory(path: string): Promise<DirectoryEntry[]>;
+
+  /**
+   * Move a file or directory to a new location
+   * @param sourcePath - Source path relative to CONTEXT_ROOT
+   * @param targetPath - Target path relative to CONTEXT_ROOT
+   * @returns Promise that resolves when move is complete
+   */
+  move(sourcePath: string, targetPath: string): Promise<void>;
+}
+
+export interface DirectoryEntry {
+  name: string;
+  isFile: boolean;
+  isDirectory: boolean;
 }

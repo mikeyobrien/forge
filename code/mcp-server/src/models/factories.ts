@@ -12,7 +12,7 @@ import {
   ProjectStatus,
 } from './types';
 import { createDocumentParamsSchema, createParaDocumentParamsSchema } from './schemas';
-import { getConfig } from '../config';
+import { getConfigSync } from '../config';
 
 /**
  * Generate ISO date string for current time
@@ -25,7 +25,7 @@ function getCurrentISODate(): string {
  * Normalize a document path relative to CONTEXT_ROOT
  */
 function normalizeDocumentPath(path: string): { id: string; absolutePath: string } {
-  const config = getConfig();
+  const config = getConfigSync();
 
   // Handle empty path
   if (!path || path.trim() === '') {
