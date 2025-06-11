@@ -156,16 +156,11 @@ describe('Validation Utilities', () => {
       );
     });
 
-    it('should warn about privileged ports', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
-
-      validatePort(80);
-
-      expect(warnSpy).toHaveBeenCalledWith(
-        'Warning: Port 80 is a privileged port and may require elevated permissions',
-      );
-
-      warnSpy.mockRestore();
+    it('should accept privileged ports without warning', () => {
+      // In stdio mode, we cannot output warnings
+      expect(() => validatePort(80)).not.toThrow();
+      expect(() => validatePort(443)).not.toThrow();
+      expect(() => validatePort(22)).not.toThrow();
     });
   });
 

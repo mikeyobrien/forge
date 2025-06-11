@@ -9,6 +9,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:integration": "npm run build && ./tests/integration/test-jsonrpc.sh",
+    "test:integration:claude": "npm run build && ./tests/integration/run-claude-tests.sh",
+    "test:verify": "./tests/integration/verify-mcp.sh",
+    "test:all": "npm run test && npm run test:integration",
     "typecheck": "tsc --noEmit",
     "dev": "node -r dotenv/config dist/index.js"
   },
@@ -24,5 +28,8 @@
     "@types/node": "^24.0.0",
     "dotenv": "^16.5.0",
     "zod": "^3.25.58"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/inspector": "^0.14.0"
   }
 }

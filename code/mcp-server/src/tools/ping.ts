@@ -7,5 +7,10 @@ export interface PingArgs {
 
 export function handlePing(args: PingArgs): string {
   const message = args.message !== undefined ? args.message : 'pong';
-  return `Server response: ${message}`;
+  const response = {
+    message,
+    timestamp: new Date().toISOString(),
+    contextRoot: process.env['CONTEXT_ROOT'] || 'unknown',
+  };
+  return JSON.stringify(response);
 }
