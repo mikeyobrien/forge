@@ -154,3 +154,5 @@ When beginning a new framework:
 6. Document as you go
 
 Remember: This project is about demonstrating what's possible when LLMs are given the freedom to create, not just assist.
+
+- Use `npm run lint -- --fix` to fix typescript format issues
