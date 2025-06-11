@@ -9,6 +9,7 @@ import { handleContextCreate, contextCreateTool } from './tools/context-create/i
 import { handleContextRead, contextReadTool } from './tools/context-read/index';
 import { createSearchTool } from './tools/context_search';
 import { queryLinks, contextQueryLinksToolDefinition } from './tools/context-query-links/index';
+import { createContextUpdateTool, handleContextUpdate } from './tools/context-update/index';
 import { SearchEngine } from './search/index';
 import { FileSystem } from './filesystem/FileSystem';
 import { PARAManager } from './para/PARAManager';
@@ -56,6 +57,16 @@ server.setRequestHandler(ListToolsRequestSchema, () => {
       description: searchTool.description,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
       inputSchema: searchTool.inputSchema as any,
+    });
+  }
+
+  // Add update tool if initialized
+  if (contextUpdateTool) {
+    tools.push({
+      name: contextUpdateTool.name,
+      description: contextUpdateTool.description || 'Update document content and metadata',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+      inputSchema: contextUpdateTool.inputSchema as any,
     });
   }
 
@@ -130,6 +141,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       };
     }
 
+    case 'context_update': {
+      const result = await handleContextUpdate(args, fileSystem, paraManager);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+
     default:
       throw new Error(`Unknown tool: ${name}`);
   }
@@ -137,9 +160,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 // Initialize components
 let fileSystem: FileSystem;
+let paraManager: PARAManager;
 let searchEngine: SearchEngine;
 let searchTool: ReturnType<typeof createSearchTool> | undefined;
 let backlinkManager: BacklinkManager;
+let contextUpdateTool: ReturnType<typeof createContextUpdateTool> | undefined;
 
 // Start the server
 async function main(): Promise<void> {
@@ -150,7 +175,7 @@ async function main(): Promise<void> {
 
     // Initialize components
     fileSystem = new FileSystem(config.contextRoot);
-    const paraManager = new PARAManager(config.contextRoot, fileSystem);
+    paraManager = new PARAManager(config.contextRoot, fileSystem);
     searchEngine = new SearchEngine(fileSystem, paraManager, config.contextRoot);
     backlinkManager = new BacklinkManager(fileSystem, config.contextRoot);
 
@@ -159,8 +184,9 @@ async function main(): Promise<void> {
     await backlinkManager.initialize();
     // Search engine and backlink manager initialized
 
-    // Create search tool
+    // Create tools
     searchTool = createSearchTool(searchEngine);
+    contextUpdateTool = createContextUpdateTool(fileSystem, paraManager);
 
     // Start the transport
     const transport = new StdioServerTransport();

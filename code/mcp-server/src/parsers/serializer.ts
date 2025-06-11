@@ -1,15 +1,38 @@
 // ABOUTME: Serializer for converting Document objects to markdown with YAML frontmatter
 // ABOUTME: Handles proper YAML formatting and content assembly
 
-import { Document, DocumentFrontmatter } from '../models/types.js';
+import { Document as ModelDocument, DocumentFrontmatter } from '../models/types.js';
+import { ParsedDocument } from './index.js';
+
+// Type guard to check if document has frontmatter field
+function hasFullDocument(doc: unknown): doc is ModelDocument {
+  return 'frontmatter' in doc;
+}
 
 /**
  * Serialize a Document object to markdown format with YAML frontmatter
  * @param document The document to serialize
  * @returns Markdown string with frontmatter
  */
-export function serializeDocument(document: Document): string {
-  const frontmatterYaml = serializeFrontmatter(document.frontmatter);
+export function serializeDocument(
+  document:
+    | ModelDocument
+    | ParsedDocument
+    | { path: string; content: string; metadata: DocumentFrontmatter },
+): string {
+  // Handle different document types
+  let frontmatter: DocumentFrontmatter | Record<string, unknown>;
+
+  if (hasFullDocument(document)) {
+    frontmatter = document.frontmatter;
+  } else if ('metadata' in document) {
+    frontmatter = document.metadata;
+  } else {
+    // Fallback - shouldn't happen
+    frontmatter = {};
+  }
+
+  const frontmatterYaml = serializeFrontmatter(frontmatter as DocumentFrontmatter);
 
   // If no frontmatter, return content only
   if (!frontmatterYaml) {
