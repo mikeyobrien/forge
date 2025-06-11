@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Execution Log: Static Website Generator - 2025-06-11 - PARA SSG</title>
+    <style>
+        
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    /* 70s Earthy Color Palette */
+    :root {
+        --saddle-brown: #8B4513;
+        --peru: #CD853F;
+        --sienna: #A0522D;
+        --goldenrod: #DAA520;
+        --dark-goldenrod: #B8860B;
+        --burlywood: #DEB887;
+        --tan: #D2B48C;
+        --sandy-brown: #F4A460;
+        --beige: #F5F5DC;
+        --cornsilk: #FFF8DC;
+        --papaya-whip: #FFEFD5;
+        --olive: #808000;
+        --dark-olive: #556B2F;
+        --text-primary: #3E2723;
+        --text-secondary: #5D4037;
+        --text-light: #6D4C41;
+        --background-light: #FFF8DC;
+        --background-dark: #F5F5DC;
+        --border-color: #D2B48C;
+        --shadow-color: rgba(139, 69, 19, 0.1);
+    }
+    
+    body {
+        font-family: Georgia, Palatino, "Palatino Linotype", "Times New Roman", serif;
+        line-height: 1.7;
+        color: var(--text-primary);
+        background-color: var(--background-light);
+        background-image: 
+            radial-gradient(circle at 20% 50%, rgba(218, 165, 32, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(160, 82, 45, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 40% 20%, rgba(205, 133, 63, 0.03) 0%, transparent 50%);
+        min-height: 100vh;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Header and Navigation */
+    header {
+        background-color: var(--saddle-brown);
+        background-image: 
+            repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.02) 10px, rgba(255, 255, 255, 0.02) 20px),
+            linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+        border-bottom: 3px solid var(--peru);
+        padding: 1.5rem 0;
+        box-shadow: 0 2px 8px var(--shadow-color);
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    
+    header h1 a {
+        color: var(--cornsilk);
+        text-decoration: none;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        transition: color 0.3s ease;
+    }
+    
+    header h1 a:hover {
+        color: var(--papaya-whip);
+    }
+    
+    .nav-menu {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .nav-menu a {
+        color: var(--burlywood);
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .nav-menu a:hover {
+        color: var(--cornsilk);
+        background-color: rgba(222, 184, 135, 0.2);
+    }
+    
+    .nav-menu a.active {
+        color: var(--cornsilk);
+        background-color: var(--peru);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Main content */
+    main {
+        min-height: calc(100vh - 200px);
+        padding: 3rem 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        margin: 0 auto;
+        max-width: 1240px;
+        box-shadow: 0 0 20px rgba(139, 69, 19, 0.05);
+    }
+    
+    /* Document styles */
+    .document h1 {
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        color: var(--sienna);
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+    
+    .document-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 3px solid var(--peru);
+        background: linear-gradient(to right, transparent, rgba(205, 133, 63, 0.1), transparent);
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+    
+    .document-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    
+    .document-meta .author,
+    .document-meta time,
+    .document-meta .status {
+        display: inline-block;
+    }
+    
+    .document-meta .tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .tag {
+        background-color: var(--burlywood);
+        color: var(--text-primary);
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        border: 1px solid var(--peru);
+        transition: all 0.3s ease;
+    }
+    
+    .tag:hover {
+        background-color: var(--peru);
+        color: var(--cornsilk);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px var(--shadow-color);
+    }
+    
+    .document-content {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: var(--text-primary);
+        text-align: justify;
+        hyphens: auto;
+    }
+    
+    .document-content h1,
+    .document-content h2,
+    .document-content h3,
+    .document-content h4,
+    .document-content h5,
+    .document-content h6 {
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--sienna);
+        font-weight: 600;
+        position: relative;
+        padding-left: 1rem;
+    }
+    
+    .document-content h2::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 80%;
+        background-color: var(--goldenrod);
+        border-radius: 2px;
+    }
+    
+    .document-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .document-content ul,
+    .document-content ol {
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+    }
+    
+    .document-content pre {
+        background-color: var(--beige);
+        border: 1px solid var(--tan);
+        padding: 1.5rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin-bottom: 1.5rem;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .document-content code {
+        background-color: var(--beige);
+        color: var(--text-primary);
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.95em;
+        font-weight: 600;
+    }
+    
+    .document-content pre code {
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    .document-content blockquote {
+        border-left: 5px solid var(--goldenrod);
+        padding-left: 1.5rem;
+        margin: 2rem 0;
+        color: var(--text-secondary);
+        font-style: italic;
+        background-color: rgba(222, 184, 135, 0.1);
+        padding: 1.5rem;
+        border-radius: 0 8px 8px 0;
+        position: relative;
+    }
+    
+    .document-content blockquote::before {
+        content: "\201C";
+        font-size: 3rem;
+        color: var(--goldenrod);
+        position: absolute;
+        left: 0.5rem;
+        top: -0.5rem;
+        font-family: Georgia, serif;
+    }
+    
+    .document-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px var(--shadow-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .document-content th,
+    .document-content td {
+        border: 1px solid var(--tan);
+        padding: 0.75rem 1rem;
+        text-align: left;
+    }
+    
+    .document-content th {
+        background-color: var(--sienna);
+        color: var(--cornsilk);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .document-content tr:nth-child(even) {
+        background-color: rgba(222, 184, 135, 0.1);
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        margin-bottom: 2rem;
+        background-color: rgba(222, 184, 135, 0.15);
+        padding: 1rem 1.5rem;
+        border-radius: 25px;
+        border: 1px solid var(--tan);
+    }
+    
+    .breadcrumbs ol {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 0.95rem;
+    }
+    
+    .breadcrumbs li {
+        display: inline;
+    }
+    
+    .breadcrumbs a {
+        color: var(--sienna);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+    
+    .breadcrumbs a:hover {
+        color: var(--peru);
+        text-decoration: underline;
+    }
+    
+    .breadcrumbs .separator {
+        margin: 0 0.75rem;
+        color: var(--goldenrod);
+        font-weight: bold;
+    }
+    
+    .breadcrumbs .current {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+    
+    /* Category pages */
+    .category-index h1 {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        color: var(--sienna);
+        text-align: center;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .category-description {
+        font-size: 1.3rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        text-align: center;
+        font-style: italic;
+    }
+    
+    .document-count {
+        font-size: 1rem;
+        color: var(--text-light);
+        margin-bottom: 3rem;
+        font-style: italic;
+        text-align: center;
+        padding: 0.5rem 1.5rem;
+        background-color: rgba(222, 184, 135, 0.2);
+        border-radius: 20px;
+        display: inline-block;
+        margin-left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .document-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .document-entry {
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 2px solid var(--tan);
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .document-entry::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background-color: var(--goldenrod);
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.3s ease;
+    }
+    
+    .document-entry:hover {
+        border-color: var(--peru);
+        box-shadow: 0 4px 12px var(--shadow-color);
+        transform: translateY(-2px);
+    }
+    
+    .document-entry:hover::before {
+        transform: scaleY(1);
+    }
+    
+    .document-entry h2 {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+        color: var(--sienna);
+    }
+    
+    .document-entry h2 a {
+        color: var(--sienna);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .document-entry h2 a:hover {
+        color: var(--peru);
+    }
+    
+    .entry-meta {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        font-size: 0.95rem;
+        color: var(--text-light);
+        margin-bottom: 0.75rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    
+    .summary {
+        color: var(--text-secondary);
+        line-height: 1.7;
+        font-size: 1.05rem;
+    }
+    
+    /* Home page */
+    .home-page h1 {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        text-align: center;
+        color: var(--sienna);
+        font-weight: 700;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+        letter-spacing: -1px;
+        position: relative;
+        padding-bottom: 1.5rem;
+    }
+    
+    .home-page h1::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, var(--goldenrod), var(--peru), var(--goldenrod));
+        border-radius: 2px;
+    }
+    
+    .home-page > p {
+        font-size: 1.4rem;
+        text-align: center;
+        color: var(--text-secondary);
+        margin-bottom: 3rem;
+        font-style: italic;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .search-box-container {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .search-box {
+        width: 100%;
+        max-width: 500px;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        border: 2px solid var(--tan);
+        border-radius: 30px;
+        background-color: var(--beige);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        font-family: Georgia, serif;
+    }
+    
+    .search-box:hover {
+        border-color: var(--peru);
+        background-color: var(--cornsilk);
+        box-shadow: 0 2px 8px var(--shadow-color);
+        transform: translateY(-1px);
+    }
+    
+    .nav-search {
+        margin-left: auto;
+        padding: 0 1rem;
+    }
+    
+    .nav-search-box {
+        width: 200px;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        border: 1px solid var(--burlywood);
+        border-radius: 20px;
+        background-color: rgba(255, 248, 220, 0.9);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: -apple-system, sans-serif;
+    }
+    
+    .nav-search-box:hover {
+        border-color: var(--cornsilk);
+        background-color: var(--cornsilk);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .nav-search {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            margin-left: 0;
+        }
+        
+        .nav-search-box {
+            width: 100%;
+        }
+    }
+    
+    .category-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+    
+    .category-card {
+        background: linear-gradient(135deg, var(--beige) 0%, var(--papaya-whip) 100%);
+        border: 2px solid var(--tan);
+        padding: 2.5rem;
+        border-radius: 16px;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .category-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(218, 165, 32, 0.1) 0%, transparent 70%);
+        transform: rotate(45deg);
+        transition: all 0.5s ease;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px var(--shadow-color);
+        border-color: var(--peru);
+    }
+    
+    .category-card:hover::before {
+        transform: rotate(90deg);
+    }
+    
+    .category-card h2 {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .category-card h2 a {
+        color: var(--sienna);
+        text-decoration: none;
+        font-weight: 700;
+        transition: color 0.3s ease;
+    }
+    
+    .category-card h2 a:hover {
+        color: var(--peru);
+    }
+    
+    .category-card p {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .category-card .document-count {
+        font-size: 0.95rem;
+        color: var(--text-light);
+        font-weight: 600;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Footer */
+    footer {
+        background-color: var(--saddle-brown);
+        background-image: 
+            repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.02) 10px, rgba(255, 255, 255, 0.02) 20px),
+            linear-gradient(to top, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+        border-top: 3px solid var(--peru);
+        padding: 3rem 0;
+        margin-top: 5rem;
+        text-align: center;
+        color: var(--burlywood);
+        font-size: 0.95rem;
+    }
+    
+    footer a {
+        color: var(--burlywood);
+        text-decoration: none;
+        border-bottom: 1px dashed var(--burlywood);
+    }
+    
+    footer a:hover {
+        color: var(--cornsilk);
+        border-bottom-style: solid;
+    }
+    
+    /* Hamburger menu button */
+    .nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
+    .nav-toggle span {
+        display: block;
+        width: 28px;
+        height: 3px;
+        background-color: var(--cornsilk);
+        margin: 6px 0;
+        transition: 0.3s;
+        border-radius: 2px;
+    }
+    
+    .nav-toggle:hover span {
+        background-color: var(--papaya-whip);
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .nav-toggle {
+            display: block;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .nav-menu {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--peru);
+            background-color: rgba(139, 69, 19, 0.95);
+            margin-left: -20px;
+            margin-right: -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-menu a {
+            padding: 0.75rem 1rem;
+            border-radius: 0;
+            border-left: 4px solid transparent;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            border-left-color: var(--goldenrod);
+            background-color: rgba(222, 184, 135, 0.2);
+        }
+        
+        .document h1 {
+            font-size: 2rem;
+        }
+        
+        .home-page h1 {
+            font-size: 2rem;
+        }
+        
+        .category-overview {
+            grid-template-columns: 1fr;
+        }
+        
+        .breadcrumbs {
+            font-size: 0.85rem;
+        }
+        
+        .container {
+            padding: 0 15px;
+        }
+    }
+    
+    /* Links */
+    a {
+        color: var(--sienna);
+        text-decoration: underline;
+        text-decoration-color: rgba(160, 82, 45, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    a:hover {
+        color: var(--peru);
+        text-decoration-color: var(--peru);
+    }
+    
+    /* Status indicators */
+    .status-draft {
+        color: var(--dark-goldenrod);
+        font-weight: 600;
+    }
+    
+    .status-published {
+        color: var(--dark-olive);
+        font-weight: 600;
+    }
+    
+    /* Wiki links */
+    .wiki-link {
+        color: var(--sienna);
+        text-decoration: none;
+        border-bottom: 2px dotted var(--peru);
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .wiki-link:hover {
+        color: var(--peru);
+        border-bottom-style: solid;
+        background-color: rgba(205, 133, 63, 0.1);
+        padding: 0 0.2rem;
+        border-radius: 3px;
+    }
+    
+    .wiki-link.broken {
+        color: var(--dark-goldenrod);
+        border-bottom-color: var(--dark-goldenrod);
+        cursor: help;
+        opacity: 0.7;
+    }
+    
+    .wiki-link.broken:hover {
+        color: var(--goldenrod);
+        background-color: rgba(218, 165, 32, 0.1);
+    }
+    
+    /* Backlinks section */
+    .backlinks {
+        margin-top: 4rem;
+        padding: 2rem;
+        border: 2px solid var(--tan);
+        border-radius: 12px;
+        background-color: rgba(222, 184, 135, 0.1);
+    }
+    
+    .backlinks h2 {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        color: var(--sienna);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .backlinks h2::before {
+        content: "\2190";
+        font-size: 1.5rem;
+        color: var(--goldenrod);
+    }
+    
+    .backlinks ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    
+    .backlinks li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(205, 133, 63, 0.2);
+    }
+    
+    .backlinks li:last-child {
+        border-bottom: none;
+    }
+    
+    .backlinks a {
+        color: var(--sienna);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .backlinks a:hover {
+        color: var(--peru);
+        text-decoration: underline;
+    }
+    
+    .backlinks .context {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin-top: 0.25rem;
+        font-style: italic;
+    }
+    
+    /* Search overlay styles */
+    #search-overlay {
+        background-color: rgba(62, 39, 35, 0.95);
+        backdrop-filter: blur(10px);
+    }
+    
+    #search-modal {
+        background: linear-gradient(135deg, var(--cornsilk) 0%, var(--papaya-whip) 100%);
+        border: 3px solid var(--peru);
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(139, 69, 19, 0.3);
+    }
+    
+    #search-input {
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        border: 2px solid var(--tan);
+        border-radius: 8px;
+        background-color: var(--background-light);
+        color: var(--text-primary);
+        font-family: Georgia, serif;
+    }
+    
+    #search-input:focus {
+        outline: none;
+        border-color: var(--peru);
+        box-shadow: 0 0 0 3px rgba(205, 133, 63, 0.2);
+    }
+    
+    #search-results {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-top: 1rem;
+        padding-right: 0.5rem;
+    }
+    
+    /* Custom scrollbar for search results */
+    #search-results::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    #search-results::-webkit-scrollbar-track {
+        background: var(--beige);
+        border-radius: 4px;
+    }
+    
+    #search-results::-webkit-scrollbar-thumb {
+        background: var(--peru);
+        border-radius: 4px;
+    }
+    
+    #search-results::-webkit-scrollbar-thumb:hover {
+        background: var(--sienna);
+    }
+    
+    .search-result {
+        padding: 1rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    
+    .search-result:hover {
+        background-color: rgba(222, 184, 135, 0.3);
+    }
+    
+    .search-result.selected {
+        background-color: rgba(205, 133, 63, 0.2);
+        border-left: 4px solid var(--goldenrod);
+        padding-left: calc(1rem - 4px);
+    }
+    
+    .search-result h3 {
+        margin: 0 0 0.5rem 0;
+        color: var(--sienna);
+        font-size: 1.2rem;
+    }
+    
+    .search-result h3 a {
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    .search-result h3 a:hover {
+        color: var(--peru);
+    }
+    
+    .search-result .excerpt {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+    
+    .search-result .excerpt mark {
+        background-color: var(--goldenrod);
+        color: var(--text-primary);
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+        font-weight: 600;
+    }
+    
+    .search-result .search-meta {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--text-light);
+    }
+    
+    .search-result .category {
+        text-transform: capitalize;
+        font-weight: 500;
+    }
+    
+    #search-close {
+        background-color: var(--sienna);
+        color: var(--cornsilk);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    #search-close:hover {
+        background-color: var(--peru);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Additional 70s design elements */
+    ::selection {
+        background-color: var(--goldenrod);
+        color: var(--cornsilk);
+    }
+    
+    ::-moz-selection {
+        background-color: var(--goldenrod);
+        color: var(--cornsilk);
+    }
+    
+    /* Subtle texture overlay for body */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 35px,
+                rgba(205, 133, 63, 0.01) 35px,
+                rgba(205, 133, 63, 0.01) 70px
+            );
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    .container,
+    header,
+    main,
+    footer {
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Retro form elements */
+    input[type="text"],
+    input[type="search"],
+    textarea,
+    select {
+        font-family: Georgia, serif;
+        background-color: var(--beige);
+        border: 2px solid var(--tan);
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+    }
+    
+    input[type="text"]:focus,
+    input[type="search"]:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--peru);
+        box-shadow: 0 0 0 3px rgba(205, 133, 63, 0.2);
+        background-color: var(--cornsilk);
+    }
+    
+    /* Print styles with 70s theme */
+    @media print {
+        body {
+            background: white;
+            color: black;
+        }
+        
+        header,
+        footer,
+        .nav-menu,
+        .nav-search,
+        .search-box-container,
+        .nav-toggle,
+        .backlinks {
+            display: none;
+        }
+        
+        .container {
+            max-width: 100%;
+        }
+        
+        a {
+            color: black;
+            text-decoration: underline;
+        }
+    }
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">PARA Knowledge Base</a></h1>
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/projects/" class="">Projects</a></li>
+                    <li><a href="/areas/" class="active">Areas</a></li>
+                    <li><a href="/resources/" class="">Resources</a></li>
+                    <li><a href="/archives/" class="">Archives</a></li>
+                    <li class="nav-search">
+                        <input type="text" class="search-box nav-search-box" placeholder="Search (Ctrl+K)" readonly onclick="openSearch()" />
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/areas/">Areas</a></li><li class="separator">/</li><li><a href="/areas/active-sessions/">Active Sessions</a></li><li class="separator">/</li><li class="current">Prompt Execution Log: Static Website Generator - 2025-06-11</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>Prompt Execution Log: Static Website Generator - 2025-06-11</h1>
+        <div class="document-meta"><time class="date">2025-06-11</time>
+<div class="tags"><span class="tag">prompt-execution</span> <span class="tag">systematic</span> <span class="tag">active</span> <span class="tag">session-log</span></div></div>
+    </header>
+    
+    <div class="document-content">
+        <h1>Prompt Execution Log: Static Website Generator - 2025-06-11</h1>
+<p>This document tracks all prompt executions for static-website-generator on 2025-06-11.</p>
+<hr />
+<h2>Session 1: 14:45</h2>
+<h2>Prompt Plan Status</h2>
+<p><strong>Plan</strong>: projects/static-website-generator-prompt-plan
+<strong>Total Prompts</strong>: 16
+<strong>Completed</strong>: 4 ✅
+<strong>Remaining</strong>: 12 ⏳</p>
+<h2>Current Prompt</h2>
+<p><strong>Phase</strong>: Phase 1: Foundation &amp; Core Infrastructure
+<strong>Prompt</strong>: 1.3 - Frontmatter &amp; Markdown Parsing
+<strong>Status</strong>: 🔄 In Progress
+<strong>Objective</strong>: Parse YAML frontmatter and convert markdown to HTML</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+YAML frontmatter parsing with serde</li>
+<li><input disabled="" type="checkbox"/>
+Markdown-to-HTML conversion using pulldown-cmark</li>
+<li><input disabled="" type="checkbox"/>
+Document struct with all metadata fields</li>
+<li><input disabled="" type="checkbox"/>
+Comprehensive parsing tests</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+YAML frontmatter correctly parsed into structs</li>
+<li><input disabled="" type="checkbox"/>
+Markdown converted to clean HTML</li>
+<li><input disabled="" type="checkbox"/>
+Document struct captures all required metadata</li>
+<li><input disabled="" type="checkbox"/>
+Handles missing or malformed frontmatter gracefully</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests cover edge cases and error conditions</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>14:45 - Starting Prompt Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Implement markdown parsing in src/parser/. Create frontmatter.rs for YAML parsing using serde, and markdown.rs for HTML conversion using pulldown-cmark. Define a comprehensive Document struct that captures all metadata (title, tags, dates, category, status). Add thorough unit tests covering various frontmatter formats and markdown edge cases.
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: Need to create parser module with frontmatter and markdown parsing capabilities</li>
+<li>Dependencies: Will need to add serde_yaml and pulldown-cmark to Cargo.toml</li>
+<li>Approach: Create Document struct first, then implement parsing functions with proper error handling</li>
+</ul>
+<h3>14:46 - Implementation Progress</h3>
+<p>Starting with examining the current project structure and dependencies…</p>
+<h3>14:50 - Verification Complete</h3>
+<p>After examining the code, I discovered that <strong>Prompt 1.3 has already been fully implemented</strong>:</p>
+<ul>
+<li>✅ YAML frontmatter parsing with serde (frontmatter.rs)</li>
+<li>✅ Markdown-to-HTML conversion using pulldown-cmark (markdown.rs)</li>
+<li>✅ Document struct with all metadata fields (document.rs)</li>
+<li>✅ Comprehensive parsing tests (23 tests passing)</li>
+</ul>
+<p>The implementation includes:</p>
+<ul>
+<li>Robust frontmatter extraction with edge case handling</li>
+<li>Full markdown parsing with extensions (tables, footnotes, task lists, etc.)</li>
+<li>DocumentMetadata struct with all fields (title, tags, dates, status, author, custom fields)</li>
+<li>Document struct combining metadata with parsed content</li>
+<li>Comprehensive error handling using Result types</li>
+<li>Unit tests covering various scenarios</li>
+</ul>
+<p><strong>Test Results</strong>: All 23 parser tests passing
+<strong>Build Status</strong>: Site generation works correctly, parsing 19 documents from context directory</p>
+<h2>Completion Summary</h2>
+<p><strong>Duration</strong>: 5 minutes (verification only - already implemented)
+<strong>Status</strong>: Already Complete
+<strong>Outcomes</strong>: Confirmed full implementation of frontmatter and markdown parsing
+<strong>Notes</strong>: This prompt was already completed in a previous session. Moving to next unfinished prompt.</p>
+<h2>Next Prompt Preview</h2>
+<p><strong>Next</strong>: Prompt 2.1 - Wiki Link Parsing &amp; Resolution
+<strong>Ready</strong>: Yes
+<strong>Dependencies</strong>: None - Prompt 1.4 is already complete</p>
+<hr />
+<p><em>Prompt verification completed: 14:50</em></p>
+<hr />
+<h2>Session 2: 14:52</h2>
+<h2>Prompt Plan Status</h2>
+<p><strong>Plan</strong>: projects/static-website-generator-prompt-plan
+<strong>Total Prompts</strong>: 16
+<strong>Completed</strong>: 5 ✅
+<strong>Remaining</strong>: 11 ⏳</p>
+<h2>Current Prompt</h2>
+<p><strong>Phase</strong>: Phase 2: Wiki Links &amp; Advanced Navigation
+<strong>Prompt</strong>: 2.1 - Wiki Link Parsing &amp; Resolution
+<strong>Status</strong>: 🔄 In Progress
+<strong>Objective</strong>: Parse <span class="wiki-link broken" title="Link target not found: wiki-links">wiki-links</span> and resolve them to actual file paths</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Wiki link regex parser</li>
+<li><input disabled="" type="checkbox"/>
+Link resolution algorithm</li>
+<li><input disabled="" type="checkbox"/>
+Broken link detection and warnings</li>
+<li><input disabled="" type="checkbox"/>
+Link replacement in HTML output</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Wiki links correctly parsed from markdown content</li>
+<li><input disabled="" type="checkbox"/>
+Links resolved to actual file paths</li>
+<li><input disabled="" type="checkbox"/>
+Broken links detected and reported as warnings</li>
+<li><input disabled="" type="checkbox"/>
+HTML output contains proper <a> tags</li>
+<li><input disabled="" type="checkbox"/>
+Case-insensitive link matching works</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests cover various link formats and edge cases</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>14:52 - Starting Prompt Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Implement wiki link system in src/parser/wiki_links.rs. Create robust regex-based parser for &lt;span class="wiki-link broken" title="Link target not found: document-name"&gt;document-name&lt;/span&gt; patterns, implement link resolution algorithm that finds target documents by title or filename, and add broken link detection with helpful warnings. Update HTML generation to replace wiki links with proper &lt;a&gt; tags pointing to generated HTML files.
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: Implement complete wiki link parsing and resolution system</li>
+<li>Dependencies: Will need to update markdown parser to handle wiki links</li>
+<li>Approach: Create regex parser, link resolver, and integrate with HTML generation</li>
+</ul>
+<h3>14:53 - Implementation Progress</h3>
+<p>Starting implementation of wiki link parsing…</p>
+<h3>15:10 - Implementation Complete</h3>
+<p>Successfully implemented wiki link parsing and resolution:</p>
+<ul>
+<li>✅ Wiki link regex parser (supports <span class="wiki-link broken" title="Link target not found: link">link</span> and <span class="wiki-link broken" title="Link target not found: link">display</span>)</li>
+<li>✅ Link resolution algorithm (case-insensitive, matches by title/filename/path)</li>
+<li>✅ Broken link detection and warnings</li>
+<li>✅ Link replacement in HTML output with proper relative paths</li>
+</ul>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li><code>WikiLink</code> struct for parsed links</li>
+<li><code>ResolvedLink</code> struct for resolution results</li>
+<li><code>parse_wiki_links()</code> - Regex-based parser</li>
+<li><code>build_document_lookup()</code> - Creates normalized lookup map</li>
+<li><code>resolve_wiki_links()</code> - Matches links to documents</li>
+<li><code>replace_wiki_links_with_html()</code> - Generates HTML with proper paths</li>
+<li>CSS styles for normal and broken wiki links</li>
+</ul>
+<p><strong>Test Results</strong>: All 61 tests passing (10 new wiki link tests)
+<strong>Integration</strong>: Wiki links processed in two-pass site generation
+<strong>Real-world Test</strong>: Successfully detected 17 broken links in context directory</p>
+<h3>15:15 - Testing Phase</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests written (10 comprehensive unit tests)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests passing (all 61 tests pass)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration verified (site generation works with wiki links)</li>
+</ul>
+<h3>15:18 - Verification</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+All deliverables completed</li>
+<li><input disabled="" type="checkbox" checked=""/>
+All success criteria met</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Code quality checks passed (cargo fmt, cargo clippy)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Ready for commit</li>
+</ul>
+<h2>Completion Summary</h2>
+<p><strong>Duration</strong>: 26 minutes
+<strong>Commit</strong>: 0b0178a - feat: implement wiki link parsing and resolution (Prompt 2.1)
+<strong>Outcomes</strong>: Full wiki link system implemented with broken link detection
+<strong>Notes</strong>: Wiki links correctly resolve with case-insensitive matching, support custom display text, and generate proper relative paths between documents.</p>
+<h2>Next Prompt Preview</h2>
+<p><strong>Next</strong>: Prompt 2.2 - Backlink System &amp; Cross-References
+<strong>Ready</strong>: Yes
+<strong>Dependencies</strong>: None - Prompt 2.1 is now complete</p>
+<hr />
+<p><em>Prompt completed: 15:18</em></p>
+<hr />
+<h2>Session 3: 16:00</h2>
+<h2>Prompt Plan Status</h2>
+<p><strong>Plan</strong>: projects/static-website-generator-prompt-plan
+<strong>Total Prompts</strong>: 16
+<strong>Completed</strong>: 6 ✅
+<strong>Remaining</strong>: 10 ⏳</p>
+<h2>Current Prompt</h2>
+<p><strong>Phase</strong>: Phase 2: Wiki Links &amp; Advanced Navigation
+<strong>Prompt</strong>: 2.2 - Backlink System &amp; Cross-References
+<strong>Status</strong>: ✅ Complete
+<strong>Objective</strong>: Generate backlinks and document relationship mapping</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Backlink generation system</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Document relationship mapping</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Backlink display in HTML templates</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Cross-reference validation</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Backlinks correctly identified and generated</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Document relationship mapping complete</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Backlink sections appear in generated HTML</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Link statistics provided in build output</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Validation catches inconsistent link states</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration tests verify full link ecosystem</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox" checked=""/>
+Changes committed to git</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>16:00 - Starting Prompt Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Implement backlink system in src/generator/. Create functionality to build reverse index of document relationships, generate backlink sections for each document, and update HTML templates to display backlinks. Add validation to ensure all cross-references are working correctly and provide comprehensive reporting of link statistics.
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: Build complete backlink system with reverse index</li>
+<li>Dependencies: Wiki links from Prompt 2.1 already implemented</li>
+<li>Approach: Create backlinks module, update document structure, integrate with HTML generation</li>
+</ul>
+<h3>16:10 - Implementation Progress</h3>
+<p>Successfully implemented backlink system:</p>
+<ul>
+<li>✅ Added <code>BacklinkReference</code> struct to document module</li>
+<li>✅ Created <code>src/generator/backlinks.rs</code> with reverse index generation</li>
+<li>✅ Implemented <code>build_backlink_index()</code> to process outgoing links</li>
+<li>✅ Added <code>apply_backlinks_to_documents()</code> to apply backlinks</li>
+<li>✅ Integrated backlink processing in main site generation flow</li>
+<li>✅ Updated HTML generator to display backlinks with proper URLs</li>
+<li>✅ Added link statistics calculation and reporting</li>
+</ul>
+<p><strong>Key Components</strong>:</p>
+<ul>
+<li><code>BacklinkReference</code> - Contains source path, title, and context</li>
+<li><code>build_backlink_index()</code> - Builds HashMap of target -&gt; backlinks</li>
+<li><code>apply_backlinks_to_documents()</code> - Applies backlinks to documents</li>
+<li><code>calculate_link_statistics()</code> - Provides comprehensive link stats</li>
+<li><code>extract_link_context()</code> - Extracts surrounding text for context</li>
+</ul>
+<p><strong>Bug Fix</strong>: Fixed path matching issue where backlinks were indexed by output_path but matched against relative_path</p>
+<h3>16:45 - Testing Phase</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests written (5 comprehensive unit tests)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests passing (all 65 tests pass)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration verified (backlinks display in generated HTML)</li>
+</ul>
+<h3>16:50 - Verification</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+All deliverables completed</li>
+<li><input disabled="" type="checkbox" checked=""/>
+All success criteria met</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Code quality checks passed (cargo fmt, cargo clippy)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Ready for commit</li>
+</ul>
+<h2>Completion Summary</h2>
+<p><strong>Duration</strong>: 50 minutes
+<strong>Commit</strong>: cd5bf0e - feat: implement backlink system and cross-references (Prompt 2.2)
+<strong>Outcomes</strong>: Full backlink system with reverse index, HTML display, and link statistics
+<strong>Notes</strong>: Backlinks correctly track document relationships, display in HTML with proper formatting, and provide comprehensive statistics including orphaned documents.</p>
+<h2>Next Prompt Preview</h2>
+<p><strong>Next</strong>: Prompt 2.3 - Enhanced Navigation &amp; Category Pages
+<strong>Ready</strong>: Yes
+<strong>Dependencies</strong>: None - Prompt 2.2 is now complete</p>
+<hr />
+<p><em>Prompt completed: 16:50</em></p>
+<hr />
+<h2>Session 4: 17:40</h2>
+<h2>Prompt Plan Status</h2>
+<p><strong>Plan</strong>: projects/static-website-generator-prompt-plan
+<strong>Total Prompts</strong>: 16
+<strong>Completed</strong>: 6 ✅
+<strong>Remaining</strong>: 10 ⏳</p>
+<h2>Current Prompt</h2>
+<p><strong>Phase</strong>: Phase 2: Wiki Links &amp; Advanced Navigation
+<strong>Prompt</strong>: 2.3 - Enhanced Navigation &amp; Category Pages
+<strong>Status</strong>: 🔄 In Progress
+<strong>Objective</strong>: Create breadcrumbs, category indexes, and improved navigation</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Breadcrumb generation system</li>
+<li><input disabled="" type="checkbox"/>
+Category index pages (Projects, Areas, Resources, Archives)</li>
+<li><input disabled="" type="checkbox"/>
+Navigation menu improvements</li>
+<li><input disabled="" type="checkbox"/>
+Site-wide index page</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Breadcrumbs generated for all pages</li>
+<li><input disabled="" type="checkbox"/>
+Category index pages created and functional</li>
+<li><input disabled="" type="checkbox"/>
+Navigation highlights current section</li>
+<li><input disabled="" type="checkbox"/>
+Site index page provides overview</li>
+<li><input disabled="" type="checkbox"/>
+Mobile-responsive navigation implemented</li>
+<li><input disabled="" type="checkbox"/>
+Navigation tests verify all functionality</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>17:40 - Starting Prompt Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Enhance navigation system in src/generator/html.rs. Implement breadcrumb generation based on file paths, create category index pages that list all documents in each PARA category, improve navigation menus with proper highlighting of current section, and generate a comprehensive site index page. Add responsive navigation that works on mobile devices.
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: Enhance navigation with breadcrumbs, category pages, and improved menus</li>
+<li>Dependencies: HTML generation system already in place</li>
+<li>Approach: I’ll implement breadcrumb generation, category index pages, improve navigation highlighting, and ensure mobile responsiveness</li>
+</ul>
+<h3>17:41 - Implementation Progress</h3>
+<p>Starting implementation of enhanced navigation system…</p>
+<h3>18:10 - Verification</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+All deliverables completed</li>
+<li><input disabled="" type="checkbox" checked=""/>
+All success criteria met</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Code quality checks passed (cargo fmt, cargo clippy)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Ready for commit</li>
+</ul>
+<h2>Completion Summary</h2>
+<p><strong>Duration</strong>: 30 minutes
+<strong>Commit</strong>: ed59107 - feat: enhance navigation system (Prompt 2.3)
+<strong>Outcomes</strong>: Enhanced existing navigation implementation with mobile hamburger menu, improved breadcrumbs, document counts, and search placeholder
+<strong>Notes</strong>: Most of the functionality was already implemented. Enhanced with mobile menu, better breadcrumb titles using document titles, document counts on category pages, and search placeholder for future implementation.</p>
+<h2>Next Prompt Preview</h2>
+<p><strong>Next</strong>: Prompt 3.1 - Search Index Generation
+<strong>Ready</strong>: Yes
+<strong>Dependencies</strong>: None - Prompt 2.3 is now complete</p>
+<hr />
+<p><em>Prompt completed: 18:10</em></p>
+<hr />
+<h2>Session 5: 22:30</h2>
+<h2>Prompt Plan Status</h2>
+<p><strong>Plan</strong>: projects/static-website-generator-prompt-plan
+<strong>Total Prompts</strong>: 16
+<strong>Completed</strong>: 7 ✅
+<strong>Remaining</strong>: 9 ⏳</p>
+<h2>Current Prompt</h2>
+<p><strong>Phase</strong>: Phase 3: Search System &amp; 70s Theme
+<strong>Prompt</strong>: 3.1 - Search Index Generation
+<strong>Status</strong>: 🔄 In Progress
+<strong>Objective</strong>: Build JSON search index with document content and metadata</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Search index data structure</li>
+<li><input disabled="" type="checkbox"/>
+JSON index generation during build</li>
+<li><input disabled="" type="checkbox"/>
+Content excerpting for search results</li>
+<li><input disabled="" type="checkbox"/>
+Index optimization for client-side performance</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Search index JSON generated during build</li>
+<li><input disabled="" type="checkbox"/>
+Index contains all necessary document metadata</li>
+<li><input disabled="" type="checkbox"/>
+Content excerpts optimized for search results</li>
+<li><input disabled="" type="checkbox"/>
+Index size reasonable for client-side loading</li>
+<li><input disabled="" type="checkbox"/>
+Index structure supports efficient searching</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests verify index generation</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>22:30 - Starting Prompt Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Implement search index system in src/generator/search.rs. Create data structures for search index containing document titles, paths, content excerpts, tags, and categories. Generate optimized JSON index during build process with content excerpting for search results. Add functionality to exclude common words and optimize index size for client-side loading.
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: Create search index generation system for client-side search</li>
+<li>Dependencies: Document parsing system, JSON serialization via serde_json</li>
+<li>Approach: Create search index structures, implement content excerpting, optimize for client-side use</li>
+</ul>
+<h3>22:31 - Implementation Progress</h3>
+<p>Starting implementation of search index generation…</p>
+<h3>22:45 - Implementation Complete</h3>
+<p>Successfully implemented search index generation:</p>
+<ul>
+<li>✅ SearchEntry struct for individual documents</li>
+<li>✅ SearchIndex struct with version and statistics</li>
+<li>✅ IndexStats for tracking document counts and sizes</li>
+<li>✅ Content extraction from HTML (removes tags, scripts, styles)</li>
+<li>✅ Smart excerpt generation (respects word boundaries)</li>
+<li>✅ Draft document filtering</li>
+<li>✅ JSON serialization with pretty printing</li>
+<li>✅ Index size optimization (5000 char limit per document)</li>
+</ul>
+<p><strong>Key Features</strong>:</p>
+<ul>
+<li>Extracts plain text from HTML using regex</li>
+<li>Generates 200-character excerpts with word boundary awareness</li>
+<li>Lowercases content for case-insensitive search</li>
+<li>Tracks statistics by category</li>
+<li>Excludes draft documents automatically</li>
+<li>Creates <code>search-index.json</code> in output directory</li>
+</ul>
+<p><strong>Test Results</strong>: All 71 tests passing (6 new search tests)
+<strong>Index Size</strong>: ~61KB for 19 documents
+<strong>Integration</strong>: Search index generated during main build process</p>
+<h3>22:45 - Testing Phase</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests written (6 comprehensive unit tests)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests passing (all 71 tests pass)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration verified (search index generates correctly)</li>
+</ul>
+<h3>22:45 - Verification</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+All deliverables completed</li>
+<li><input disabled="" type="checkbox" checked=""/>
+All success criteria met</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Code quality checks passed (cargo fmt, cargo clippy)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Ready for commit</li>
+</ul>
+<h2>Completion Summary</h2>
+<p><strong>Duration</strong>: 15 minutes
+<strong>Commit</strong>: fc5ab61 - feat: implement search index generation (Prompt 3.1)
+<strong>Outcomes</strong>: Complete search index generation system with JSON output
+<strong>Notes</strong>: Search index includes all necessary data for client-side searching. Index is optimized for size with content truncation and draft filtering.</p>
+<h2>Next Prompt Preview</h2>
+<p><strong>Next</strong>: Prompt 3.2 - Client-Side Search Implementation
+<strong>Ready</strong>: Yes
+<strong>Dependencies</strong>: None - Prompt 3.1 is now complete</p>
+<hr />
+<p><em>Prompt completed: 22:45</em></p>
+<hr />
+<h2>Session 6: 22:55</h2>
+<h2>Prompt Plan Status</h2>
+<p><strong>Plan</strong>: projects/static-website-generator-prompt-plan
+<strong>Total Prompts</strong>: 16
+<strong>Completed</strong>: 8 ✅
+<strong>Remaining</strong>: 8 ⏳</p>
+<h2>Current Prompt</h2>
+<p><strong>Phase</strong>: Phase 3: Search System &amp; 70s Theme
+<strong>Prompt</strong>: 3.2 - Client-Side Search Implementation
+<strong>Status</strong>: 🔄 In Progress
+<strong>Objective</strong>: Create JavaScript search functionality with results interface</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Client-side JavaScript search engine</li>
+<li><input disabled="" type="checkbox"/>
+Search interface with input and results</li>
+<li><input disabled="" type="checkbox"/>
+Search result highlighting and ranking</li>
+<li><input disabled="" type="checkbox"/>
+Search functionality embedded in HTML templates</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+JavaScript search loads and parses JSON index</li>
+<li><input disabled="" type="checkbox"/>
+Search interface responsive and functional</li>
+<li><input disabled="" type="checkbox"/>
+Results ranked by relevance</li>
+<li><input disabled="" type="checkbox"/>
+Search highlighting shows matching terms</li>
+<li><input disabled="" type="checkbox"/>
+Keyboard shortcuts work (Ctrl+K, escape, arrow keys)</li>
+<li><input disabled="" type="checkbox"/>
+Search works offline after initial page load</li>
+<li><input disabled="" type="checkbox"/>
+Manual testing confirms search functionality</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>22:55 - Starting Prompt Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Implement client-side search in src/theme/. Create JavaScript search engine that loads the JSON index and provides fast text search with ranking. Build search interface with input field, results display, and result highlighting. Embed search functionality into HTML templates and ensure it works without external dependencies. Add keyboard shortcuts and search result navigation.
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: Implement complete client-side search with JavaScript</li>
+<li>Dependencies: Search index from Prompt 3.1, no external JS libraries</li>
+<li>Approach: Create self-contained JavaScript search engine with UI</li>
+</ul>
+<h3>22:56 - Implementation Progress</h3>
+<p>Starting implementation of client-side search functionality…</p>
+<h3>23:10 - Implementation Complete</h3>
+<p>Successfully implemented client-side search functionality:</p>
+<ul>
+<li>✅ JavaScript search engine created in src/theme/search.rs</li>
+<li>✅ Search overlay UI with modal design</li>
+<li>✅ Keyboard shortcuts implemented (Ctrl+K, /, Escape)</li>
+<li>✅ Real-time search as you type</li>
+<li>✅ Result ranking by relevance (title &gt; tags &gt; content)</li>
+<li>✅ Search highlighting with <mark> tags</li>
+<li>✅ Keyboard navigation (arrow keys, enter)</li>
+<li>✅ Search boxes integrated in home page and navigation</li>
+<li>✅ Mobile-responsive search interface</li>
+</ul>
+<p><strong>Key Features</strong>:</p>
+<ul>
+<li>Self-contained JavaScript (no external dependencies)</li>
+<li>Loads search index from /search-index.json</li>
+<li>Fuzzy text matching with word splitting</li>
+<li>Results limited to top 20 for performance</li>
+<li>Click outside to close search overlay</li>
+<li>Inline search boxes trigger overlay when clicked</li>
+</ul>
+<p><strong>Test Results</strong>: All 74 tests passing (3 new search tests)
+<strong>Site Generation</strong>: Successfully generates site with working search
+<strong>Integration</strong>: Search functionality embedded in all generated HTML pages</p>
+<h3>23:10 - Testing Phase</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests written (3 unit tests for search script generation)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests passing (all 74 tests pass)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration verified (search works in generated site)</li>
+</ul>
+<h3>23:10 - Verification</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+All deliverables completed</li>
+<li><input disabled="" type="checkbox" checked=""/>
+All success criteria met</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Code quality checks passed (cargo fmt, cargo clippy)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Ready for commit</li>
+</ul>
+<h2>Completion Summary</h2>
+<p><strong>Duration</strong>: 15 minutes
+<strong>Commit</strong>: dbce7ea - feat: implement client-side search functionality (Prompt 3.2)
+<strong>Outcomes</strong>: Complete client-side search with JavaScript UI
+<strong>Notes</strong>: Search functionality is fully operational with keyboard shortcuts, result highlighting, and responsive design. Works offline after initial page load.</p>
+<h2>Next Prompt Preview</h2>
+<p><strong>Next</strong>: Prompt 3.3 - 70s Earthy Theme Implementation
+<strong>Ready</strong>: Yes
+<strong>Dependencies</strong>: None - Prompt 3.2 is now complete</p>
+<hr />
+<p><em>Prompt completed: 23:10</em></p>
+<hr />
+<h2>Session 7: 23:20</h2>
+<h2>Prompt Plan Status</h2>
+<p><strong>Plan</strong>: projects/static-website-generator-prompt-plan
+<strong>Total Prompts</strong>: 16
+<strong>Completed</strong>: 9 ✅
+<strong>Remaining</strong>: 7 ⏳</p>
+<h2>Current Prompt</h2>
+<p><strong>Phase</strong>: Phase 3: Search System &amp; 70s Theme
+<strong>Prompt</strong>: 3.3 - 70s Earthy Theme Implementation
+<strong>Status</strong>: 🔄 In Progress
+<strong>Objective</strong>: Apply complete 70s earthy design theme with responsive layout</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+70s earthy color palette CSS</li>
+<li><input disabled="" type="checkbox"/>
+Typography and layout styling</li>
+<li><input disabled="" type="checkbox"/>
+Mobile-responsive design</li>
+<li><input disabled="" type="checkbox"/>
+CSS embedded in HTML templates</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+70s earthy color palette fully implemented</li>
+<li><input disabled="" type="checkbox"/>
+Typography clear and readable on all devices</li>
+<li><input disabled="" type="checkbox"/>
+Responsive design works on mobile and desktop</li>
+<li><input disabled="" type="checkbox"/>
+CSS embedded in HTML templates</li>
+<li><input disabled="" type="checkbox"/>
+Design evokes 70s era while remaining modern</li>
+<li><input disabled="" type="checkbox"/>
+Visual testing confirms theme quality</li>
+<li><input disabled="" type="checkbox"/>
+Generated site looks professional and cohesive</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>23:20 - Starting Prompt Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Implement complete 70s earthy theme in src/theme/styles.rs. Create CSS with the defined color palette (Saddle Brown, Peru, Goldenrod, Beige, etc.), implement typography using system fonts, and ensure fully responsive design that works on mobile and desktop. Embed CSS directly in HTML templates to avoid external dependencies. Add subtle design elements that evoke the 70s era while maintaining modern usability.
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: Implement complete 70s earthy design theme with CSS</li>
+<li>Dependencies: Existing HTML template system</li>
+<li>Approach: Create comprehensive CSS in styles.rs with 70s color palette and responsive design</li>
+</ul>
+<h3>23:20 - Implementation Progress</h3>
+<p>Starting implementation of 70s earthy theme…</p>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by PARA SSG</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleNav() {
+            var navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var navMenu = document.getElementById('navMenu');
+            var navToggle = document.querySelector('.nav-toggle');
+            if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+        
+        
+// Search functionality for para-ssg
+(function() {
+    let searchIndex = null;
+    let searchInput = null;
+    let searchResults = null;
+    let searchOverlay = null;
+    let currentFocus = -1;
+
+    // Initialize search on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeSearch();
+    });
+
+    function initializeSearch() {
+        // Create search overlay
+        createSearchOverlay();
+        
+        // Set up keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+K or Cmd+K to open search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                openSearch();
+            }
+            // Forward slash to open search (if not in input)
+            else if (e.key === '/' && !isInputElement(e.target)) {
+                e.preventDefault();
+                openSearch();
+            }
+            // Escape to close search
+            else if (e.key === 'Escape' && searchOverlay.style.display === 'block') {
+                closeSearch();
+            }
+        });
+
+        // Load search index
+        loadSearchIndex();
+    }
+
+    function createSearchOverlay() {
+        // Create overlay container
+        searchOverlay = document.createElement('div');
+        searchOverlay.id = 'search-overlay';
+        searchOverlay.style.cssText = `
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        `;
+
+        // Create search container
+        const searchContainer = document.createElement('div');
+        searchContainer.style.cssText = `
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            background: #f5f2e8;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        `;
+
+        // Create search input
+        searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = 'Search documents...';
+        searchInput.style.cssText = `
+            padding: 20px;
+            font-size: 18px;
+            border: none;
+            border-bottom: 2px solid #8b4513;
+            background: transparent;
+            outline: none;
+            color: #3e2723;
+        `;
+
+        // Create results container
+        searchResults = document.createElement('div');
+        searchResults.style.cssText = `
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(80vh - 80px);
+        `;
+
+        // Assemble components
+        searchContainer.appendChild(searchInput);
+        searchContainer.appendChild(searchResults);
+        searchOverlay.appendChild(searchContainer);
+        document.body.appendChild(searchOverlay);
+
+        // Set up event listeners
+        searchInput.addEventListener('input', performSearch);
+        searchInput.addEventListener('keydown', handleSearchNavigation);
+        searchOverlay.addEventListener('click', function(e) {
+            if (e.target === searchOverlay) {
+                closeSearch();
+            }
+        });
+    }
+
+    function loadSearchIndex() {
+        fetch('/search-index.json')
+            .then(response => response.json())
+            .then(data => {
+                searchIndex = data;
+                console.log('Search index loaded:', data.stats);
+            })
+            .catch(error => {
+                console.error('Failed to load search index:', error);
+            });
+    }
+
+    function openSearch() {
+        if (!searchOverlay) return;
+        searchOverlay.style.display = 'block';
+        searchInput.value = '';
+        searchInput.focus();
+        searchResults.innerHTML = '';
+        currentFocus = -1;
+    }
+
+    function closeSearch() {
+        if (!searchOverlay) return;
+        searchOverlay.style.display = 'none';
+        searchInput.value = '';
+        searchResults.innerHTML = '';
+    }
+
+    function performSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        
+        if (!query) {
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        if (!searchIndex || !searchIndex.entries) {
+            searchResults.innerHTML = '<p style="color: #8b4513;">Search index not loaded yet...</p>';
+            return;
+        }
+
+        const results = searchDocuments(query);
+        displayResults(results, query);
+    }
+
+    function searchDocuments(query) {
+        const results = [];
+        const queryWords = query.split(/\s+/).filter(w => w.length > 0);
+
+        for (const entry of searchIndex.entries) {
+            let score = 0;
+            let matches = [];
+
+            // Search in title (higher weight)
+            for (const word of queryWords) {
+                if (entry.title.toLowerCase().includes(word)) {
+                    score += 10;
+                    matches.push('title');
+                }
+            }
+
+            // Search in tags (medium weight)
+            for (const tag of entry.tags) {
+                for (const word of queryWords) {
+                    if (tag.toLowerCase().includes(word)) {
+                        score += 5;
+                        matches.push('tag');
+                        break;
+                    }
+                }
+            }
+
+            // Search in content (lower weight)
+            for (const word of queryWords) {
+                if (entry.content.includes(word)) {
+                    score += 1;
+                    matches.push('content');
+                }
+            }
+
+            if (score > 0) {
+                results.push({
+                    entry: entry,
+                    score: score,
+                    matches: [...new Set(matches)]
+                });
+            }
+        }
+
+        // Sort by score (descending)
+        results.sort((a, b) => b.score - a.score);
+        
+        return results.slice(0, 20); // Limit to top 20 results
+    }
+
+    function displayResults(results, query) {
+        if (results.length === 0) {
+            searchResults.innerHTML = '<p style="color: #8b4513;">No results found</p>';
+            return;
+        }
+
+        const html = results.map((result, index) => {
+            const entry = result.entry;
+            const highlightedTitle = highlightText(entry.title, query);
+            const highlightedExcerpt = highlightText(entry.excerpt, query);
+            
+            return `
+                <div class="search-result" data-index="${index}" style="
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: white;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background 0.2s;
+                " onmouseover="this.style.background='#f5deb3'" onmouseout="this.style.background='white'">
+                    <h3 style="margin: 0 0 5px 0; color: #8b4513;">
+                        <a href="${entry.path}" style="text-decoration: none; color: inherit;">
+                            ${highlightedTitle}
+                        </a>
+                    </h3>
+                    <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
+                        ${highlightedExcerpt}
+                    </p>
+                    <div style="font-size: 12px; color: #999;">
+                        <span style="background: #f5deb3; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
+                            ${entry.category}
+                        </span>
+                        ${entry.tags.slice(0, 3).map(tag => 
+                            `<span style="background: #e8dcc8; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
+                                ${tag}
+                            </span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        searchResults.innerHTML = html;
+        
+        // Add click handlers
+        const resultElements = searchResults.querySelectorAll('.search-result');
+        resultElements.forEach(el => {
+            el.addEventListener('click', function(e) {
+                if (!e.target.closest('a')) {
+                    const link = this.querySelector('a');
+                    if (link) window.location.href = link.href;
+                }
+            });
+        });
+    }
+
+    function highlightText(text, query) {
+        if (!text) return '';
+        
+        const words = query.split(/\s+/).filter(w => w.length > 0);
+        let highlighted = text;
+        
+        for (const word of words) {
+            const regex = new RegExp(`(${escapeRegex(word)})`, 'gi');
+            highlighted = highlighted.replace(regex, '<mark style="background: #daa520; padding: 0 2px;">$1</mark>');
+        }
+        
+        return highlighted;
+    }
+
+    function handleSearchNavigation(e) {
+        const results = searchResults.querySelectorAll('.search-result');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentFocus++;
+            if (currentFocus >= results.length) currentFocus = 0;
+            setFocus(results);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentFocus--;
+            if (currentFocus < 0) currentFocus = results.length - 1;
+            setFocus(results);
+        } else if (e.key === 'Enter' && currentFocus >= 0 && currentFocus < results.length) {
+            e.preventDefault();
+            const link = results[currentFocus].querySelector('a');
+            if (link) window.location.href = link.href;
+        }
+    }
+
+    function setFocus(results) {
+        results.forEach((el, index) => {
+            if (index === currentFocus) {
+                el.style.background = '#daa520';
+                el.scrollIntoView({ block: 'nearest' });
+            } else {
+                el.style.background = 'white';
+            }
+        });
+    }
+
+    function isInputElement(element) {
+        return element.tagName === 'INPUT' || 
+               element.tagName === 'TEXTAREA' || 
+               element.isContentEditable;
+    }
+
+    function escapeRegex(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // Also add inline search boxes
+    document.addEventListener('DOMContentLoaded', function() {
+        const inlineSearchBoxes = document.querySelectorAll('.search-box');
+        inlineSearchBoxes.forEach(box => {
+            box.addEventListener('click', openSearch);
+            box.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    openSearch();
+                }
+            });
+        });
+    });
+})();
+
+    </script>
+</body>
+</html>

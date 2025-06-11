@@ -1,9 +1,11 @@
-//! ABOUTME: CSS generation and 70s earthy theme implementation
-//! ABOUTME: Creates stylesheets with retro color palette and responsive design
-
-/// Get default CSS styles with complete 70s earthy theme
-pub fn get_default_styles() -> String {
-    r#"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Execution: Static Website Generator - PARA SSG</title>
+    <style>
+        
     /* Reset and base styles */
     * {
         margin: 0;
@@ -1074,5 +1076,659 @@ pub fn get_default_styles() -> String {
             text-decoration: underline;
         }
     }
-    "#.to_string()
-}
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">PARA Knowledge Base</a></h1>
+                <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/projects/" class="">Projects</a></li>
+                    <li><a href="/areas/" class="active">Areas</a></li>
+                    <li><a href="/resources/" class="">Resources</a></li>
+                    <li><a href="/archives/" class="">Archives</a></li>
+                    <li class="nav-search">
+                        <input type="text" class="search-box nav-search-box" placeholder="Search (Ctrl+K)" readonly onclick="openSearch()" />
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/areas/">Areas</a></li><li class="separator">/</li><li><a href="/areas/active-sessions/">Active Sessions</a></li><li class="separator">/</li><li class="current">Prompt Execution: Static Website Generator</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>Prompt Execution: Static Website Generator</h1>
+        <div class="document-meta"><time class="date">2025-06-11</time>
+<div class="tags"><span class="tag">prompt-execution</span> <span class="tag">systematic</span> <span class="tag">active</span> <span class="tag">rust</span> <span class="tag">static-site-generator</span></div></div>
+    </header>
+    
+    <div class="document-content">
+        <h1>Prompt Execution Session: Static Website Generator</h1>
+<h2>Session: 2025-01-06 15:35:00</h2>
+<h2>Prompt Plan Status</h2>
+<p><strong>Plan</strong>: projects/static-website-generator-prompt-plan
+<strong>Total Prompts</strong>: 16
+<strong>Completed</strong>: 0 ✅
+<strong>Remaining</strong>: 16 ⏳</p>
+<h2>Current Prompt</h2>
+<p><strong>Phase</strong>: Phase 1: Foundation &amp; Core Infrastructure
+<strong>Prompt</strong>: 1.1: Project Structure &amp; Basic CLI
+<strong>Status</strong>: 🔄 In Progress
+<strong>Objective</strong>: Set up proper Rust project structure with comprehensive module organization</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Complete module structure in <code>src/</code></li>
+<li><input disabled="" type="checkbox"/>
+CLI argument parsing with proper error handling</li>
+<li><input disabled="" type="checkbox"/>
+Basic file system operations</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests for CLI functionality</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+All module directories created with mod.rs files</li>
+<li><input disabled="" type="checkbox"/>
+CLI accepts input_dir and output_dir arguments</li>
+<li><input disabled="" type="checkbox"/>
+Proper error handling for missing/invalid directories</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests covering CLI argument validation</li>
+<li><input disabled="" type="checkbox"/>
+Code compiles without warnings</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>15:35 - Starting Prompt Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Set up the complete Rust project structure for para-ssg in code/static-site-generator/. Create all necessary modules (parser/, generator/, theme/, utils/) with proper mod.rs files. Implement robust CLI argument parsing in main.rs that validates input/output directories and provides helpful error messages. Add comprehensive unit tests for all CLI functionality. Follow Rust best practices with proper error handling using Result types.
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: Complete project structure setup with modules and CLI</li>
+<li>Dependencies: None (first prompt)</li>
+<li>Approach: Follow existing Cargo.toml and expand on basic main.rs structure</li>
+</ul>
+<h3>16:10 - Prompt Implementation Completed ✅</h3>
+<p><strong>Deliverables Completed</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Complete module structure in <code>src/</code> (8 modules created)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+CLI argument parsing with proper error handling</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Basic file system operations (skeleton implementation)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Unit tests for CLI functionality (6 comprehensive tests)</li>
+</ul>
+<p><strong>Success Criteria Met</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+All module directories created with mod.rs files</li>
+<li><input disabled="" type="checkbox" checked=""/>
+CLI accepts input_dir and output_dir arguments</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Proper error handling for missing/invalid directories</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Unit tests covering CLI argument validation</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Code compiles without warnings</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests pass: <code>cargo test</code> (6 tests passed)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Changes committed to git (commit: 9595df7)</li>
+</ul>
+<h2>Completion Summary</h2>
+<p><strong>Duration</strong>: 35 minutes
+<strong>Commit</strong>: 9595df7 - “feat: implement project structure and basic CLI for para-ssg”
+<strong>Outcomes</strong>:</p>
+<ul>
+<li>Complete Rust project structure with 24 files created</li>
+<li>Robust CLI with comprehensive error handling using thiserror</li>
+<li>6 unit tests covering all validation scenarios</li>
+<li>All pre-commit hooks passed (clippy, fmt, tests)</li>
+</ul>
+<p><strong>Key Implementation Details</strong>:</p>
+<ul>
+<li>Used thiserror for ergonomic error handling</li>
+<li>Created comprehensive module structure for future prompts</li>
+<li>Implemented Config struct with validation logic</li>
+<li>Added proper documentation comments following project standards</li>
+<li>All code follows Rust best practices and conventions</li>
+</ul>
+<h2>Next Prompt Preview</h2>
+<p><strong>Next</strong>: Prompt 1.2: Document Discovery &amp; PARA Structure Detection
+<strong>Ready</strong>: Yes - all dependencies from Prompt 1.1 are complete
+<strong>Dependencies</strong>: None (Prompt 1.1 completed successfully)</p>
+<hr />
+<p><em>Prompt 1.1 completed: 2025-01-06 16:10:00</em></p>
+<h2>Current Prompt - Session 2</h2>
+<p><strong>Phase</strong>: Phase 1: Foundation &amp; Core Infrastructure
+<strong>Prompt</strong>: 1.2: Document Discovery &amp; PARA Structure Detection
+<strong>Status</strong>: 🔄 In Progress
+<strong>Objective</strong>: Implement directory traversal and PARA category detection</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Recursive directory traversal utility</li>
+<li><input disabled="" type="checkbox"/>
+PARA category detection (projects/, areas/, resources/, archives/)</li>
+<li><input disabled="" type="checkbox"/>
+Document metadata extraction</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests with sample documents</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Recursive directory traversal working correctly</li>
+<li><input disabled="" type="checkbox"/>
+PARA categories properly detected and categorized</li>
+<li><input disabled="" type="checkbox"/>
+File filtering for .md files only</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests with sample directory structures</li>
+<li><input disabled="" type="checkbox"/>
+Error handling for permission issues and invalid paths</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>16:15 - Starting Prompt 1.2 Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Implement document discovery system in src/utils/para.rs and src/utils/fs.rs. Create functions to recursively traverse the context directory, detect PARA categories, and collect all .md files with their metadata. Include proper error handling for file system operations and comprehensive integration tests using tempfile to create test directory structures.
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: File system traversal and PARA category detection</li>
+<li>Dependencies: Prompt 1.1 complete (project structure ready)</li>
+<li>Approach: Implement fs.rs for traversal, para.rs for PARA logic</li>
+</ul>
+<h3>16:25 - Prompt 1.2 Implementation Completed ✅</h3>
+<p><strong>Deliverables Completed</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Recursive directory traversal utility (traverse_directory function)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+PARA category detection (detect_para_category with constants)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Document metadata extraction (DocumentInfo struct)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration tests with sample documents (16 comprehensive tests)</li>
+</ul>
+<p><strong>Success Criteria Met</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Recursive directory traversal working correctly</li>
+<li><input disabled="" type="checkbox" checked=""/>
+PARA categories properly detected and categorized</li>
+<li><input disabled="" type="checkbox" checked=""/>
+File filtering for .md files only</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration tests with sample directory structures</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Error handling for permission issues and invalid paths</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests pass: <code>cargo test</code> (16 tests passed)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Changes committed to git (commit: b47dea7)</li>
+</ul>
+<h2>Completion Summary - Prompt 1.2</h2>
+<p><strong>Duration</strong>: 15 minutes
+<strong>Commit</strong>: b47dea7 - “feat: implement document discovery and PARA structure detection”
+<strong>Outcomes</strong>:</p>
+<ul>
+<li>Created DocumentInfo struct for document metadata</li>
+<li>Implemented recursive directory traversal with hidden directory filtering</li>
+<li>Added PARA category detection with constants</li>
+<li>Created ParaStatistics for document counting by category</li>
+<li>Added comprehensive error handling for file system operations</li>
+<li>10 integration tests using tempfile for realistic scenarios</li>
+<li>CLI now discovers and reports documents by PARA category</li>
+</ul>
+<p><strong>Key Features</strong>:</p>
+<ul>
+<li>Skip hidden directories (starting with .)</li>
+<li>Detect all PARA categories: projects, areas, resources, archives</li>
+<li>Extract document metadata: path, relative_path, stem, category</li>
+<li>Statistics tracking for discovered documents</li>
+<li>Robust error handling for permissions and invalid paths</li>
+</ul>
+<h2>Progress Update</h2>
+<p><strong>Total Prompts</strong>: 16
+<strong>Completed</strong>: 2 ✅ (Prompts 1.1 and 1.2)
+<strong>Remaining</strong>: 14 ⏳</p>
+<hr />
+<p><em>Session continues with next prompt…</em></p>
+<h2>Current Prompt - Session 3</h2>
+<p><strong>Phase</strong>: Phase 1: Foundation &amp; Core Infrastructure
+<strong>Prompt</strong>: 1.3: Frontmatter &amp; Markdown Parsing
+<strong>Status</strong>: 🔄 In Progress
+<strong>Objective</strong>: Parse YAML frontmatter and convert markdown to HTML</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+YAML frontmatter parsing with serde</li>
+<li><input disabled="" type="checkbox"/>
+Markdown-to-HTML conversion using pulldown-cmark</li>
+<li><input disabled="" type="checkbox"/>
+Document struct with all metadata fields</li>
+<li><input disabled="" type="checkbox"/>
+Comprehensive parsing tests</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+YAML frontmatter correctly parsed into structs</li>
+<li><input disabled="" type="checkbox"/>
+Markdown converted to clean HTML</li>
+<li><input disabled="" type="checkbox"/>
+Document struct captures all required metadata</li>
+<li><input disabled="" type="checkbox"/>
+Handles missing or malformed frontmatter gracefully</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests cover edge cases and error conditions</li>
+<li><input disabled="" type="checkbox"/>
+Tests pass: <code>cargo test</code></li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>16:30 - Starting Prompt 1.3 Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Implement markdown parsing in src/parser/. Create frontmatter.rs for YAML parsing using serde, and markdown.rs for HTML conversion using pulldown-cmark. Define a comprehensive Document struct that captures all metadata (title, tags, dates, category, status). Add thorough unit tests covering various frontmatter formats and markdown edge cases.
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: Parse frontmatter and convert markdown to HTML</li>
+<li>Dependencies: Prompt 1.2 complete (document discovery working)</li>
+<li>Approach: Use serde for YAML parsing, pulldown-cmark for markdown</li>
+</ul>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by PARA SSG</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleNav() {
+            var navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            var navMenu = document.getElementById('navMenu');
+            var navToggle = document.querySelector('.nav-toggle');
+            if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+        
+        
+// Search functionality for para-ssg
+(function() {
+    let searchIndex = null;
+    let searchInput = null;
+    let searchResults = null;
+    let searchOverlay = null;
+    let currentFocus = -1;
+
+    // Initialize search on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeSearch();
+    });
+
+    function initializeSearch() {
+        // Create search overlay
+        createSearchOverlay();
+        
+        // Set up keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+K or Cmd+K to open search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                openSearch();
+            }
+            // Forward slash to open search (if not in input)
+            else if (e.key === '/' && !isInputElement(e.target)) {
+                e.preventDefault();
+                openSearch();
+            }
+            // Escape to close search
+            else if (e.key === 'Escape' && searchOverlay.style.display === 'block') {
+                closeSearch();
+            }
+        });
+
+        // Load search index
+        loadSearchIndex();
+    }
+
+    function createSearchOverlay() {
+        // Create overlay container
+        searchOverlay = document.createElement('div');
+        searchOverlay.id = 'search-overlay';
+        searchOverlay.style.cssText = `
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        `;
+
+        // Create search container
+        const searchContainer = document.createElement('div');
+        searchContainer.style.cssText = `
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            background: #f5f2e8;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        `;
+
+        // Create search input
+        searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = 'Search documents...';
+        searchInput.style.cssText = `
+            padding: 20px;
+            font-size: 18px;
+            border: none;
+            border-bottom: 2px solid #8b4513;
+            background: transparent;
+            outline: none;
+            color: #3e2723;
+        `;
+
+        // Create results container
+        searchResults = document.createElement('div');
+        searchResults.style.cssText = `
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(80vh - 80px);
+        `;
+
+        // Assemble components
+        searchContainer.appendChild(searchInput);
+        searchContainer.appendChild(searchResults);
+        searchOverlay.appendChild(searchContainer);
+        document.body.appendChild(searchOverlay);
+
+        // Set up event listeners
+        searchInput.addEventListener('input', performSearch);
+        searchInput.addEventListener('keydown', handleSearchNavigation);
+        searchOverlay.addEventListener('click', function(e) {
+            if (e.target === searchOverlay) {
+                closeSearch();
+            }
+        });
+    }
+
+    function loadSearchIndex() {
+        fetch('/search-index.json')
+            .then(response => response.json())
+            .then(data => {
+                searchIndex = data;
+                console.log('Search index loaded:', data.stats);
+            })
+            .catch(error => {
+                console.error('Failed to load search index:', error);
+            });
+    }
+
+    function openSearch() {
+        if (!searchOverlay) return;
+        searchOverlay.style.display = 'block';
+        searchInput.value = '';
+        searchInput.focus();
+        searchResults.innerHTML = '';
+        currentFocus = -1;
+    }
+
+    function closeSearch() {
+        if (!searchOverlay) return;
+        searchOverlay.style.display = 'none';
+        searchInput.value = '';
+        searchResults.innerHTML = '';
+    }
+
+    function performSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        
+        if (!query) {
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        if (!searchIndex || !searchIndex.entries) {
+            searchResults.innerHTML = '<p style="color: #8b4513;">Search index not loaded yet...</p>';
+            return;
+        }
+
+        const results = searchDocuments(query);
+        displayResults(results, query);
+    }
+
+    function searchDocuments(query) {
+        const results = [];
+        const queryWords = query.split(/\s+/).filter(w => w.length > 0);
+
+        for (const entry of searchIndex.entries) {
+            let score = 0;
+            let matches = [];
+
+            // Search in title (higher weight)
+            for (const word of queryWords) {
+                if (entry.title.toLowerCase().includes(word)) {
+                    score += 10;
+                    matches.push('title');
+                }
+            }
+
+            // Search in tags (medium weight)
+            for (const tag of entry.tags) {
+                for (const word of queryWords) {
+                    if (tag.toLowerCase().includes(word)) {
+                        score += 5;
+                        matches.push('tag');
+                        break;
+                    }
+                }
+            }
+
+            // Search in content (lower weight)
+            for (const word of queryWords) {
+                if (entry.content.includes(word)) {
+                    score += 1;
+                    matches.push('content');
+                }
+            }
+
+            if (score > 0) {
+                results.push({
+                    entry: entry,
+                    score: score,
+                    matches: [...new Set(matches)]
+                });
+            }
+        }
+
+        // Sort by score (descending)
+        results.sort((a, b) => b.score - a.score);
+        
+        return results.slice(0, 20); // Limit to top 20 results
+    }
+
+    function displayResults(results, query) {
+        if (results.length === 0) {
+            searchResults.innerHTML = '<p style="color: #8b4513;">No results found</p>';
+            return;
+        }
+
+        const html = results.map((result, index) => {
+            const entry = result.entry;
+            const highlightedTitle = highlightText(entry.title, query);
+            const highlightedExcerpt = highlightText(entry.excerpt, query);
+            
+            return `
+                <div class="search-result" data-index="${index}" style="
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: white;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background 0.2s;
+                " onmouseover="this.style.background='#f5deb3'" onmouseout="this.style.background='white'">
+                    <h3 style="margin: 0 0 5px 0; color: #8b4513;">
+                        <a href="${entry.path}" style="text-decoration: none; color: inherit;">
+                            ${highlightedTitle}
+                        </a>
+                    </h3>
+                    <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
+                        ${highlightedExcerpt}
+                    </p>
+                    <div style="font-size: 12px; color: #999;">
+                        <span style="background: #f5deb3; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
+                            ${entry.category}
+                        </span>
+                        ${entry.tags.slice(0, 3).map(tag => 
+                            `<span style="background: #e8dcc8; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
+                                ${tag}
+                            </span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        searchResults.innerHTML = html;
+        
+        // Add click handlers
+        const resultElements = searchResults.querySelectorAll('.search-result');
+        resultElements.forEach(el => {
+            el.addEventListener('click', function(e) {
+                if (!e.target.closest('a')) {
+                    const link = this.querySelector('a');
+                    if (link) window.location.href = link.href;
+                }
+            });
+        });
+    }
+
+    function highlightText(text, query) {
+        if (!text) return '';
+        
+        const words = query.split(/\s+/).filter(w => w.length > 0);
+        let highlighted = text;
+        
+        for (const word of words) {
+            const regex = new RegExp(`(${escapeRegex(word)})`, 'gi');
+            highlighted = highlighted.replace(regex, '<mark style="background: #daa520; padding: 0 2px;">$1</mark>');
+        }
+        
+        return highlighted;
+    }
+
+    function handleSearchNavigation(e) {
+        const results = searchResults.querySelectorAll('.search-result');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentFocus++;
+            if (currentFocus >= results.length) currentFocus = 0;
+            setFocus(results);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentFocus--;
+            if (currentFocus < 0) currentFocus = results.length - 1;
+            setFocus(results);
+        } else if (e.key === 'Enter' && currentFocus >= 0 && currentFocus < results.length) {
+            e.preventDefault();
+            const link = results[currentFocus].querySelector('a');
+            if (link) window.location.href = link.href;
+        }
+    }
+
+    function setFocus(results) {
+        results.forEach((el, index) => {
+            if (index === currentFocus) {
+                el.style.background = '#daa520';
+                el.scrollIntoView({ block: 'nearest' });
+            } else {
+                el.style.background = 'white';
+            }
+        });
+    }
+
+    function isInputElement(element) {
+        return element.tagName === 'INPUT' || 
+               element.tagName === 'TEXTAREA' || 
+               element.isContentEditable;
+    }
+
+    function escapeRegex(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // Also add inline search boxes
+    document.addEventListener('DOMContentLoaded', function() {
+        const inlineSearchBoxes = document.querySelectorAll('.search-box');
+        inlineSearchBoxes.forEach(box => {
+            box.addEventListener('click', openSearch);
+            box.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    openSearch();
+                }
+            });
+        });
+    });
+})();
+
+    </script>
+</body>
+</html>
