@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "context-manager": {
+      "command": "node",
+      "args": ["-r", "dotenv/config", "dist/index.js"],
+      "cwd": "/Users/mobrienv/Code/why/code/mcp-server"
+    }
+  }
+}

@@ -51,7 +51,8 @@ server.setRequestHandler(ListToolsRequestSchema, () => {
     tools.push({
       name: searchTool.name,
       description: searchTool.description,
-      inputSchema: searchTool.inputSchema,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+      inputSchema: searchTool.inputSchema as any,
     });
   }
 
@@ -119,17 +120,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
-// Type for search tool
-interface SearchTool {
-  name: string;
-  description: string;
-  inputSchema: Record<string, unknown>;
-  execute: (input: unknown) => Promise<unknown>;
-}
-
 // Initialize search engine
 let searchEngine: SearchEngine;
-let searchTool: SearchTool | undefined;
+let searchTool: ReturnType<typeof createSearchTool> | undefined;
 
 // Start the server
 async function main(): Promise<void> {
