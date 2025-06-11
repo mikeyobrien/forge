@@ -1,6 +1,7 @@
 # TDD Implementation Plan for Documentation & Journaling System
 
 ## Overview
+
 This plan breaks down the implementation of the MCP-based documentation system into small, testable increments. Each step builds on the previous one, ensuring continuous integration and avoiding orphaned code. The system uses the latest @modelcontextprotocol/sdk patterns and respects the CONTEXT_ROOT environment variable for document storage.
 
 **Language**: TypeScript (strict mode) - all implementation MUST be in TypeScript with proper type safety.
@@ -8,12 +9,14 @@ This plan breaks down the implementation of the MCP-based documentation system i
 ## Architecture Decisions
 
 ### Environment Variables
+
 - `CONTEXT_ROOT`: Base directory for all document storage (required)
 - `LOG_LEVEL`: Logging verbosity (optional, defaults to 'info')
 - `PORT`: Server port for HTTP transport (optional, defaults to 3000)
 - `NODE_ENV`: Environment mode (optional, defaults to 'production')
 
 ### SDK Patterns (2024-2025)
+
 - Use latest @modelcontextprotocol/sdk with ES modules
 - Import paths must include .js extension
 - Support both stdio and StreamableHttp transports
@@ -22,22 +25,26 @@ This plan breaks down the implementation of the MCP-based documentation system i
 ## High-Level Phases
 
 ### Phase 1: Foundation (Steps 1-6)
+
 - TypeScript project setup with pre-commit hooks
 - Environment configuration with CONTEXT_ROOT
 - Document model and validation
 - File system operations
 
 ### Phase 2: Core Operations (Steps 7-11)
+
 - PARA structure management
 - Create and read operations
 - Frontmatter parsing and validation
 
 ### Phase 3: Search & Relationships (Steps 12-16)
+
 - Wiki-link parsing
 - Search functionality
 - Relationship tracking
 
 ### Phase 4: Advanced Features (Steps 17-21)
+
 - Update operations
 - Move operations between PARA categories
 - Knowledge graph export
@@ -45,6 +52,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 ## Detailed Step-by-Step Implementation
 
 ### Step 1: TypeScript Project Setup with Pre-commit Hooks
+
 - Initialize TypeScript project at `code/mcp/`
 - Configure strict TypeScript settings
 - Set up ESLint with TypeScript plugin
@@ -54,6 +62,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Ensure all code quality checks pass before commits
 
 ### Step 2: MCP SDK Integration with TypeScript
+
 - Install @modelcontextprotocol/sdk with TypeScript types
 - Configure for ES modules with .js imports
 - Create basic MCP server structure with proper types
@@ -62,6 +71,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Verify TypeScript compilation and type checking
 
 ### Step 3: Environment Configuration System
+
 - Create typed environment configuration
 - Validate CONTEXT_ROOT exists and is writable
 - Support .env files for development
@@ -70,6 +80,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Unit test configuration loading with type safety
 
 ### Step 4: Document Model and Types
+
 - Define TypeScript interfaces for Document
 - Create frontmatter schema types with strict typing
 - Implement validation functions with proper return types
@@ -78,6 +89,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Unit test all type validations
 
 ### Step 5: File System Abstraction Layer
+
 - Create FileSystem interface with TypeScript
 - Implement with CONTEXT_ROOT base path
 - Add typed path utilities for safe operations
@@ -86,6 +98,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Handle cross-platform path issues with types
 
 ### Step 6: PARA Structure Management
+
 - Implement PARA folder creation under CONTEXT_ROOT
 - Create typed path resolver for document locations
 - Add category validation with TypeScript enums
@@ -94,6 +107,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Verify CONTEXT_ROOT isolation
 
 ### Step 7: Frontmatter Parser with TypeScript
+
 - Implement YAML frontmatter extraction with types
 - Create frontmatter serialization with type safety
 - Handle malformed frontmatter gracefully
@@ -102,6 +116,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Support both Windows and Unix line endings
 
 ### Step 8: Document Creation Tool (context_create)
+
 - Implement context_create MCP tool with Zod schema
 - Use CONTEXT_ROOT for storage location
 - Validate required frontmatter fields with types
@@ -110,6 +125,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Return typed document metadata
 
 ### Step 9: Document Reading Tool (context_read)
+
 - Implement context_read MCP tool with types
 - Resolve paths relative to CONTEXT_ROOT
 - Parse frontmatter and content with type safety
@@ -118,6 +134,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Support both absolute and relative paths
 
 ### Step 10: Wiki-Link Parser with TypeScript
+
 - Extract [[wiki-links]] with typed results
 - Handle nested and escaped brackets
 - Create link normalization rules with types
@@ -126,6 +143,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Unit test link extraction edge cases
 
 ### Step 11: Basic Search Tool (context_search)
+
 - Implement tag-based search with typed queries
 - Add content search within CONTEXT_ROOT
 - Create typed search result ranking
@@ -134,6 +152,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Test search performance
 
 ### Step 12: Integration Testing Phase 1
+
 - Set up test CONTEXT_ROOT directory
 - Test complete create->read->search flow
 - Verify PARA structure maintained
@@ -142,6 +161,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Benchmark performance baseline
 
 ### Step 13: Backlink Tracking System
+
 - Build reverse link index with TypeScript types
 - Update index on document operations
 - Handle link updates efficiently
@@ -150,6 +170,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Ensure index consistency
 
 ### Step 14: Link Queries Tool (context_query_links)
+
 - Implement context_query_links with typed inputs
 - Find documents linking to target
 - Get all links from document with types
@@ -158,6 +179,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Test deep link chains
 
 ### Step 15: Document Updates Tool (context_update)
+
 - Implement context_update with typed operations
 - Preserve frontmatter structure with types
 - Update link indexes on change
@@ -166,6 +188,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Test partial updates
 
 ### Step 16: Advanced Search Features
+
 - Add date range filtering with types
 - Implement status-based search with enums
 - Create compound queries with typed operators
@@ -174,6 +197,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Performance test with large datasets
 
 ### Step 17: Integration Testing Phase 2
+
 - Test update->search->query flow
 - Verify link integrity after updates
 - Stress test with many documents
@@ -182,6 +206,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Profile memory usage
 
 ### Step 18: Document Movement Tool (context_move)
+
 - Implement context_move with typed parameters
 - Update all link references with type safety
 - Keep within CONTEXT_ROOT
@@ -190,6 +215,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Ensure atomic operations
 
 ### Step 19: Knowledge Graph Builder
+
 - Create typed graph data structure
 - Build from link indexes with TypeScript
 - Add typed node/edge metadata
@@ -198,6 +224,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Test cyclic graph handling
 
 ### Step 20: Graph Export Tool (context_graph)
+
 - Implement context_graph with typed formats
 - Export to JSON with TypeScript interfaces
 - Add GraphML support with types
@@ -206,6 +233,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Test large graph exports
 
 ### Step 21: Template System with TypeScript
+
 - Create typed document templates
 - Store in CONTEXT_ROOT/templates
 - Add typed template variables
@@ -214,6 +242,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Test template inheritance
 
 ### Step 22: Final Integration and Polish
+
 - Complete MCP server with all tools typed
 - Validate CONTEXT_ROOT on startup
 - Add StreamableHttp transport with types
@@ -224,6 +253,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 ## Testing Strategy
 
 ### Unit Tests
+
 - Written in TypeScript with full type coverage
 - Each function tested with typed inputs/outputs
 - Mock file system with typed CONTEXT_ROOT
@@ -231,6 +261,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Maintain >90% coverage
 
 ### Integration Tests
+
 - TypeScript tests with typed assertions
 - Use temporary CONTEXT_ROOT directories
 - Test tool interactions with types
@@ -238,6 +269,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - Check data consistency with types
 
 ### End-to-End Tests
+
 - Full workflow scenarios in TypeScript
 - Performance benchmarks with typed metrics
 - Stress testing with typed thresholds
@@ -246,6 +278,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 ## TypeScript Configuration
 
 ### tsconfig.json Requirements
+
 - `"strict": true` - enable all strict type checking
 - `"noImplicitAny": true` - no implicit any types
 - `"strictNullChecks": true` - explicit null handling
@@ -255,6 +288,7 @@ This plan breaks down the implementation of the MCP-based documentation system i
 - `"moduleResolution": "node"` - Node resolution
 
 ### Code Quality Tools
+
 - ESLint with @typescript-eslint plugin
 - Prettier for consistent formatting
 - ts-prune for unused exports
@@ -308,7 +342,7 @@ This ensures code quality from the start.
 
 ### Prompt 2: MCP SDK Integration with TypeScript Types
 
-```text
+````text
 Set up MCP SDK with full TypeScript type safety and create a typed ping tool.
 
 Requirements:
@@ -320,16 +354,18 @@ Requirements:
    ```typescript
    import { Server } from "@modelcontextprotocol/sdk/server/index.js";
    import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-   ```
-   - Define server with proper types
-   - Set up transport with TypeScript
+````
+
+- Define server with proper types
+- Set up transport with TypeScript
+
 3. Create src/tools/ping.ts:
    - Define input schema with Zod
    - Implement tool with full type safety
    - Return typed response
    ```typescript
    const pingSchema = z.object({
-     message: z.string().optional()
+     message: z.string().optional(),
    });
    type PingInput = z.infer<typeof pingSchema>;
    ```
@@ -348,7 +384,8 @@ Requirements:
    - Error handling
 
 All code must be strongly typed TypeScript.
-```
+
+````
 
 ### Prompt 3: Typed Environment Configuration
 
@@ -364,7 +401,8 @@ Requirements:
      port: number;
      nodeEnv: 'development' | 'production' | 'test';
    }
-   ```
+````
+
 2. Implementation requirements:
    - Load from process.env with type coercion
    - Validate CONTEXT_ROOT exists and is writable
@@ -377,7 +415,10 @@ Requirements:
 4. Error handling:
    ```typescript
    class ConfigurationError extends Error {
-     constructor(public field: string, public reason: string) {
+     constructor(
+       public field: string,
+       public reason: string,
+     ) {
        super(`Configuration error: ${field} - ${reason}`);
      }
    }
@@ -393,7 +434,8 @@ Requirements:
    - Type-safe access
 
 No any types allowed - everything must be properly typed.
-```
+
+````
 
 ### Prompt 4: Document Model with Full TypeScript Types
 
@@ -408,7 +450,7 @@ Requirements:
      tags: string[];
      summary: string;
    }
-   
+
    interface FrontmatterOptional {
      context?: string;
      decisions?: string[];
@@ -418,7 +460,7 @@ Requirements:
      priority?: 'high' | 'medium' | 'low';
      next_actions?: string[];
    }
-   
+
    interface Document {
      path: string; // Relative to CONTEXT_ROOT
      frontmatter: FrontmatterRequired & Partial<FrontmatterOptional>;
@@ -426,14 +468,15 @@ Requirements:
      links: string[];
      backlinks: string[];
    }
-   ```
+````
+
 2. Create src/types/para.ts:
    ```typescript
    enum PARACategory {
      Projects = 'Projects',
-     Areas = 'Areas', 
+     Areas = 'Areas',
      Resources = 'Resources',
-     Archives = 'Archives'
+     Archives = 'Archives',
    }
    ```
 3. Zod schemas for validation:
@@ -442,8 +485,8 @@ Requirements:
    - Type inference from schemas
 4. Type guards:
    ```typescript
-   function isValidDocument(obj: unknown): obj is Document
-   function hasRequiredFrontmatter(fm: unknown): fm is FrontmatterRequired
+   function isValidDocument(obj: unknown): obj is Document;
+   function hasRequiredFrontmatter(fm: unknown): fm is FrontmatterRequired;
    ```
 5. Path types:
    ```typescript
@@ -456,7 +499,8 @@ Requirements:
    - Type inference verification
 
 Use branded types for path safety.
-```
+
+````
 
 ### Prompt 5: Typed File System Abstraction
 
@@ -473,16 +517,17 @@ Requirements:
      mkdir(path: RelativePath, recursive?: boolean): Promise<void>;
      listFiles(path: RelativePath, pattern?: string): Promise<RelativePath[]>;
    }
-   
+
    class FileSystem implements IFileSystem {
      constructor(private contextRoot: AbsolutePath) {}
    }
-   ```
+````
+
 2. Path utilities with types:
    ```typescript
-   function toRelativePath(path: string): RelativePath
-   function toAbsolutePath(path: string, base: AbsolutePath): AbsolutePath
-   function isWithinContextRoot(path: AbsolutePath, root: AbsolutePath): boolean
+   function toRelativePath(path: string): RelativePath;
+   function toAbsolutePath(path: string, base: AbsolutePath): AbsolutePath;
+   function isWithinContextRoot(path: AbsolutePath, root: AbsolutePath): boolean;
    ```
 3. Security with TypeScript:
    - Path validation at type level
@@ -491,7 +536,10 @@ Requirements:
 4. Error types:
    ```typescript
    class SecurityError extends Error {
-     constructor(public attemptedPath: string, public contextRoot: string) {}
+     constructor(
+       public attemptedPath: string,
+       public contextRoot: string,
+     ) {}
    }
    ```
 5. Mock implementation:
@@ -504,7 +552,8 @@ Requirements:
    - Mock behavior validation
 
 Use TypeScript's type system to prevent security issues.
-```
+
+````
 
 ### Prompt 6: PARA Structure with TypeScript
 
@@ -520,11 +569,12 @@ Requirements:
      resolvePath(category: PARACategory, filename: string): RelativePath;
      getCategoryFromPath(path: RelativePath): PARACategory | null;
    }
-   
+
    class PARAManager implements PARAStructure {
      constructor(private fs: IFileSystem) {}
    }
-   ```
+````
+
 2. Type-safe operations:
    - Use enum for categories
    - Typed path resolution
@@ -551,7 +601,8 @@ Requirements:
    - Error handling with types
 
 Leverage TypeScript enums and type predicates.
-```
+
+````
 
 ### Prompt 7: Frontmatter Parser with TypeScript Types
 
@@ -566,25 +617,26 @@ Requirements:
      body: string;
      raw: string;
    }
-   
+
    class FrontmatterParser {
      parse<T = unknown>(content: string): ParseResult<T>;
      serialize<T>(frontmatter: T, body: string): string;
      update<T extends Record<string, unknown>>(
-       content: string, 
+       content: string,
        updates: Partial<T>
      ): string;
    }
-   ```
+````
+
 2. Type-safe parsing:
    - Generic types for frontmatter
    - Preserve type information
    - Validation with Zod schemas
 3. Specific extractors:
    ```typescript
-   function extractTags(frontmatter: unknown): string[]
-   function extractDate(frontmatter: unknown): Date | null
-   function extractAs<T>(frontmatter: unknown, schema: ZodSchema<T>): T
+   function extractTags(frontmatter: unknown): string[];
+   function extractDate(frontmatter: unknown): Date | null;
+   function extractAs<T>(frontmatter: unknown, schema: ZodSchema<T>): T;
    ```
 4. Safe YAML options:
    - Prevent code execution
@@ -597,7 +649,8 @@ Requirements:
    - Round-trip accuracy
 
 Use generics for flexible yet safe parsing.
-```
+
+````
 
 ### Prompt 8: Create Document Tool with Full Types
 
@@ -615,22 +668,23 @@ Requirements:
      context: z.string().optional(),
      priority: z.enum(['high', 'medium', 'low']).optional()
    });
-   
+
    type CreateInput = z.infer<typeof createInputSchema>;
-   
+
    interface CreateResult {
      path: RelativePath;
      document: Document;
    }
-   ```
+````
+
 2. Tool implementation:
    ```typescript
    server.tool(
-     "context_create",
+     'context_create',
      createInputSchema,
      async (input: CreateInput): Promise<ToolResult<CreateResult>> => {
        // Fully typed implementation
-     }
+     },
    );
    ```
 3. Type-safe operations:
@@ -639,7 +693,7 @@ Requirements:
    - Handle errors with types
 4. Filename generation:
    ```typescript
-   function generateFilename(title: string, existing: Set<string>): string
+   function generateFilename(title: string, existing: Set<string>): string;
    ```
 5. Tests with TypeScript:
    - Input validation
@@ -648,7 +702,8 @@ Requirements:
    - Result types
 
 Every function must have explicit TypeScript types.
-```
+
+````
 
 ### Prompt 9: Read Document Tool with TypeScript
 
@@ -661,9 +716,9 @@ Requirements:
    const readInputSchema = z.object({
      path: z.string().transform(toRelativePath)
    });
-   
+
    type ReadInput = z.infer<typeof readInputSchema>;
-   
+
    interface ReadResult {
      document: Document;
      metadata: {
@@ -672,13 +727,14 @@ Requirements:
        category: PARACategory;
      };
    }
-   ```
+````
+
 2. Path resolution with types:
    ```typescript
    async function resolveDocumentPath(
      input: RelativePath,
-     para: PARAManager
-   ): Promise<RelativePath | null>
+     para: PARAManager,
+   ): Promise<RelativePath | null>;
    ```
 3. Tool response:
    ```typescript
@@ -703,7 +759,8 @@ Requirements:
    - Error type verification
 
 Maintain type safety from input to output.
-```
+
+````
 
 ### Prompt 10: Wiki-Link Parser with TypeScript
 
@@ -718,35 +775,40 @@ Requirements:
      target: string;
      display?: string;
    }
-   
+
    interface LinkExtractor {
      extractLinks(content: string): WikiLink[];
      normalizeLink(link: string): string;
      parseLink(raw: string): WikiLink | null;
    }
-   ```
+````
+
 2. Type-safe regex patterns:
+
    ```typescript
    const WIKI_LINK_PATTERN = /\[\[([^\]]+)\]\]/g;
-   
+
    function isValidLink(text: string): text is WikiLinkFormat {
      return WIKI_LINK_PATTERN.test(text);
    }
    ```
+
 3. Link index with types:
+
    ```typescript
    class LinkIndex {
      private forward: Map<RelativePath, Set<RelativePath>>;
      private backward: Map<RelativePath, Set<RelativePath>>;
-     
+
      addDocument(doc: Document): void;
      getBacklinks(path: RelativePath): RelativePath[];
      getForwardLinks(path: RelativePath): RelativePath[];
    }
    ```
+
 4. Type guards:
    ```typescript
-   function isWikiLink(obj: unknown): obj is WikiLink
+   function isWikiLink(obj: unknown): obj is WikiLink;
    ```
 5. Tests with types:
    - Link extraction accuracy
@@ -754,7 +816,8 @@ Requirements:
    - Index operations
 
 Use TypeScript interfaces for link structure.
-```
+
+````
 
 ### Prompt 11: Search Tool with Typed Queries
 
@@ -770,16 +833,17 @@ Requirements:
      category: z.nativeEnum(PARACategory).optional(),
      limit: z.number().default(20)
    });
-   
+
    type SearchInput = z.infer<typeof searchInputSchema>;
-   
+
    interface SearchResult {
      path: RelativePath;
      score: number;
      highlights: string[];
      document: Pick<Document, 'frontmatter'>;
    }
-   ```
+````
+
 2. Search index with types:
    ```typescript
    interface SearchIndex {
@@ -789,18 +853,20 @@ Requirements:
    }
    ```
 3. Scoring with types:
+
    ```typescript
    interface ScoringFactors {
      tagMatch: number;
      textMatch: number;
      titleMatch: number;
    }
-   
-   function calculateScore(factors: ScoringFactors): number
+
+   function calculateScore(factors: ScoringFactors): number;
    ```
+
 4. Result formatting:
    ```typescript
-   function formatResults(results: SearchResult[]): ToolResult<SearchResult[]>
+   function formatResults(results: SearchResult[]): ToolResult<SearchResult[]>;
    ```
 5. Tests:
    - Query type validation
@@ -808,7 +874,8 @@ Requirements:
    - Score calculation types
 
 Every search operation must be type-safe.
-```
+
+````
 
 ### Prompt 12: Phase 1 Integration Tests with TypeScript
 
@@ -820,47 +887,48 @@ Requirements:
    ```typescript
    describe('Phase 1 Integration', () => {
      let testContext: TestContext;
-     
+
      interface TestContext {
        contextRoot: AbsolutePath;
        server: Server;
        fs: IFileSystem;
      }
    });
-   ```
+````
+
 2. Typed test helpers:
+
    ```typescript
    async function createTestDocument(
      context: TestContext,
-     params: Partial<CreateInput>
-   ): Promise<Document>
-   
-   async function assertDocumentExists(
-     context: TestContext,
-     path: RelativePath
-   ): Promise<void>
+     params: Partial<CreateInput>,
+   ): Promise<Document>;
+
+   async function assertDocumentExists(context: TestContext, path: RelativePath): Promise<void>;
    ```
+
 3. Test scenarios with types:
    - Type-safe document creation
    - Typed search queries
    - Result type verification
 4. Performance types:
+
    ```typescript
    interface PerformanceMetrics {
      operationTime: number;
      memoryUsed: number;
    }
-   
-   function measurePerformance<T>(
-     operation: () => Promise<T>
-   ): Promise<[T, PerformanceMetrics]>
+
+   function measurePerformance<T>(operation: () => Promise<T>): Promise<[T, PerformanceMetrics]>;
    ```
+
 5. Cleanup with types:
    ```typescript
-   async function cleanupTestContext(context: TestContext): Promise<void>
+   async function cleanupTestContext(context: TestContext): Promise<void>;
    ```
 
 All test code must use TypeScript with proper types.
+
 ```
 
 Continue with remaining prompts following the same TypeScript-first pattern...
@@ -887,3 +955,4 @@ Each step must:
 7. **Strict Null Checks**: Handle null/undefined explicitly
 
 The final system should leverage TypeScript's type system to prevent bugs at compile time while maintaining the security boundary of CONTEXT_ROOT.
+```

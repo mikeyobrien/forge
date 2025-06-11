@@ -1,0 +1,23 @@
+{
+  "name": "mcp-server",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rm -rf dist",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "MCP server implementation",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
