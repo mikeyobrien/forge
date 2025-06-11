@@ -15,3 +15,28 @@ export {
   SearchError,
   SearchErrorType,
 } from './types.js';
+
+// Advanced search exports
+export {
+  AdvancedSearchQuery,
+  AdvancedSearchResponse,
+  ParsedQuery,
+  QueryClause,
+  SortCriteria,
+  FacetType,
+  SearchFacet,
+  FacetValue,
+  SearchSuggestion,
+  SavedSearch,
+  SearchHistoryEntry,
+  FuzzyMatchConfig,
+  DEFAULT_FUZZY_CONFIG,
+  SimilarityOptions,
+  DEFAULT_SIMILARITY_OPTIONS,
+} from './advanced-types.js';
+
+export { FuzzyMatcher } from './fuzzy-matcher.js';
+export { QueryParser } from './query-parser.js';
+export { FacetGenerator } from './facet-generator.js';
+export { AdvancedRelevanceScorer } from './advanced-relevance.js';
+export { SearchSuggester } from './search-suggester.js';

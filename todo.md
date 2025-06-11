@@ -91,7 +91,13 @@
 - [x] Step 12: Integration Testing Phase 1
 - [x] Step 13: Backlink Tracking System
 - [x] Step 14: Link Queries Tool (context_query_links)
-- [ ] Step 15: Document Updates Tool (context_update)
+- [x] Step 15: Document Updates Tool (context_update)
+  - [x] Implement DocumentUpdater class with content and metadata updates
+  - [x] Add wiki-link preservation when replacing content
+  - [x] Support partial metadata updates with field merging
+  - [x] Create atomic file operations to prevent partial updates
+  - [x] Add comprehensive test coverage with edge cases
+  - [x] Integrate with MCP server as context_update tool
 - [ ] Step 16: Advanced Search Features
 
 ### Phase 4: Advanced Features
@@ -182,8 +188,8 @@
 ## Completion Metrics
 
 - Total Steps: 23 (including self-verification)
-- Completed: 12
+- Completed: 15
 - In Progress: 0
-- Percentage: 52.2%
+- Percentage: 65.2%
 
 Last Updated: 2025-06-11

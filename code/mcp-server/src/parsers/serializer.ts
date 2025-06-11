@@ -6,7 +6,7 @@ import { ParsedDocument } from './index.js';
 
 // Type guard to check if document has frontmatter field
 function hasFullDocument(doc: unknown): doc is ModelDocument {
-  return 'frontmatter' in doc;
+  return doc !== null && typeof doc === 'object' && 'frontmatter' in doc;
 }
 
 /**

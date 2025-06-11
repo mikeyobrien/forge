@@ -7,10 +7,10 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprot
 import { handlePing, PingArgs } from './tools/ping';
 import { handleContextCreate, contextCreateTool } from './tools/context-create/index';
 import { handleContextRead, contextReadTool } from './tools/context-read/index';
-import { createSearchTool } from './tools/context_search';
+import { createAdvancedSearchTool } from './tools/context_advanced_search';
 import { queryLinks, contextQueryLinksToolDefinition } from './tools/context-query-links/index';
 import { createContextUpdateTool, handleContextUpdate } from './tools/context-update/index';
-import { SearchEngine } from './search/index';
+import { AdvancedSearchEngine } from './search/AdvancedSearchEngine';
 import { FileSystem } from './filesystem/FileSystem';
 import { PARAManager } from './para/PARAManager';
 import { BacklinkManager } from './backlinks/BacklinkManager';
@@ -161,8 +161,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 // Initialize components
 let fileSystem: FileSystem;
 let paraManager: PARAManager;
-let searchEngine: SearchEngine;
-let searchTool: ReturnType<typeof createSearchTool> | undefined;
+let searchEngine: AdvancedSearchEngine;
+let searchTool: ReturnType<typeof createAdvancedSearchTool> | undefined;
 let backlinkManager: BacklinkManager;
 let contextUpdateTool: ReturnType<typeof createContextUpdateTool> | undefined;
 
@@ -176,7 +176,7 @@ async function main(): Promise<void> {
     // Initialize components
     fileSystem = new FileSystem(config.contextRoot);
     paraManager = new PARAManager(config.contextRoot, fileSystem);
-    searchEngine = new SearchEngine(fileSystem, paraManager, config.contextRoot);
+    searchEngine = new AdvancedSearchEngine(fileSystem, paraManager, config.contextRoot);
     backlinkManager = new BacklinkManager(fileSystem, config.contextRoot);
 
     // Initialize search engine and backlink manager
@@ -185,7 +185,7 @@ async function main(): Promise<void> {
     // Search engine and backlink manager initialized
 
     // Create tools
-    searchTool = createSearchTool(searchEngine);
+    searchTool = createAdvancedSearchTool(searchEngine);
     contextUpdateTool = createContextUpdateTool(fileSystem, paraManager);
 
     // Start the transport
