@@ -6,6 +6,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { handlePing, PingArgs } from './tools/ping';
 import { handleContextCreate, contextCreateTool } from './tools/context-create/index';
+import { handleContextRead, contextReadTool } from './tools/context-read/index';
 import { configuration, ConfigurationError } from './config/index';
 
 // Create server instance
@@ -39,6 +40,7 @@ server.setRequestHandler(ListToolsRequestSchema, () => {
         },
       },
       contextCreateTool,
+      contextReadTool,
     ],
   };
 });
@@ -62,6 +64,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     case 'context_create': {
       const result = await handleContextCreate(args);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: result,
+          },
+        ],
+      };
+    }
+
+    case 'context_read': {
+      const result = await handleContextRead(args);
       return {
         content: [
           {
