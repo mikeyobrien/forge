@@ -102,8 +102,14 @@
 
 ### Phase 4: Advanced Features
 
-- [ ] Step 17: Integration Testing Phase 2
-- [ ] Step 18: Document Movement Tool (context_move)
+- [x] Step 17: Integration Testing Phase 2
+- [x] Step 18: Document Movement Tool (context_move)
+  - [x] Implement DocumentMover class with atomic operations
+  - [x] Handle wiki-link updates when documents move
+  - [x] Support cross-category moves with metadata updates
+  - [x] Add rollback support for failed operations
+  - [x] Create MCP tool interface with proper validation
+  - [x] Write comprehensive unit and integration tests
 - [ ] Step 19: Knowledge Graph Builder
 - [ ] Step 20: Graph Export Tool (context_graph)
 - [ ] Step 21: Template System with TypeScript
@@ -188,8 +194,8 @@
 ## Completion Metrics
 
 - Total Steps: 23 (including self-verification)
-- Completed: 15
+- Completed: 18
 - In Progress: 0
-- Percentage: 65.2%
+- Percentage: 78.3%
 
-Last Updated: 2025-06-11
+Last Updated: 2025-11-06

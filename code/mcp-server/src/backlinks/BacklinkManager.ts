@@ -268,9 +268,9 @@ export class BacklinkManager {
   }
 
   /**
-   * Get backlinks for a specific document
+   * Get detailed backlinks with all metadata for a specific document
    */
-  getBacklinks(targetPath: string, options?: BacklinkQueryOptions): BacklinkQueryResult {
+  getDetailedBacklinks(targetPath: string, options?: BacklinkQueryOptions): BacklinkQueryResult {
     const opts = {
       includeContext: true,
       linkType: 'all' as const,
@@ -391,6 +391,76 @@ export class BacklinkManager {
    */
   getLinkedDocuments(): string[] {
     return Object.keys(this.index);
+  }
+
+  /**
+   * Get the raw index for debugging
+   */
+  getIndex(): BacklinkIndex {
+    return this.index;
+  }
+
+  /**
+   * Get backlinks as simple paths array (for document move operations)
+   */
+  async getBacklinks(targetPath: string): Promise<string[]> {
+    const backlinks = this.index[targetPath] || [];
+    return [...new Set(backlinks.map(link => link.sourcePath))];
+  }
+
+  /**
+   * Get all backlinks synchronously (for testing)
+   */
+  getBacklinksSync(targetPath: string): string[] {
+    const backlinks = this.index[targetPath] || [];
+    return [...new Set(backlinks.map(link => link.sourcePath))];
+  }
+
+
+  /**
+   * Handle document move - update all references in the index
+   */
+  async handleDocumentMove(oldPath: string, newPath: string): Promise<void> {
+    logger.debug(`Handling document move from ${oldPath} to ${newPath}`);
+
+    // 1. Update all entries where this document is the source
+    for (const targetPath in this.index) {
+      const entries = this.index[targetPath];
+      if (!entries) continue;
+      
+      for (const entry of entries) {
+        if (entry.sourcePath === oldPath) {
+          entry.sourcePath = newPath;
+        }
+      }
+    }
+
+    // 2. Move entries where this document is the target
+    if (this.index[oldPath]) {
+      const entries = this.index[oldPath];
+      delete this.index[oldPath];
+      this.index[newPath] = entries;
+      
+      // Update target paths in the entries
+      for (const entry of entries) {
+        entry.targetPath = newPath;
+      }
+    }
+
+    // 3. Update any entries that link to the old path
+    for (const targetPath in this.index) {
+      const entries = this.index[targetPath];
+      if (!entries) continue;
+      
+      for (const entry of entries) {
+        if (entry.targetPath === oldPath) {
+          entry.targetPath = newPath;
+        }
+      }
+    }
+
+    this.markDirty();
+    await this.saveIndex(true); // Force immediate save for move operations
   }
 
   // Private methods

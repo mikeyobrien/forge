@@ -15,10 +15,10 @@ export class PARAManager {
     this.contextRoot = path.resolve(contextRoot);
     this.fileSystem = fileSystem;
     this.structure = {
-      [PARACategory.Projects]: path.join(this.contextRoot, PARACategory.Projects),
-      [PARACategory.Areas]: path.join(this.contextRoot, PARACategory.Areas),
-      [PARACategory.Resources]: path.join(this.contextRoot, PARACategory.Resources),
-      [PARACategory.Archives]: path.join(this.contextRoot, PARACategory.Archives),
+      [PARACategory.Projects]: path.join(this.contextRoot, 'Projects'),
+      [PARACategory.Areas]: path.join(this.contextRoot, 'Areas'),
+      [PARACategory.Resources]: path.join(this.contextRoot, 'Resources'),
+      [PARACategory.Archives]: path.join(this.contextRoot, 'Archives'),
     };
   }
 
@@ -62,8 +62,15 @@ export class PARAManager {
     const resolvedPath = path.resolve(documentPath);
     this.validatePathSecurity(resolvedPath);
 
+    // Debug: console.log('getDocumentCategory:', { documentPath, resolvedPath, structure: this.structure });
+
     for (const [category, categoryPath] of Object.entries(this.structure)) {
-      if (resolvedPath.startsWith(categoryPath + path.sep)) {
+      // Normalize both paths for comparison
+      const normalizedResolved = resolvedPath.replace(/\\/g, '/');
+      const normalizedCategory = categoryPath.replace(/\\/g, '/');
+      
+      if (normalizedResolved.startsWith(normalizedCategory + '/') || 
+          normalizedResolved.startsWith(normalizedCategory + path.sep)) {
         return category as PARACategory;
       }
     }
