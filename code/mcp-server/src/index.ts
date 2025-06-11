@@ -7,6 +7,10 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprot
 import { handlePing, PingArgs } from './tools/ping';
 import { handleContextCreate, contextCreateTool } from './tools/context-create/index';
 import { handleContextRead, contextReadTool } from './tools/context-read/index';
+import { createSearchTool } from './tools/context_search';
+import { SearchEngine } from './search/index';
+import { FileSystem } from './filesystem/FileSystem';
+import { PARAManager } from './para/PARAManager';
 import { configuration, ConfigurationError } from './config/index';
 
 // Create server instance
@@ -24,25 +28,34 @@ const server = new Server(
 
 // Define tools
 server.setRequestHandler(ListToolsRequestSchema, () => {
-  return {
-    tools: [
-      {
-        name: 'ping',
-        description: 'Test the MCP server connection',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            message: {
-              type: 'string',
-              description: 'Optional message to echo back',
-            },
+  const tools = [
+    {
+      name: 'ping',
+      description: 'Test the MCP server connection',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          message: {
+            type: 'string',
+            description: 'Optional message to echo back',
           },
         },
       },
-      contextCreateTool,
-      contextReadTool,
-    ],
-  };
+    },
+    contextCreateTool,
+    contextReadTool,
+  ];
+
+  // Add search tool if initialized
+  if (searchTool) {
+    tools.push({
+      name: searchTool.name,
+      description: searchTool.description,
+      inputSchema: searchTool.inputSchema,
+    });
+  }
+
+  return { tools };
 });
 
 // Handle tool calls
@@ -86,10 +99,37 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       };
     }
 
+    case 'context_search': {
+      if (!searchTool) {
+        throw new Error('Search tool not initialized');
+      }
+      const result = await searchTool.execute(args);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+
     default:
       throw new Error(`Unknown tool: ${name}`);
   }
 });
+
+// Type for search tool
+interface SearchTool {
+  name: string;
+  description: string;
+  inputSchema: Record<string, unknown>;
+  execute: (input: unknown) => Promise<unknown>;
+}
+
+// Initialize search engine
+let searchEngine: SearchEngine;
+let searchTool: SearchTool | undefined;
 
 // Start the server
 async function main(): Promise<void> {
@@ -100,6 +140,18 @@ async function main(): Promise<void> {
     console.error(`  CONTEXT_ROOT: ${config.contextRoot}`);
     console.error(`  Log level: ${config.logLevel}`);
     console.error(`  Environment: ${config.nodeEnv}`);
+
+    // Initialize components
+    const fileSystem = new FileSystem(config.contextRoot);
+    const paraManager = new PARAManager(config.contextRoot, fileSystem);
+    searchEngine = new SearchEngine(fileSystem, paraManager, config.contextRoot);
+
+    // Initialize search engine
+    await searchEngine.initialize();
+    console.error('Search engine initialized');
+
+    // Create search tool
+    searchTool = createSearchTool(searchEngine);
 
     // Start the transport
     const transport = new StdioServerTransport();
