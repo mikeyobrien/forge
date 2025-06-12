@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>search-tool-complete | forge</title>
+    <title>Do Session: Add hot-reloading to para-ssg | forge</title>
     <style>
         
     /* ==========================================================================
@@ -1074,8 +1074,8 @@
             <div class="nav-container">
                 <h1><a href="/">forge</a></h1>
                 <ul class="nav-menu">
-                    <li><a href="/projects/" class="active">P</a></li>
-                    <li><a href="/areas/" class="">A</a></li>
+                    <li><a href="/projects/" class="">P</a></li>
+                    <li><a href="/areas/" class="active">A</a></li>
                     <li><a href="/resources/" class="">R</a></li>
                     <li><a href="/archives/" class="">A</a></li>
                 </ul>
@@ -1088,76 +1088,89 @@
             
 <nav class="breadcrumbs">
     <ol>
-        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/projects/">Projects</a></li><li class="separator">/</li><li><a href="/projects/mcp-server-implementation/">Mcp Server Implementation</a></li><li class="separator">/</li><li class="current">search-tool-complete</li>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/areas/">Areas</a></li><li class="separator">/</li><li><a href="/areas/active-sessions/">Active Sessions</a></li><li class="separator">/</li><li class="current">Do Session: Add hot-reloading to para-ssg</li>
     </ol>
 </nav>
 
             
 <article class="document">
     <header class="document-header">
-        <h1>search-tool-complete</h1>
-        <div class="document-meta"><time class="date">2025-06-11</time></div>
+        <h1>Do Session: Add hot-reloading to para-ssg</h1>
+        <div class="document-meta"><time class="date">2025-06-12</time>
+<div class="tags"><span class="tag">do</span> <span class="tag">session</span> <span class="tag">active</span> <span class="tag">para-ssg</span> <span class="tag">hot-reload</span></div></div>
     </header>
     
     <div class="document-content">
-        <h1>Search Tool Implementation Complete ✅</h1>
-<h2>Summary</h2>
-<p>Successfully implemented and integrated the context_search MCP tool with Claude CLI.</p>
-<h2>Key Accomplishments</h2>
-<h3>1. Implementation</h3>
+        <h1>Do Session: Add hot-reloading to para-ssg</h1>
+<h2>Created: 2025-01-11 10:00:00</h2>
+<h2>Request Analysis</h2>
+<h3>Original Request</h3>
+<p>Add a new argument to para-ssg that allows for hot-reloading.</p>
+<h3>Task Type</h3>
+<p>Implementation</p>
+<h3>Scope Assessment</h3>
 <ul>
-<li>✅ SearchEngine with automatic document indexing</li>
-<li>✅ Relevance scoring with customizable weights</li>
-<li>✅ Full-text search with snippet generation</li>
-<li>✅ Tag matching (exact and prefix)</li>
-<li>✅ PARA category filtering</li>
-<li>✅ Date range filtering</li>
-<li>✅ Pagination support</li>
+<li><strong>Files affected</strong>: CLI argument parser, main loop, file watcher implementation</li>
+<li><strong>Systems involved</strong>: para-ssg static site generator</li>
+<li><strong>External dependencies</strong>: File system watcher library (notify crate likely)</li>
 </ul>
-<h3>2. MCP Integration</h3>
+<h3>Success Criteria</h3>
 <ul>
-<li>✅ Tool properly registered with MCP server</li>
-<li>✅ Stdio-safe implementation (no console output)</li>
-<li>✅ JSON-RPC protocol compliance</li>
-<li>✅ Proper error handling</li>
+<li><input disabled="" type="checkbox"/>
+New CLI flag added for hot-reloading</li>
+<li><input disabled="" type="checkbox"/>
+File watcher implemented to detect changes</li>
+<li><input disabled="" type="checkbox"/>
+Automatic rebuild triggered on file changes</li>
+<li><input disabled="" type="checkbox"/>
+Graceful handling of errors during hot-reload</li>
+<li><input disabled="" type="checkbox"/>
+Tests written for new functionality</li>
+<li><input disabled="" type="checkbox"/>
+Documentation updated</li>
 </ul>
-<h3>3. Claude CLI Integration</h3>
+<h2>Execution Plan</h2>
+<h3>Approach</h3>
+<p>Add a –watch or –hot-reload flag to para-ssg that monitors the context directory for changes and automatically rebuilds the site when files are modified.</p>
+<h3>Steps</h3>
+<ol>
+<li><input disabled="" type="checkbox"/>
+Analyze current CLI argument structure</li>
+<li><input disabled="" type="checkbox"/>
+Check if file watching dependencies are available</li>
+<li><input disabled="" type="checkbox"/>
+Add new CLI argument for hot-reloading</li>
+<li><input disabled="" type="checkbox"/>
+Implement file watcher functionality</li>
+<li><input disabled="" type="checkbox"/>
+Integrate watcher with build process</li>
+<li><input disabled="" type="checkbox"/>
+Add tests for hot-reload functionality</li>
+<li><input disabled="" type="checkbox"/>
+Update documentation</li>
+</ol>
+<h2>Implementation Log</h2>
+<h3>10:00 - Session Start</h3>
+<p><strong>Focus</strong>: Understanding current para-ssg structure and CLI implementation
+<strong>Approach</strong>: Examine main.rs and existing argument parsing to plan integration</p>
+<h3>10:05 - Analyzed Current Structure</h3>
+<p><strong>Focus</strong>: Understanding the current CLI implementation
+<strong>Findings</strong>:</p>
 <ul>
-<li>✅ MCP server configured and accessible</li>
-<li>✅ Tools appear as <code>mcp__context-manager__context_search</code></li>
-<li>✅ Successfully returns search results with snippets</li>
+<li>para-ssg uses simple argument parsing without a CLI framework</li>
+<li>Current flags: –help/-h, –verbose/-v</li>
+<li>Config struct is straightforward, can easily add a watch field</li>
+<li>No existing file watching dependencies in Cargo.toml</li>
+<li>Will need to add <code>notify</code> crate for cross-platform file watching</li>
 </ul>
-<h2>Verification</h2>
-<pre><code class="language-bash"># Command used:
-claude --dangerously-skip-permissions -p "Use the mcp__context-manager__context_search tool to search for documents containing 'mcp'. Show me all the results with their snippets."
-
-# Results returned:
-Found 2 documents containing 'mcp':
-
-1. projects/search-implementation.md - "Search Implementation Project"
-   - Category: projects
-   - Tags: search, implementation, mcp
-   - Snippet: "...for the **MCP** server..."
-
-2. resources/mcp-documentation.md - "MCP Server Documentation"
-   - Category: resources
-   - Tags: documentation, mcp, reference
-   - Snippet: "# **MCP** Server Documentation..."
-</code></pre>
-<h2>Technical Details</h2>
-<ul>
-<li>460+ tests passing</li>
-<li>TypeScript with strict mode</li>
-<li>Comprehensive error handling</li>
-<li>Performance optimized with lazy indexing</li>
-</ul>
-<h2>Configuration</h2>
-<ul>
-<li><code>.mcp.json</code> configuration file for Claude CLI</li>
-<li><code>start-mcp.sh</code> wrapper script for reliable startup</li>
-<li>Environment variables properly configured</li>
-</ul>
-<p>The search tool is now fully operational and ready for use!</p>
+<p><strong>Next Steps</strong>:</p>
+<ol>
+<li>Add notify dependency to Cargo.toml</li>
+<li>Update Config struct to include watch field</li>
+<li>Modify main.rs to parse –watch flag</li>
+<li>Implement file watcher in a separate module or in main</li>
+<li>Integrate watcher with the build process</li>
+</ol>
 
     </div>
     

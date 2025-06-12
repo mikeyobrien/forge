@@ -53,6 +53,7 @@ pub struct Config {
     pub base_url: String,
     pub site_title: String,
     pub verbose: bool,
+    pub watch: bool,
 }
 
 impl Config {
@@ -64,6 +65,7 @@ impl Config {
             base_url: "/".to_string(),
             site_title: "forge".to_string(),
             verbose: false,
+            watch: false,
         }
     }
 
@@ -463,6 +465,16 @@ mod tests {
         assert_eq!(config.output_dir, "/output");
         assert_eq!(config.base_url, "/");
         assert_eq!(config.site_title, "forge");
+        assert!(!config.verbose);
+        assert!(!config.watch);
+    }
+
+    #[test]
+    fn test_config_with_watch() {
+        let mut config = Config::new("/input".to_string(), "/output".to_string());
+        config.watch = true;
+        
+        assert!(config.watch);
     }
 
     #[test]

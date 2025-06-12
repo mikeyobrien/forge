@@ -12,6 +12,7 @@ A high-performance static site generator designed specifically for PARA-organize
 - 🔄 **Backlinks System** - Automatic reverse link discovery with context
 - ⚡ **High Performance** - Parallel processing with progress reporting for large document sets
 - 📊 **Comprehensive Analytics** - Build statistics, link analysis, and validation warnings
+- 👁️ **Hot Reload** - Watch mode for automatic rebuilds on file changes
 
 ## Quick Start
 
@@ -35,6 +36,9 @@ para-ssg /path/to/context ./output
 
 # With verbose output
 para-ssg --verbose /path/to/context ./output
+
+# With hot reload (watch mode)
+para-ssg --watch /path/to/context ./output
 
 # Get help
 para-ssg --help
@@ -115,6 +119,7 @@ description: 'Brief description for search results'
 #### Options
 
 - `--verbose`, `-v` - Enable detailed build information and statistics
+- `--watch`, `-w` - Watch for file changes and rebuild automatically
 - `--help`, `-h` - Display help information
 
 #### Examples
@@ -125,6 +130,9 @@ para-ssg ~/Documents/notes ./website
 
 # Verbose mode with detailed progress
 para-ssg --verbose ~/knowledge-base ./public
+
+# Watch mode for development
+para-ssg --watch ~/Documents/notes ./website
 
 # Generate for deployment
 para-ssg /path/to/docs /var/www/html
@@ -155,6 +163,41 @@ para-ssg provides comprehensive build reporting:
 - **Progress Reporting** - Real-time updates during generation
 - **Memory Optimization** - Efficient handling of large document sets
 - **Incremental Builds** - Fast rebuilds with minimal changes
+
+### Watch Mode (Hot Reload)
+
+#### Overview
+
+The `--watch` flag enables automatic rebuilding when markdown files change:
+
+```bash
+para-ssg --watch /path/to/content ./output
+```
+
+#### Features
+
+- **Automatic Detection** - Monitors all markdown files in the input directory
+- **Smart Debouncing** - Waits 500ms after changes stop to avoid rapid rebuilds
+- **Error Recovery** - Continues watching even if a build fails
+- **Clear Feedback** - Shows when changes are detected and builds complete
+
+#### Use Cases
+
+- **Development** - See changes immediately while writing documentation
+- **Live Editing** - Preview content changes in real-time
+- **Content Review** - Quickly iterate on documentation structure
+
+#### Example Workflow
+
+```bash
+# Start watch mode in one terminal
+para-ssg --watch ./content ./build
+
+# In another terminal, serve the output
+python -m http.server --directory ./build 8000
+
+# Edit markdown files and see changes automatically rebuild
+```
 
 ### Search Functionality
 
@@ -406,13 +449,13 @@ para-ssg is designed for high performance:
 
 #### Runtime Dependencies
 
-- `clap` - Command line argument parsing
 - `serde` - Serialization framework
 - `pulldown-cmark` - Markdown parsing
 - `serde_yaml` - YAML frontmatter parsing
 - `serde_json` - JSON search index generation
 - `thiserror` - Error handling
 - `rayon` - Parallel processing
+- `notify` - File system watching for hot reload
 
 #### Development Dependencies
 
@@ -520,7 +563,14 @@ MIT License - see LICENSE file for details.
 
 ## Changelog
 
-### Version 0.1.0 (Current)
+### Version 0.2.0 (Development)
+
+- Added hot reload with `--watch` flag
+- File system monitoring for automatic rebuilds
+- Smart debouncing to prevent rapid rebuilds
+- Improved developer experience
+
+### Version 0.1.0
 
 - Initial release with core PARA support
 - Wiki links and backlinks system

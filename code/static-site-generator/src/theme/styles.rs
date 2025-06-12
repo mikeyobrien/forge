@@ -1,20 +1,44 @@
-//! ABOUTME: CSS generation with minimal dark theme
-//! ABOUTME: Creates clean dark mode stylesheet for pleasant reading
+//! ABOUTME: CSS generation with modern dark theme and design system
+//! ABOUTME: Creates accessible, performant stylesheet with animations and interactions
 
 #[cfg(not(debug_assertions))]
 use crate::utils::minify_css;
 
-/// Get default CSS styles with minimal dark theme
+/// Get default CSS styles with modern dark theme
+/// 
+/// ## Design System Features:
+/// - **Color System**: Extended palette with gradients and semantic colors
+/// - **Typography**: Fluid scaling with clamp() for responsive text
+/// - **Spacing**: 8px grid system for consistent rhythm
+/// - **Animations**: GPU-accelerated transforms with reduced motion support
+/// - **Accessibility**: WCAG compliant contrast, focus states, and ARIA support
+/// - **Performance**: Optimized transitions and will-change properties
 pub fn get_default_styles() -> String {
     let css = r#"
-    /* Reset and base styles */
+    /* ==========================================================================
+       CSS Reset and Base Styles
+       ========================================================================== */
+    
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
     
-    /* Modern Dark Theme with Enhanced Color System */
+    /* Ensure smooth scrolling and focus behavior */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    :focus-visible {
+        outline: 2px solid var(--accent-primary);
+        outline-offset: 2px;
+    }
+    
+    /* ==========================================================================
+       Design System: Color Variables
+       ========================================================================== */
+    
     :root {
         /* Base colors */
         --bg-primary: #0f0f0f;
@@ -79,7 +103,10 @@ pub fn get_default_styles() -> String {
         --border-color: var(--border-primary);
     }
     
-    /* Spacing system - 8px grid scale */
+    /* ==========================================================================
+       Design System: Spacing & Layout Variables
+       ========================================================================== */
+    
     :root {
         --space-1: 0.5rem;  /* 8px */
         --space-2: 1rem;    /* 16px */
@@ -96,6 +123,10 @@ pub fn get_default_styles() -> String {
         --breakpoint-lg: 1024px;
         --breakpoint-xl: 1280px;
     }
+    
+    /* ==========================================================================
+       Typography & Body Styles
+       ========================================================================== */
     
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', 'Helvetica Neue', sans-serif;
@@ -119,7 +150,10 @@ pub fn get_default_styles() -> String {
         grid-template-columns: 1fr;
     }
     
-    /* Container with responsive max-width */
+    /* ==========================================================================
+       Layout Components
+       ========================================================================== */
+    
     .container {
         max-width: 1000px;
         margin: 0 auto;
@@ -127,7 +161,10 @@ pub fn get_default_styles() -> String {
         width: 100%;
     }
     
-    /* Header - minimal navigation with grid area */
+    /* ==========================================================================
+       Header & Navigation
+       ========================================================================== */
+    
     header {
         grid-area: header;
         background-color: var(--surface-raised);
@@ -196,14 +233,20 @@ pub fn get_default_styles() -> String {
         display: none;
     }
     
-    /* Main content with grid area */
+    /* ==========================================================================
+       Main Content Area
+       ========================================================================== */
+    
     main {
         grid-area: main;
         padding: var(--space-4) 0;
         min-height: 0; /* Allow grid to control height */
     }
     
-    /* PARA Hero Section with systematic spacing and animations */
+    /* ==========================================================================
+       PARA Hero Section
+       ========================================================================== */
+    
     .para-hero {
         text-align: center;
         margin-bottom: var(--space-6);
@@ -212,7 +255,7 @@ pub fn get_default_styles() -> String {
         overflow: hidden;
     }
     
-    /* Animated background glow effect */
+    /* Animated background glow effect - GPU accelerated */
     .para-hero::before {
         content: '';
         position: absolute;
@@ -229,11 +272,12 @@ pub fn get_default_styles() -> String {
     
     @keyframes gentle-pulse {
         0%, 100% { 
-            transform: translate(-50%, -50%) scale(1);
+            transform: translate(-50%, -50%) scale(1) translateZ(0);
             opacity: 0.3;
+            will-change: transform, opacity;
         }
         50% { 
-            transform: translate(-50%, -50%) scale(1.1);
+            transform: translate(-50%, -50%) scale(1.1) translateZ(0);
             opacity: 0.6;
         }
     }
@@ -291,7 +335,9 @@ pub fn get_default_styles() -> String {
         background-clip: text;
         -webkit-text-fill-color: transparent;
         color: #0EA5E9; /* fallback for unsupported browsers */
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    background-position 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         display: inline-block;
         letter-spacing: -0.02em;
@@ -316,7 +362,7 @@ pub fn get_default_styles() -> String {
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        transform: translateY(-4px) scale(1.08);
+        transform: translateY(-4px) scale(1.08) translateZ(0);
         text-decoration: none;
         filter: drop-shadow(0 8px 16px rgba(14, 165, 233, 0.5));
         animation: gradient-shift 2s ease-in-out infinite, subtle-float 6s ease-in-out infinite;
@@ -336,13 +382,13 @@ pub fn get_default_styles() -> String {
         outline: none;
         box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.4);
         border-radius: 4px;
-        transform: translateY(-2px) scale(1.05);
+        transform: translateY(-2px) scale(1.05) translateZ(0);
         filter: drop-shadow(0 4px 8px rgba(14, 165, 233, 0.4));
     }
     
     /* Active state for better feedback */
     .para-letter:active {
-        transform: translateY(0) scale(1.02);
+        transform: translateY(0) scale(1.02) translateZ(0);
         filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.6));
         transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -404,7 +450,10 @@ pub fn get_default_styles() -> String {
         }
     }
     
-    /* Modern file cards for landing page */
+    /* ==========================================================================
+       File Cards Component
+       ========================================================================== */
+    
     .file-cards {
         display: grid;
         grid-template-columns: 1fr;
@@ -420,7 +469,10 @@ pub fn get_default_styles() -> String {
         border: 1px solid var(--border-primary);
         border-radius: 8px;
         padding: var(--space-3);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
     }
@@ -440,7 +492,7 @@ pub fn get_default_styles() -> String {
     .file-card:hover {
         border-color: var(--border-secondary);
         background-color: var(--surface-overlay);
-        transform: translateY(-2px);
+        transform: translateY(-2px) translateZ(0);
         box-shadow: var(--shadow-md);
     }
     
@@ -449,7 +501,7 @@ pub fn get_default_styles() -> String {
     }
     
     .file-card:active {
-        transform: translateY(-1px);
+        transform: translateY(-1px) translateZ(0);
         transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
@@ -582,7 +634,10 @@ pub fn get_default_styles() -> String {
         font-size: 0.8rem;
     }
     
-    /* Document pages */
+    /* ==========================================================================
+       Document Pages
+       ========================================================================== */
+    
     .document h1 {
         font-size: clamp(1.75rem, 4vw, 2rem);
         margin-bottom: 1rem;
@@ -683,7 +738,10 @@ pub fn get_default_styles() -> String {
         padding: 0;
     }
     
-    /* Category pages - minimal list */
+    /* ==========================================================================
+       Category Pages
+       ========================================================================== */
+    
     .category-index h1 {
         font-size: clamp(1.75rem, 4vw, 2rem);
         margin-bottom: 0.5rem;
@@ -716,7 +774,9 @@ pub fn get_default_styles() -> String {
         border: 1px solid var(--border-primary);
         border-radius: 5px;
         background-color: var(--surface-raised);
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .document-entry:hover {
@@ -752,7 +812,10 @@ pub fn get_default_styles() -> String {
         line-height: 1.5;
     }
     
-    /* Links */
+    /* ==========================================================================
+       Links & Interactive Elements
+       ========================================================================== */
+    
     a {
         color: var(--link-primary);
         text-decoration: none;
@@ -810,7 +873,10 @@ pub fn get_default_styles() -> String {
         color: var(--text-primary);
     }
     
-    /* Footer - minimal with grid area */
+    /* ==========================================================================
+       Footer
+       ========================================================================== */
+    
     footer {
         grid-area: footer;
         background-color: var(--surface-raised);
@@ -821,7 +887,9 @@ pub fn get_default_styles() -> String {
         font-size: 0.85rem;
     }
     
-    /* Responsive Design - Mobile First Approach */
+    /* ==========================================================================
+       Responsive Design - Mobile First Approach
+       ========================================================================== */
     
     /* Small screens (mobile) */
     @media (max-width: 640px) {
@@ -918,7 +986,93 @@ pub fn get_default_styles() -> String {
         }
     }
     
-    /* Search overlay will be created dynamically by JavaScript */
+    /* ==========================================================================
+       Loading States & Performance
+       ========================================================================== */
+    
+    /* Add loading indicator for async operations */
+    .loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.7;
+    }
+    
+    .loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin: -10px 0 0 -10px;
+        border: 2px solid var(--accent-primary);
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spinner 0.8s linear infinite;
+    }
+    
+    @keyframes spinner {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Ensure all transforms use GPU acceleration */
+    .para-letter,
+    .file-card,
+    .document-entry,
+    .search-result {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+    }
+    
+    /* ==========================================================================
+       Accessibility Enhancements
+       ========================================================================== */
+    
+    /* Skip to main content link */
+    .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--accent-primary);
+        color: white;
+        padding: var(--space-1) var(--space-2);
+        text-decoration: none;
+        border-radius: 0 0 4px 0;
+        z-index: 1001;
+    }
+    
+    .skip-link:focus {
+        top: 0;
+    }
+    
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        :root {
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --bg-primary: #000000;
+            --bg-secondary: #1a1a1a;
+            --border-primary: #ffffff;
+        }
+    }
+    
+    /* Print styles */
+    @media print {
+        header, footer, .para-hero, .search-box {
+            display: none;
+        }
+        
+        body {
+            background: white;
+            color: black;
+        }
+        
+        a {
+            color: black;
+            text-decoration: underline;
+        }
+    }
     "#;
 
     // Minify CSS in release mode

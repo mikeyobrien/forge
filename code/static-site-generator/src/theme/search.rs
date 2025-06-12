@@ -5,6 +5,13 @@
 use crate::utils::minify_js;
 
 /// Generates the JavaScript code for client-side search functionality
+/// 
+/// ## Features:
+/// - **Keyboard Shortcuts**: Ctrl+K, /, and Escape for navigation
+/// - **Fuzzy Search**: Searches titles, tags, and content
+/// - **Accessibility**: Full ARIA support and keyboard navigation
+/// - **Performance**: Debounced search with staggered animations
+/// - **Visual Design**: Modern overlay with backdrop blur and smooth transitions
 pub fn generate_search_script() -> String {
     let js = r#"
 // Search functionality for para-ssg
@@ -50,6 +57,9 @@ pub fn generate_search_script() -> String {
         // Create overlay container
         searchOverlay = document.createElement('div');
         searchOverlay.id = 'search-overlay';
+        searchOverlay.setAttribute('role', 'dialog');
+        searchOverlay.setAttribute('aria-modal', 'true');
+        searchOverlay.setAttribute('aria-labelledby', 'search-input');
         searchOverlay.style.cssText = `
             display: none;
             position: fixed;
@@ -92,7 +102,10 @@ pub fn generate_search_script() -> String {
         // Create search input
         searchInput = document.createElement('input');
         searchInput.type = 'text';
+        searchInput.id = 'search-input';
         searchInput.placeholder = 'Search documents... (Press "/" or Ctrl+K)';
+        searchInput.setAttribute('aria-label', 'Search documents');
+        searchInput.setAttribute('aria-describedby', 'search-instructions');
         searchInput.style.cssText = `
             padding: 24px 28px;
             font-size: 18px;
@@ -110,6 +123,9 @@ pub fn generate_search_script() -> String {
         // Create results container
         searchResults = document.createElement('div');
         searchResults.id = 'search-results';
+        searchResults.setAttribute('role', 'listbox');
+        searchResults.setAttribute('aria-label', 'Search results');
+        searchResults.setAttribute('aria-live', 'polite');
         searchResults.style.cssText = `
             padding: 0 12px 12px;
             overflow-y: auto;
@@ -163,8 +179,26 @@ pub fn generate_search_script() -> String {
         `;
         document.head.appendChild(scrollbarStyles);
 
+        // Add search instructions for screen readers
+        const searchInstructions = document.createElement('div');
+        searchInstructions.id = 'search-instructions';
+        searchInstructions.className = 'sr-only';
+        searchInstructions.textContent = 'Type to search. Use arrow keys to navigate results. Press Enter to select.';
+        searchInstructions.style.cssText = `
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
+        `;
+        
         // Assemble components
         searchContainer.appendChild(searchInput);
+        searchContainer.appendChild(searchInstructions);
         searchContainer.appendChild(searchResults);
         searchOverlay.appendChild(searchContainer);
         document.body.appendChild(searchOverlay);
@@ -290,9 +324,12 @@ pub fn generate_search_script() -> String {
 
     function displayResults(results, query) {
         if (results.length === 0) {
-            searchResults.innerHTML = '<p style="color: #a0a0a0;">No results found</p>';
+            searchResults.innerHTML = '<p style="color: #a0a0a0;" role="status">No results found</p>';
+            searchResults.setAttribute('aria-label', 'No search results found');
             return;
         }
+        
+        searchResults.setAttribute('aria-label', `${results.length} search results found`);
 
         const html = results.map((result, index) => {
             const entry = result.entry;
@@ -309,7 +346,7 @@ pub fn generate_search_script() -> String {
             const categoryGradient = categoryColors[entry.category] || categoryColors['resources'];
             
             return `
-                <div class="search-result" data-index="${index}" style="
+                <div class="search-result" data-index="${index}" role="option" aria-selected="false" tabindex="-1" style="
                     position: relative;
                     padding: 20px;
                     margin: 0 16px 16px;
@@ -460,15 +497,19 @@ pub fn generate_search_script() -> String {
         results.forEach((el, index) => {
             if (index === currentFocus) {
                 el.style.background = 'var(--link-color, #007acc)';
-                el.style.transform = 'translateY(-2px)';
+                el.style.transform = 'translateY(-2px) translateZ(0)';
                 el.style.boxShadow = '0 0 0 2px var(--link-color, #007acc)';
                 el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                el.setAttribute('aria-selected', 'true');
+                el.setAttribute('tabindex', '0');
                 const accentBar = el.querySelector('div');
                 if (accentBar) accentBar.style.width = '8px';
             } else {
                 el.style.background = 'var(--surface-1, #1a1a1a)';
-                el.style.transform = 'translateY(0)';
+                el.style.transform = 'translateY(0) translateZ(0)';
                 el.style.boxShadow = 'none';
+                el.setAttribute('aria-selected', 'false');
+                el.setAttribute('tabindex', '-1');
                 const accentBar = el.querySelector('div');
                 if (accentBar) accentBar.style.width = '4px';
             }
