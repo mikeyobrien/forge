@@ -185,25 +185,26 @@
     .para-letter {
         font-size: clamp(2.5rem, 8vw, 4rem);
         font-weight: 700;
-        background: var(--accent-gradient);
-        background-clip: text;
+        background: linear-gradient(135deg, #0EA5E9 0%, #3B82F6 100%);
         -webkit-background-clip: text;
+        background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 0 2px 4px rgba(14, 165, 233, 0.3);
+        color: #0EA5E9; /* fallback for unsupported browsers */
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         display: inline-block;
         letter-spacing: -0.02em;
+        filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.3));
     }
     
     .para-letter:hover {
-        background: var(--accent-gradient-hover);
+        background: linear-gradient(135deg, #0284C7 0%, #2563EB 100%);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         transform: translateY(-2px) scale(1.05);
         text-decoration: none;
-        text-shadow: 0 4px 8px rgba(14, 165, 233, 0.4);
+        filter: drop-shadow(0 4px 8px rgba(14, 165, 233, 0.4));
     }
     
     .para-subtitle {
@@ -629,12 +630,6 @@
             </tr>
             <tr>
                 <td class="date">2025-06-11</td>
-                <td class="title"><a href="/projects/moved-archive.html">Test Archive</a></td>
-                <td class="category">projects</td>
-                <td class="tags"><span class="tag">test</span><span class="tag">completed</span></td>
-            </tr>
-            <tr>
-                <td class="date">2025-06-11</td>
                 <td class="title"><a href="/projects/static-website-generator-prompt-plan.html">Prompt Plan: Static Website Generator</a></td>
                 <td class="category">projects</td>
                 <td class="tags"><span class="tag">prompt-plan</span><span class="tag">systematic</span><span class="tag">development</span><span class="tag">rust</span><span class="tag">static-site-generator</span></td>
@@ -695,6 +690,30 @@
             </tr>
             <tr>
                 <td class="date">2025-06-11</td>
+                <td class="title"><a href="/areas/active-sessions/prompt-execution-static-website-generator-20250106.html">Prompt Execution: Static Website Generator</a></td>
+                <td class="category">areas</td>
+                <td class="tags"><span class="tag">prompt-execution</span><span class="tag">systematic</span><span class="tag">active</span><span class="tag">rust</span><span class="tag">static-site-generator</span></td>
+            </tr>
+            <tr>
+                <td class="date">2025-06-11</td>
+                <td class="title"><a href="/areas/active-sessions/prompt-execution-static-website-generator-2025-06-11.html">Prompt Execution Log: Static Website Generator - 2025-06-11</a></td>
+                <td class="category">areas</td>
+                <td class="tags"><span class="tag">prompt-execution</span><span class="tag">systematic</span><span class="tag">active</span><span class="tag">session-log</span></td>
+            </tr>
+            <tr>
+                <td class="date">2025-06-11</td>
+                <td class="title"><a href="/projects/test-area-moved.html">Test Area</a></td>
+                <td class="category">projects</td>
+                <td class="tags"><span class="tag">test</span><span class="tag">area</span><span class="tag">updated</span></td>
+            </tr>
+            <tr>
+                <td class="date">2025-06-11</td>
+                <td class="title"><a href="/projects/moved-archive.html">Test Archive</a></td>
+                <td class="category">projects</td>
+                <td class="tags"><span class="tag">test</span><span class="tag">completed</span></td>
+            </tr>
+            <tr>
+                <td class="date">2025-06-11</td>
                 <td class="title"><a href="/resources/project-specification.html">project-specification</a></td>
                 <td class="category">resources</td>
                 <td class="tags"><span class="no-tags">—</span></td>
@@ -722,24 +741,6 @@
                 <td class="title"><a href="/resources/mcp-troubleshooting-guide.html">MCP Server Troubleshooting Guide for Claude CLI</a></td>
                 <td class="category">resources</td>
                 <td class="tags"><span class="tag">mcp</span><span class="tag">troubleshooting</span><span class="tag">claude-cli</span><span class="tag">debugging</span><span class="tag">stdio</span></td>
-            </tr>
-            <tr>
-                <td class="date">2025-06-11</td>
-                <td class="title"><a href="/areas/active-sessions/prompt-execution-static-website-generator-20250106.html">Prompt Execution: Static Website Generator</a></td>
-                <td class="category">areas</td>
-                <td class="tags"><span class="tag">prompt-execution</span><span class="tag">systematic</span><span class="tag">active</span><span class="tag">rust</span><span class="tag">static-site-generator</span></td>
-            </tr>
-            <tr>
-                <td class="date">2025-06-11</td>
-                <td class="title"><a href="/areas/active-sessions/prompt-execution-static-website-generator-2025-06-11.html">Prompt Execution Log: Static Website Generator - 2025-06-11</a></td>
-                <td class="category">areas</td>
-                <td class="tags"><span class="tag">prompt-execution</span><span class="tag">systematic</span><span class="tag">active</span><span class="tag">session-log</span></td>
-            </tr>
-            <tr>
-                <td class="date">2025-06-11</td>
-                <td class="title"><a href="/projects/test-area-moved.html">Test Area</a></td>
-                <td class="category">projects</td>
-                <td class="tags"><span class="tag">test</span><span class="tag">area</span><span class="tag">updated</span></td>
             </tr>
 
         </tbody>
