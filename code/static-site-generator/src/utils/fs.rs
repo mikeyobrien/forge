@@ -114,18 +114,57 @@ fn traverse_recursive(
 ///
 /// # Errors
 ///
-/// Returns error if directory cannot be created
+/// Returns error if directory cannot be created or lacks write permissions
 pub fn create_output_directory(path: &Path) -> Result<()> {
+    // Check if path exists and is a file
+    if path.exists() && path.is_file() {
+        return Err(ParaSsgError::InvalidPath(format!(
+            "Output path '{}' exists and is a file, not a directory",
+            path.display()
+        )));
+    }
+
+    // Create directory
     fs::create_dir_all(path).map_err(|e| {
-        ParaSsgError::Io(std::io::Error::new(
-            e.kind(),
-            format!(
+        let error_msg = match e.kind() {
+            std::io::ErrorKind::PermissionDenied => {
+                format!(
+                    "Permission denied: Cannot create output directory '{}'. Check your permissions.",
+                    path.display()
+                )
+            }
+            std::io::ErrorKind::Other => {
+                format!(
+                    "Failed to create output directory '{}': {}. The path may be invalid or the parent directory may not exist.",
+                    path.display(),
+                    e
+                )
+            }
+            _ => format!(
                 "Failed to create output directory '{}': {}",
                 path.display(),
                 e
             ),
-        ))
+        };
+        ParaSsgError::Io(std::io::Error::new(e.kind(), error_msg))
     })?;
+
+    // Test write permissions by creating and removing a test file
+    let test_file = path.join(".para-ssg-test");
+    if let Err(e) = fs::write(&test_file, "") {
+        return Err(ParaSsgError::Io(std::io::Error::new(
+            e.kind(),
+            format!(
+                "Output directory '{}' exists but is not writable: {}",
+                path.display(),
+                e
+            ),
+        )));
+    }
+
+    // Clean up test file
+    let _ = fs::remove_file(test_file);
+
     Ok(())
 }
 

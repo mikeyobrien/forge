@@ -6,8 +6,7 @@ use crate::utils::minify_js;
 
 /// Generates the JavaScript code for client-side search functionality
 pub fn generate_search_script() -> String {
-    let js =
-    r#"
+    let js = r#"
 // Search functionality for para-ssg
 (function() {
     let searchIndex = null;
@@ -338,7 +337,7 @@ pub fn generate_search_script() -> String {
     });
 })();
 "#;
-    
+
     // Minify JavaScript in release mode
     #[cfg(debug_assertions)]
     {

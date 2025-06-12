@@ -6,8 +6,11 @@ pub mod parser;
 pub mod theme;
 pub mod utils;
 
-use std::path::{Path, PathBuf};
+#[cfg(test)]
+mod error_handling_tests;
+
 use rayon::prelude::*;
+use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 
@@ -93,6 +96,15 @@ pub fn generate_site(config: &Config) -> Result<()> {
     let document_infos = utils::traverse_directory(input_path)?;
     let stats = utils::ParaStatistics::from_documents(&document_infos);
 
+    if stats.total_count == 0 {
+        eprintln!(
+            "⚠️  Warning: No markdown documents found in '{}'",
+            config.input_dir
+        );
+        eprintln!("   Ensure your input directory contains .md files");
+        return Ok(());
+    }
+
     println!("📊 Found {} documents:", stats.total_count);
     if stats.projects_count > 0 {
         println!("   - Projects: {}", stats.projects_count);
@@ -113,6 +125,7 @@ pub fn generate_site(config: &Config) -> Result<()> {
     // Check for PARA structure
     if !utils::has_para_structure(input_path) {
         println!("⚠️  Warning: No PARA structure detected in input directory");
+        println!("   Consider organizing your content into projects/, areas/, resources/, and archives/ folders");
     }
 
     // Create output directory
@@ -125,7 +138,7 @@ pub fn generate_site(config: &Config) -> Result<()> {
     let total_docs = document_infos.len();
     let processed = Arc::new(AtomicUsize::new(0));
     let processed_clone = processed.clone();
-    
+
     let parse_results: Vec<_> = document_infos
         .par_iter()
         .map(|doc_info| {
@@ -134,28 +147,63 @@ pub fn generate_site(config: &Config) -> Result<()> {
                 &doc_info.relative_path,
                 doc_info.category.clone(),
             );
-            
+
+            if config.verbose {
+                match &result {
+                    Ok(doc) => println!(
+                        "   ✓ Parsed: {} ({})",
+                        doc.title(),
+                        doc_info.relative_path.display()
+                    ),
+                    Err(e) => {
+                        eprintln!("   ✗ Failed: {} - {}", doc_info.relative_path.display(), e)
+                    }
+                }
+            }
+
             let count = processed_clone.fetch_add(1, Ordering::SeqCst) + 1;
-            if count % 10 == 0 || count == total_docs {
+            if !config.verbose && (count % 10 == 0 || count == total_docs) {
                 print!("\r   Progress: {}/{} documents", count, total_docs);
                 use std::io::Write;
                 std::io::stdout().flush().ok();
             }
-            
+
             result
         })
         .collect();
-    
-    println!(); // New line after progress
-    
+
+    if !config.verbose {
+        println!(); // New line after progress
+    }
+
     let mut documents = Vec::new();
     let mut parse_errors = 0;
-    
+    let mut parse_warnings = Vec::new();
+
     for (i, result) in parse_results.into_iter().enumerate() {
         match result {
-            Ok(doc) => documents.push(doc),
+            Ok(doc) => {
+                // Check for potential issues
+                if doc.metadata.title.is_none() && config.verbose {
+                    parse_warnings.push(format!(
+                        "'{}' has no title in frontmatter",
+                        document_infos[i].relative_path.display()
+                    ));
+                }
+                if doc.metadata.tags.is_empty() && config.verbose {
+                    parse_warnings.push(format!(
+                        "'{}' has no tags",
+                        document_infos[i].relative_path.display()
+                    ));
+                }
+                documents.push(doc);
+            }
             Err(e) => {
-                eprintln!("⚠️  Failed to parse '{}': {}", document_infos[i].path.display(), e);
+                eprintln!(
+                    "⚠️  Failed to parse '{}': {}",
+                    document_infos[i].path.display(),
+                    e
+                );
                 parse_errors += 1;
             }
         }
@@ -164,6 +212,14 @@ pub fn generate_site(config: &Config) -> Result<()> {
     if parse_errors > 0 {
         println!("⚠️  {} document(s) failed to parse", parse_errors);
     }
+
+    if config.verbose && !parse_warnings.is_empty() {
+        println!("\n📋 Parse warnings:");
+        for warning in parse_warnings {
+            println!("   - {}", warning);
+        }
+    }
+
     println!("✅ Successfully parsed {} documents", documents.len());
 
     // Build document lookup for wiki link resolution
@@ -175,14 +231,16 @@ pub fn generate_site(config: &Config) -> Result<()> {
     let lookup_map = parser::build_document_lookup(&document_lookup);
 
     // Process wiki links in parallel (second pass)
-    println!("🔗 Processing wiki links...");
+    if config.verbose {
+        println!("🔗 Processing wiki links in detail...");
+    }
     let processed = Arc::new(AtomicUsize::new(0));
     let processed_clone = processed.clone();
     let total_docs = documents.len();
-    
+
     let broken_links_total = Arc::new(AtomicUsize::new(0));
     let broken_links_clone = broken_links_total.clone();
-    
+
     documents = documents
         .into_par_iter()
         .map(|mut doc| {
@@ -190,34 +248,49 @@ pub fn generate_site(config: &Config) -> Result<()> {
                 &doc.raw_content,
                 &doc.output_path,
                 &lookup_map,
-            ).expect("Wiki link processing failed");
+            )
+            .expect("Wiki link processing failed");
 
             doc.html_content = html_with_links;
-            doc.wiki_links = resolved_links;
+            doc.wiki_links = resolved_links.clone();
 
-            // Count broken links
-            let broken_count = parser::get_broken_links(&doc.wiki_links).len();
-            if broken_count > 0 {
-                broken_links_clone.fetch_add(broken_count, Ordering::SeqCst);
+            // Count and collect broken links
+            let broken_links = parser::get_broken_links(&doc.wiki_links);
+            if !broken_links.is_empty() {
+                broken_links_clone.fetch_add(broken_links.len(), Ordering::SeqCst);
+                if config.verbose {
+                    for link in &broken_links {
+                        println!(
+                            "   ⚠️  Broken link in '{}': [[{}]]",
+                            doc.relative_path.display(),
+                            link.target
+                        );
+                    }
+                }
             }
-            
+
             let count = processed_clone.fetch_add(1, Ordering::SeqCst) + 1;
-            if count % 10 == 0 || count == total_docs {
+            if !config.verbose && (count % 10 == 0 || count == total_docs) {
                 print!("\r   Progress: {}/{} documents", count, total_docs);
                 use std::io::Write;
                 std::io::stdout().flush().ok();
             }
-            
+
             doc
         })
         .collect();
-    
-    println!(); // New line after progress
-    
+
+    if !config.verbose {
+        println!(); // New line after progress
+    }
+
     let broken_links_total = broken_links_total.load(Ordering::SeqCst);
 
     if broken_links_total > 0 {
         println!("⚠️  Total broken wiki links: {}", broken_links_total);
+        if !config.verbose {
+            println!("   Run with --verbose to see details");
+        }
     } else {
         println!("✅ All wiki links resolved successfully");
     }
@@ -248,9 +321,47 @@ pub fn generate_site(config: &Config) -> Result<()> {
     println!("🔍 Generating search index...");
     generator::generate_search_index(&documents, output_path)?;
 
+    // Additional validation warnings
+    if config.verbose {
+        let mut validation_warnings = Vec::new();
+
+        // Check for documents with very long titles
+        for doc in &documents {
+            if doc.title().len() > 100 {
+                validation_warnings.push(format!(
+                    "Document '{}' has a very long title ({} chars)",
+                    doc.relative_path.display(),
+                    doc.title().len()
+                ));
+            }
+        }
+
+        // Check for deeply nested documents
+        for doc in &documents {
+            let depth = doc.relative_path.components().count();
+            if depth > 5 {
+                validation_warnings.push(format!(
+                    "Document '{}' is deeply nested ({} levels)",
+                    doc.relative_path.display(),
+                    depth
+                ));
+            }
+        }
+
+        if !validation_warnings.is_empty() {
+            println!("\n📋 Validation warnings:");
+            for warning in validation_warnings {
+                println!("   - {}", warning);
+            }
+        }
+    }
+
     // Generate HTML pages
     println!("🔨 Generating HTML pages...");
     let generator = Arc::new(generator::HtmlGenerator::new(output_path.to_path_buf()));
+
+    // Save document count before moving documents
+    let total_document_count = documents.len();
 
     // Group documents by category
     let mut categories: std::collections::HashMap<String, Vec<parser::Document>> =
@@ -267,23 +378,21 @@ pub fn generate_site(config: &Config) -> Result<()> {
     let processed_clone = processed.clone();
     let all_docs: Vec<_> = categories.values().flatten().collect();
     let total_pages = all_docs.len();
-    
-    all_docs
-        .par_iter()
-        .try_for_each(|doc| -> Result<()> {
-            let html = generator.generate_document_page(doc)?;
-            generator.write_page(&doc.output_path, &html)?;
-            
-            let count = processed_clone.fetch_add(1, Ordering::SeqCst) + 1;
-            if count % 10 == 0 || count == total_pages {
-                print!("\r   Progress: {}/{} pages", count, total_pages);
-                use std::io::Write;
-                std::io::stdout().flush().ok();
-            }
-            
-            Ok(())
-        })?;
-    
+
+    all_docs.par_iter().try_for_each(|doc| -> Result<()> {
+        let html = generator.generate_document_page(doc)?;
+        generator.write_page(&doc.output_path, &html)?;
+
+        let count = processed_clone.fetch_add(1, Ordering::SeqCst) + 1;
+        if count % 10 == 0 || count == total_pages {
+            print!("\r   Progress: {}/{} pages", count, total_pages);
+            use std::io::Write;
+            std::io::stdout().flush().ok();
+        }
+
+        Ok(())
+    })?;
+
     println!(); // New line after progress
     let generated_count = total_pages;
 
@@ -307,13 +416,40 @@ pub fn generate_site(config: &Config) -> Result<()> {
     generator.write_page(Path::new("index.html"), &home_html)?;
 
     println!("✅ Generated {} HTML pages", generated_count);
-    
+
     let elapsed = start_time.elapsed();
-    println!(
-        "🎉 Site generation complete in {:.2}s! Output: {}",
-        elapsed.as_secs_f32(),
-        config.output_dir
-    );
+
+    // Build summary
+    println!("\n📊 Build Summary:");
+    println!("   - Documents parsed: {}", total_document_count);
+    println!("   - HTML pages generated: {}", generated_count + 5); // +5 for category pages and home
+    println!("   - Wiki links processed: {}", link_stats.total_links);
+    if link_stats.broken_links > 0 {
+        println!("   - ⚠️  Broken links: {}", link_stats.broken_links);
+    }
+    if link_stats.orphaned_documents.len() > 0 {
+        println!(
+            "   - ⚠️  Orphaned documents: {}",
+            link_stats.orphaned_documents.len()
+        );
+        if config.verbose {
+            for orphan in &link_stats.orphaned_documents {
+                println!("      - {}", orphan.display());
+            }
+        }
+    }
+    if parse_errors > 0 {
+        println!("   - ⚠️  Parse errors: {}", parse_errors);
+    }
+    println!("   - Build time: {:.2}s", elapsed.as_secs_f32());
+    println!("   - Output directory: {}", config.output_dir);
+
+    if config.verbose {
+        let avg_time_per_doc = elapsed.as_millis() as f32 / total_document_count as f32;
+        println!("   - Average time per document: {:.2}ms", avg_time_per_doc);
+    }
+
+    println!("\n🎉 Site generation complete!");
 
     Ok(())
 }

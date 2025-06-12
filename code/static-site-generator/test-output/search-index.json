@@ -157,9 +157,9 @@
   "stats": {
     "total_documents": 19,
     "documents_by_category": {
+      "areas": 3,
       "projects": 10,
       "archives": 1,
-      "areas": 3,
       "resources": 5
     },
     "total_content_size": 52682,

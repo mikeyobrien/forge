@@ -2,9 +2,9 @@
 //! ABOUTME: Provides common functionality used across the application
 
 pub mod fs;
-pub mod para;
 pub mod minify;
+pub mod para;
 
 pub use fs::*;
-pub use para::*;
 pub use minify::*;
+pub use para::*;

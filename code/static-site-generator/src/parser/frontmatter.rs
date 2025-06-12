@@ -56,7 +56,27 @@ pub fn parse_frontmatter(content: &str) -> Result<(DocumentMetadata, String)> {
 
     // Parse YAML content
     let metadata: DocumentMetadata = serde_yaml::from_str(yaml_content).map_err(|e| {
-        ParaSsgError::ParseError(format!("Failed to parse YAML frontmatter: {}", e))
+        // Provide more helpful error messages for common YAML issues
+        let error_line = e.location().map(|loc| loc.line()).unwrap_or(0);
+        let error_msg = if yaml_content.contains(":\t") || yaml_content.contains("\t") {
+            format!(
+                "YAML parsing failed at line {}: Tab characters are not allowed in YAML. Use spaces for indentation. Error: {}",
+                error_line, e
+            )
+        } else if e.to_string().contains("duplicate key") {
+            format!(
+                "YAML parsing failed: Duplicate keys found in frontmatter. Each key should appear only once. Error: {}",
+                e
+            )
+        } else if e.to_string().contains("did not find expected") {
+            format!(
+                "YAML parsing failed at line {}: Invalid YAML syntax. Check for missing colons, quotes, or incorrect indentation. Error: {}",
+                error_line, e
+            )
+        } else {
+            format!("Failed to parse YAML frontmatter at line {}: {}", error_line, e)
+        };
+        ParaSsgError::ParseError(error_msg)
     })?;
 
     Ok((metadata, remaining_content.to_string()))

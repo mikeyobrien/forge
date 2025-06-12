@@ -7,7 +7,7 @@ pub fn minify_css(css: &str) -> String {
     let mut in_comment = false;
     let mut chars = css.chars().peekable();
     let mut last_char = ' ';
-    
+
     while let Some(ch) = chars.next() {
         if in_comment {
             if ch == '*' && chars.peek() == Some(&'/') {
@@ -16,7 +16,7 @@ pub fn minify_css(css: &str) -> String {
             }
             continue;
         }
-        
+
         match ch {
             '/' if chars.peek() == Some(&'*') => {
                 chars.next(); // consume '*'
@@ -24,10 +24,17 @@ pub fn minify_css(css: &str) -> String {
             }
             ' ' | '\t' | '\n' | '\r' => {
                 // Only add space if it's necessary (between words/values)
-                if !last_char.is_whitespace() 
-                    && !matches!(last_char, '{' | '}' | ';' | ':' | ',' | '>' | '+' | '~' | '(' | ')')
-                    && chars.peek().map_or(false, |&next| 
-                        !matches!(next, '{' | '}' | ';' | ':' | ',' | '>' | '+' | '~' | '(' | ')'))
+                if !last_char.is_whitespace()
+                    && !matches!(
+                        last_char,
+                        '{' | '}' | ';' | ':' | ',' | '>' | '+' | '~' | '(' | ')'
+                    )
+                    && chars.peek().map_or(false, |&next| {
+                        !matches!(
+                            next,
+                            '{' | '}' | ';' | ':' | ',' | '>' | '+' | '~' | '(' | ')'
+                        )
+                    })
                 {
                     result.push(' ');
                     last_char = ' ';
@@ -39,7 +46,7 @@ pub fn minify_css(css: &str) -> String {
             }
         }
     }
-    
+
     result
 }
 
@@ -53,7 +60,7 @@ pub fn minify_js(js: &str) -> String {
     let mut chars = js.chars().peekable();
     let mut last_char = ' ';
     let mut escape_next = false;
-    
+
     while let Some(ch) = chars.next() {
         if escape_next {
             result.push(ch);
@@ -61,7 +68,7 @@ pub fn minify_js(js: &str) -> String {
             last_char = ch;
             continue;
         }
-        
+
         if in_string {
             result.push(ch);
             if ch == '\\' {
@@ -72,7 +79,7 @@ pub fn minify_js(js: &str) -> String {
             last_char = ch;
             continue;
         }
-        
+
         if in_single_comment {
             if ch == '\n' {
                 in_single_comment = false;
@@ -82,7 +89,7 @@ pub fn minify_js(js: &str) -> String {
             }
             continue;
         }
-        
+
         if in_multi_comment {
             if ch == '*' && chars.peek() == Some(&'/') {
                 chars.next(); // consume '/'
@@ -90,7 +97,7 @@ pub fn minify_js(js: &str) -> String {
             }
             continue;
         }
-        
+
         match ch {
             '"' | '\'' => {
                 in_string = true;
@@ -108,7 +115,7 @@ pub fn minify_js(js: &str) -> String {
             }
             ' ' | '\t' | '\n' | '\r' => {
                 // Only add space if necessary between identifiers/keywords
-                if !last_char.is_whitespace() 
+                if !last_char.is_whitespace()
                     && is_identifier_char(last_char)
                     && chars.peek().map_or(false, |&next| is_identifier_char(next))
                 {
@@ -122,7 +129,7 @@ pub fn minify_js(js: &str) -> String {
             }
         }
     }
-    
+
     result
 }
 

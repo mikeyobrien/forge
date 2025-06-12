@@ -22,11 +22,18 @@ fn run() -> Result<(), ParaSsgError> {
     }
 
     // Parse verbose flag
-    let (verbose, remaining_args) = if args.contains(&"--verbose".to_string()) || args.contains(&"-v".to_string()) {
-        (true, args.iter().filter(|a| *a != "--verbose" && *a != "-v").cloned().collect::<Vec<_>>())
-    } else {
-        (false, args)
-    };
+    let (verbose, remaining_args) =
+        if args.contains(&"--verbose".to_string()) || args.contains(&"-v".to_string()) {
+            (
+                true,
+                args.iter()
+                    .filter(|a| *a != "--verbose" && *a != "-v")
+                    .cloned()
+                    .collect::<Vec<_>>(),
+            )
+        } else {
+            (false, args)
+        };
 
     if remaining_args.len() != 3 {
         print_usage(&remaining_args[0]);
@@ -76,5 +83,8 @@ fn print_usage(program_name: &str) {
     eprintln!();
     eprintln!("EXAMPLES:");
     eprintln!("    {} ../context ./dist", program_name);
-    eprintln!("    {} --verbose /path/to/notes /var/www/html", program_name);
+    eprintln!(
+        "    {} --verbose /path/to/notes /var/www/html",
+        program_name
+    );
 }

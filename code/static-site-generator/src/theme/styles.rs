@@ -6,8 +6,7 @@ use crate::utils::minify_css;
 
 /// Get default CSS styles with complete 70s earthy theme
 pub fn get_default_styles() -> String {
-    let css =
-    r#"
+    let css = r#"
     /* Reset and base styles */
     * {
         margin: 0;
@@ -1079,7 +1078,7 @@ pub fn get_default_styles() -> String {
         }
     }
     "#;
-    
+
     // Minify CSS in release mode
     #[cfg(debug_assertions)]
     {
