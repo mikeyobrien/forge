@@ -54,22 +54,28 @@ describe('GraphAnalyzer', () => {
     // Create edges to form interesting structure
     const edges = [
       // Hub connects to many nodes
-      ['hub', 'A'], ['hub', 'B'], ['hub', 'C'], ['hub', 'D'],
+      ['hub', 'A'],
+      ['hub', 'B'],
+      ['hub', 'C'],
+      ['hub', 'D'],
       // A and B form a small cluster
-      ['A', 'B'], ['B', 'A'],
+      ['A', 'B'],
+      ['B', 'A'],
       // C and D are connected through bridge
-      ['C', 'bridge'], ['bridge', 'D'],
+      ['C', 'bridge'],
+      ['bridge', 'D'],
       // E is weakly connected
       ['E', 'hub'],
       // Cluster nodes
-      ['cluster1', 'cluster2'], ['cluster2', 'cluster1'],
+      ['cluster1', 'cluster2'],
+      ['cluster2', 'cluster1'],
     ];
 
     for (const [source, target] of edges) {
       if (typeof source === 'string' && typeof target === 'string') {
         const sourceAdjacency = graph.adjacencyList.get(source);
         const targetReverse = graph.reverseAdjacencyList.get(target);
-        
+
         if (sourceAdjacency && targetReverse) {
           sourceAdjacency.add(target);
           targetReverse.add(source);
@@ -116,7 +122,7 @@ describe('GraphAnalyzer', () => {
       const analysis = analyzer.analyzeGraph(graph);
 
       expect(analysis.hubNodes.length).toBeGreaterThan(0);
-      const hubIds = analysis.hubNodes.map(n => n.id);
+      const hubIds = analysis.hubNodes.map((n) => n.id);
       expect(hubIds).toContain('hub'); // Central hub should be identified
     });
 
@@ -125,7 +131,7 @@ describe('GraphAnalyzer', () => {
       const analysis = analyzer.analyzeGraph(graph);
 
       // Hub should be central by degree
-      const degreeIds = analysis.centralNodes.byDegree.map(n => n.id);
+      const degreeIds = analysis.centralNodes.byDegree.map((n) => n.id);
       expect(degreeIds[0]).toBe('hub');
 
       // All centrality lists should be populated
@@ -138,7 +144,7 @@ describe('GraphAnalyzer', () => {
       const analysis = analyzer.analyzeGraph(graph);
 
       expect(analysis.clusters.size).toBeGreaterThan(0);
-      
+
       // Cluster1 and cluster2 should be in the same cluster
       const cluster1Label = analysis.clusters.get('cluster1');
       const cluster2Label = analysis.clusters.get('cluster2');
@@ -162,11 +168,11 @@ describe('GraphAnalyzer', () => {
       const related = analyzer.findRelatedDocuments(graph, 'A', 5);
 
       expect(related.length).toBeGreaterThan(0);
-      
+
       // B should be highly related to A (bidirectional link)
-      const relatedIds = related.map(n => n.id);
+      const relatedIds = related.map((n) => n.id);
       expect(relatedIds[0]).toBe('B');
-      
+
       // Hub should also be related (direct link)
       expect(relatedIds).toContain('hub');
     });
@@ -182,12 +188,12 @@ describe('GraphAnalyzer', () => {
       const graph = createRichTestGraph();
       const related = analyzer.findRelatedDocuments(graph, 'C', 10);
 
-      const relatedIds = related.map(n => n.id);
+      const relatedIds = related.map((n) => n.id);
       // Bridge is directly connected
       expect(relatedIds).toContain('bridge');
       // D is two hops away (through bridge)
       expect(relatedIds).toContain('D');
-      
+
       // Bridge should come before D in the results
       const bridgeIndex = relatedIds.indexOf('bridge');
       const dIndex = relatedIds.indexOf('D');
@@ -201,13 +207,12 @@ describe('GraphAnalyzer', () => {
       const suggestions = analyzer.suggestConnections(graph, 10);
 
       expect(suggestions.length).toBeGreaterThan(0);
-      
+
       // A and C both connect to hub, so they might be suggested
-      const acSuggestion = suggestions.find(s =>
-        (s.from === 'A' && s.to === 'C') ||
-        (s.from === 'C' && s.to === 'A')
+      const acSuggestion = suggestions.find(
+        (s) => (s.from === 'A' && s.to === 'C') || (s.from === 'C' && s.to === 'A'),
       );
-      
+
       if (acSuggestion) {
         expect(acSuggestion.reason).toContain('common connections');
         expect(acSuggestion.confidence).toBeGreaterThan(0);
@@ -219,9 +224,8 @@ describe('GraphAnalyzer', () => {
       const suggestions = analyzer.suggestConnections(graph, 20);
 
       // A and B both have 'web' tag
-      const tagSuggestion = suggestions.find(s =>
-        s.reason.includes('Similar tags') &&
-        s.reason.includes('web')
+      const tagSuggestion = suggestions.find(
+        (s) => s.reason.includes('Similar tags') && s.reason.includes('web'),
       );
 
       expect(tagSuggestion).toBeDefined();
@@ -232,9 +236,7 @@ describe('GraphAnalyzer', () => {
       const suggestions = analyzer.suggestConnections(graph, 50);
 
       // Should not suggest A->B since it already exists
-      const existingConnection = suggestions.find(s =>
-        s.from === 'A' && s.to === 'B'
-      );
+      const existingConnection = suggestions.find((s) => s.from === 'A' && s.to === 'B');
 
       expect(existingConnection).toBeUndefined();
     });
@@ -246,7 +248,7 @@ describe('GraphAnalyzer', () => {
       if (suggestions.length > 1) {
         for (let i = 1; i < suggestions.length; i++) {
           expect(suggestions[i - 1]?.confidence).toBeGreaterThanOrEqual(
-            suggestions[i]?.confidence || 0
+            suggestions[i]?.confidence || 0,
           );
         }
       }
@@ -271,15 +273,20 @@ describe('GraphAnalyzer', () => {
 
     it('should handle single node graph', () => {
       const singleNodeGraph: Graph = {
-        nodes: new Map([['A', {
-          id: 'A',
-          title: 'Single Node',
-          category: PARACategory.Resources,
-          metadata: { title: 'Single Node' },
-          tags: [],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        }]]),
+        nodes: new Map([
+          [
+            'A',
+            {
+              id: 'A',
+              title: 'Single Node',
+              category: PARACategory.Resources,
+              metadata: { title: 'Single Node' },
+              tags: [],
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ],
+        ]),
         edges: new Map(),
         adjacencyList: new Map([['A', new Set()]]),
         reverseAdjacencyList: new Map([['A', new Set()]]),

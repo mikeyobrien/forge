@@ -24,7 +24,7 @@ describe('Document Lifecycle Integration', () => {
   it('should handle complete document workflow with link preservation', async () => {
     const result = await harness.executeScenario({
       name: 'Complete Document Workflow',
-      
+
       setup: async () => {
         // Create initial documents with links
         return [
@@ -38,8 +38,8 @@ describe('Document Lifecycle Integration', () => {
               created: new Date(),
               modified: new Date(),
               category: 'projects' as const,
-              status: 'active'
-            }
+              status: 'active',
+            },
           },
           {
             path: 'resources/api-guide.md',
@@ -50,8 +50,8 @@ describe('Document Lifecycle Integration', () => {
               tags: ['api', 'documentation'],
               created: new Date(),
               modified: new Date(),
-              category: 'resources' as const
-            }
+              category: 'resources' as const,
+            },
           },
           {
             path: 'areas/development.md',
@@ -62,9 +62,9 @@ describe('Document Lifecycle Integration', () => {
               tags: ['development', 'standards'],
               created: new Date(),
               modified: new Date(),
-              category: 'areas' as const
-            }
-          }
+              category: 'areas' as const,
+            },
+          },
         ];
       },
 
@@ -76,14 +76,15 @@ describe('Document Lifecycle Integration', () => {
           'resources/api-guide.md',
           apiBacklinks,
           ['projects/main-project.md'],
-          { exactMatch: true }
+          { exactMatch: true },
         );
 
         // 2. Update document with new links while preserving old ones
-        const updatedContent = 'This project depends on [[resources/api-guide]], [[areas/development]], and [[resources/new-resource]].';
+        const updatedContent =
+          'This project depends on [[resources/api-guide]], [[areas/development]], and [[resources/new-resource]].';
         await context.documentUpdater.updateDocument('projects/main-project.md', {
           content: updatedContent,
-          preserveLinks: true
+          preserveLinks: true,
         });
 
         // 3. Create the new linked document
@@ -95,38 +96,41 @@ describe('Document Lifecycle Integration', () => {
             tags: ['resource', 'new'],
             created: new Date(),
             modified: new Date(),
-            category: 'resources' as const
-          }
+            category: 'resources' as const,
+          },
         };
-        await context.fs.writeFile(newDoc.path, `---
+        await context.fs.writeFile(
+          newDoc.path,
+          `---
 title: ${newDoc.metadata.title}
 tags: ${newDoc.metadata.tags}
 category: ${newDoc.metadata.category}
 ---
 
-${newDoc.content}`);
-        
+${newDoc.content}`,
+        );
+
         // Rebuild index to include new document
         await context.backlinkManager.rebuildIndex();
 
         // 4. Search for documents
         const searchResults = await context.searchEngine.search({
-          tags: ['project']
+          tags: ['project'],
         });
-        
-        IntegrationAssertions.assertSearchResults(
-          searchResults,
-          ['projects/main-project.md'],
-          { exactMatch: false }
-        );
+
+        IntegrationAssertions.assertSearchResults(searchResults, ['projects/main-project.md'], {
+          exactMatch: false,
+        });
 
         // 5. Query link relationships
-        const forwardLinks = await context.backlinkManager.getForwardLinks('projects/main-project.md');
+        const forwardLinks = await context.backlinkManager.getForwardLinks(
+          'projects/main-project.md',
+        );
         IntegrationAssertions.assertForwardLinks(
           'projects/main-project.md',
           forwardLinks,
           ['resources/api-guide.md', 'areas/development.md', 'resources/new-resource.md'],
-          { exactMatch: true }
+          { exactMatch: true },
         );
       },
 
@@ -134,33 +138,30 @@ ${newDoc.content}`);
         // Verify all relationships remain intact
         const mainDoc = await context.fs.readFile('projects/main-project.md');
         const parsed = parseDocument(mainDoc);
-        
+
         // Check content was updated
-        IntegrationAssertions.assertContentContains(
-          parsed,
-          '[[resources/new-resource]]'
-        );
+        IntegrationAssertions.assertContentContains(parsed, '[[resources/new-resource]]');
 
         // Verify backlinks for all documents
-        const newResourceBacklinksResult = context.backlinkManager.getBacklinks('resources/new-resource.md');
+        const newResourceBacklinksResult = context.backlinkManager.getBacklinks(
+          'resources/new-resource.md',
+        );
         const newResourceBacklinks = newResourceBacklinksResult.backlinks;
         IntegrationAssertions.assertBacklinks(
           'resources/new-resource.md',
           newResourceBacklinks,
           ['projects/main-project.md'],
-          { exactMatch: true }
+          { exactMatch: true },
         );
 
         // Verify search index was updated
         const updatedSearch = await context.searchEngine.search({
-          content: 'new-resource'
+          content: 'new-resource',
         });
-        IntegrationAssertions.assertSearchResults(
-          updatedSearch,
-          ['projects/main-project.md'],
-          { exactMatch: false }
-        );
-      }
+        IntegrationAssertions.assertSearchResults(updatedSearch, ['projects/main-project.md'], {
+          exactMatch: false,
+        });
+      },
     });
 
     expect(result.success).toBe(true);
@@ -171,7 +172,7 @@ ${newDoc.content}`);
   it('should handle document deletion and broken links', async () => {
     const result = await harness.executeScenario({
       name: 'Document Deletion and Broken Links',
-      
+
       setup: async () => {
         return generator.generateDocumentNetwork(5, 0.5);
       },
@@ -180,7 +181,7 @@ ${newDoc.content}`);
         // Get a document that has backlinks
         let targetDoc = '';
         let maxBacklinks = 0;
-        
+
         // Find document with most backlinks
         for (const [doc] of context.documents) {
           const result = context.backlinkManager.getBacklinks(doc);
@@ -192,7 +193,7 @@ ${newDoc.content}`);
 
         // Delete the document
         await context.fs.deleteFile(targetDoc);
-        
+
         // Rebuild index to detect broken links
         await context.backlinkManager.rebuildIndex();
       },
@@ -205,7 +206,7 @@ ${newDoc.content}`);
         // Verify broken links are detected
         const brokenLinks = await context.backlinkManager.getBrokenLinks();
         expect(brokenLinks.length).toBeGreaterThan(0);
-      }
+      },
     });
 
     expect(result.success).toBe(true);
@@ -214,7 +215,7 @@ ${newDoc.content}`);
   it('should maintain consistency during concurrent updates', async () => {
     const result = await harness.executeScenario({
       name: 'Concurrent Document Updates',
-      
+
       setup: async () => {
         return [
           {
@@ -226,8 +227,8 @@ ${newDoc.content}`);
               tags: ['project'],
               created: new Date(),
               modified: new Date(),
-              category: 'projects' as const
-            }
+              category: 'projects' as const,
+            },
           },
           {
             path: 'projects/project-b.md',
@@ -238,9 +239,9 @@ ${newDoc.content}`);
               tags: ['project'],
               created: new Date(),
               modified: new Date(),
-              category: 'projects' as const
-            }
-          }
+              category: 'projects' as const,
+            },
+          },
         ];
       },
 
@@ -248,23 +249,26 @@ ${newDoc.content}`);
         // Simulate concurrent updates
         const updates = [
           context.documentUpdater.updateDocument('projects/project-a.md', {
-            content: 'Updated: Links to [[projects/project-b]] and [[projects/project-c]]'
+            content: 'Updated: Links to [[projects/project-b]] and [[projects/project-c]]',
           }),
           context.documentUpdater.updateDocument('projects/project-b.md', {
-            content: 'Updated: Links to [[projects/project-a]] and [[projects/project-c]]'
-          })
+            content: 'Updated: Links to [[projects/project-a]] and [[projects/project-c]]',
+          }),
         ];
 
         // Wait for all updates to complete
         await Promise.all(updates);
 
         // Create the new referenced document
-        await context.fs.writeFile('projects/project-c.md', `---
+        await context.fs.writeFile(
+          'projects/project-c.md',
+          `---
 title: Project C
 category: projects
 ---
 
-New project referenced by others.`);
+New project referenced by others.`,
+        );
 
         await context.backlinkManager.rebuildIndex();
       },
@@ -273,18 +277,14 @@ New project referenced by others.`);
         // Verify circular references are maintained
         const aBacklinksResult = context.backlinkManager.getBacklinks('projects/project-a.md');
         const bBacklinksResult = context.backlinkManager.getBacklinks('projects/project-b.md');
-        
-        IntegrationAssertions.assertBacklinks(
-          'projects/project-a.md',
-          aBacklinksResult.backlinks,
-          ['projects/project-b.md']
-        );
-        
-        IntegrationAssertions.assertBacklinks(
+
+        IntegrationAssertions.assertBacklinks('projects/project-a.md', aBacklinksResult.backlinks, [
           'projects/project-b.md',
-          bBacklinksResult.backlinks,
-          ['projects/project-a.md']
-        );
+        ]);
+
+        IntegrationAssertions.assertBacklinks('projects/project-b.md', bBacklinksResult.backlinks, [
+          'projects/project-a.md',
+        ]);
 
         // Verify new document has backlinks from both
         const cBacklinksResult = context.backlinkManager.getBacklinks('projects/project-c.md');
@@ -292,16 +292,16 @@ New project referenced by others.`);
           'projects/project-c.md',
           cBacklinksResult.backlinks,
           ['projects/project-a.md', 'projects/project-b.md'],
-          { exactMatch: true }
+          { exactMatch: true },
         );
 
         // Verify link consistency
         IntegrationAssertions.assertLinkConsistency(
           context.documents,
           context.linkIndex,
-          await context.backlinkManager.getAllBacklinks()
+          await context.backlinkManager.getAllBacklinks(),
         );
-      }
+      },
     });
 
     expect(result.success).toBe(true);
@@ -313,7 +313,7 @@ New project referenced by others.`);
 
     const result = await harness.executeScenario({
       name: 'Large Document Network Performance',
-      
+
       setup: async () => {
         return generator.generateDocumentNetwork(LARGE_NETWORK_SIZE, 0.2);
       },
@@ -322,20 +322,19 @@ New project referenced by others.`);
         // Measure search performance
         const searchTime = await harness.measureTime(async () => {
           return context.searchEngine.search({
-            content: 'development'
+            content: 'development',
           });
         });
-        
+
         expect(searchTime.duration).toBeLessThan(MAX_OPERATION_TIME);
 
         // Measure update performance
         const updateTime = await harness.measureTime(async () => {
-          return context.documentUpdater.updateDocument(
-            context.documents.keys().next().value,
-            { content: 'Performance test update with [[new/link]]' }
-          );
+          return context.documentUpdater.updateDocument(context.documents.keys().next().value, {
+            content: 'Performance test update with [[new/link]]',
+          });
         });
-        
+
         expect(updateTime.duration).toBeLessThan(MAX_OPERATION_TIME);
       },
 
@@ -343,11 +342,11 @@ New project referenced by others.`);
         const stats = context.backlinkManager.getStats();
         expect(stats.totalDocuments).toBe(LARGE_NETWORK_SIZE);
         expect(stats.totalBacklinks).toBeGreaterThan(0);
-        
+
         // Verify no memory leaks or excessive usage
         const metrics = result.metrics || {};
         expect(metrics.documentCount).toBe(LARGE_NETWORK_SIZE);
-      }
+      },
     });
 
     expect(result.success).toBe(true);

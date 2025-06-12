@@ -405,7 +405,7 @@ export class BacklinkManager {
    */
   async getBacklinks(targetPath: string): Promise<string[]> {
     const backlinks = this.index[targetPath] || [];
-    return [...new Set(backlinks.map(link => link.sourcePath))];
+    return [...new Set(backlinks.map((link) => link.sourcePath))];
   }
 
   /**
@@ -413,9 +413,8 @@ export class BacklinkManager {
    */
   getBacklinksSync(targetPath: string): string[] {
     const backlinks = this.index[targetPath] || [];
-    return [...new Set(backlinks.map(link => link.sourcePath))];
+    return [...new Set(backlinks.map((link) => link.sourcePath))];
   }
-
 
   /**
    * Handle document move - update all references in the index
@@ -427,7 +426,7 @@ export class BacklinkManager {
     for (const targetPath in this.index) {
       const entries = this.index[targetPath];
       if (!entries) continue;
-      
+
       for (const entry of entries) {
         if (entry.sourcePath === oldPath) {
           entry.sourcePath = newPath;
@@ -440,7 +439,7 @@ export class BacklinkManager {
       const entries = this.index[oldPath];
       delete this.index[oldPath];
       this.index[newPath] = entries;
-      
+
       // Update target paths in the entries
       for (const entry of entries) {
         entry.targetPath = newPath;
@@ -451,7 +450,7 @@ export class BacklinkManager {
     for (const targetPath in this.index) {
       const entries = this.index[targetPath];
       if (!entries) continue;
-      
+
       for (const entry of entries) {
         if (entry.targetPath === oldPath) {
           entry.targetPath = newPath;

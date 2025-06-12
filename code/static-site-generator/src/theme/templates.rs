@@ -455,13 +455,23 @@ impl TemplateEngine {
 
         for doc in documents {
             let date_str = doc.date.as_deref().unwrap_or("—");
-            let category_str = if doc.url.starts_with("/projects/") {
+            
+            // Strip base URL to get the relative path for category detection
+            let relative_url = if !base_url.is_empty() && base_url != "/" && doc.url.starts_with(base_url) {
+                &doc.url[base_url.len()..]
+            } else if doc.url.starts_with('/') {
+                &doc.url[1..]
+            } else {
+                &doc.url
+            };
+            
+            let category_str = if relative_url.starts_with("projects/") {
                 "projects"
-            } else if doc.url.starts_with("/areas/") {
+            } else if relative_url.starts_with("areas/") {
                 "areas"
-            } else if doc.url.starts_with("/resources/") {
+            } else if relative_url.starts_with("resources/") {
                 "resources"
-            } else if doc.url.starts_with("/archives/") {
+            } else if relative_url.starts_with("archives/") {
                 "archives"
             } else {
                 "other"
@@ -719,5 +729,57 @@ mod tests {
         let engine = TemplateEngine::new();
         let html = engine.render_breadcrumbs(&[]).unwrap();
         assert_eq!(html, "");
+    }
+
+    #[test]
+    fn test_render_home_page_with_base_url() {
+        let engine = TemplateEngine::new();
+        
+        // Test with subpath base URL
+        let documents = vec![
+            DocumentSummary {
+                url: "/static-site-generator/projects/test.html".to_string(),
+                title: "Test Project".to_string(),
+                date: Some("2023-01-15".to_string()),
+                tags: vec!["rust".to_string()],
+                summary: None,
+            },
+            DocumentSummary {
+                url: "/static-site-generator/areas/health.html".to_string(),
+                title: "Health Area".to_string(),
+                date: Some("2023-01-16".to_string()),
+                tags: vec![],
+                summary: None,
+            },
+        ];
+
+        let html = engine.render_home_page(&documents, "/static-site-generator/").unwrap();
+        
+        // Should correctly identify categories despite base URL
+        assert!(html.contains(r#"category-projects">projects</span>"#));
+        assert!(html.contains(r#"category-areas">areas</span>"#));
+        assert!(!html.contains(r#"category-other">other</span>"#));
+    }
+
+    #[test]
+    fn test_render_home_page_with_root_base_url() {
+        let engine = TemplateEngine::new();
+        
+        // Test with root base URL
+        let documents = vec![
+            DocumentSummary {
+                url: "/projects/test.html".to_string(),
+                title: "Test Project".to_string(),
+                date: Some("2023-01-15".to_string()),
+                tags: vec!["rust".to_string()],
+                summary: None,
+            },
+        ];
+
+        let html = engine.render_home_page(&documents, "/").unwrap();
+        
+        // Should correctly identify category with root base URL
+        assert!(html.contains(r#"category-projects">projects</span>"#));
+        assert!(!html.contains(r#"category-other">other</span>"#));
     }
 }

@@ -85,7 +85,7 @@ describe('GraphBuilder', () => {
         .join('\n')}\n---\n\n`;
       await fileSystem.writeFile(doc.path, frontmatter + doc.content);
     }
-    
+
     // Initialize search engine and link indexer
     await searchEngine.initialize();
     await linkIndexer.buildIndex();
@@ -123,12 +123,13 @@ describe('GraphBuilder', () => {
       expect(graph.edges.size).toBeGreaterThan(4);
 
       // Check for tag relation between project1 and area1 (both have 'web' tag)
-      const tagEdges = Array.from(graph.edges.values()).filter(e => e.type === 'tag-relation');
+      const tagEdges = Array.from(graph.edges.values()).filter((e) => e.type === 'tag-relation');
       expect(tagEdges.length).toBeGreaterThan(0);
 
-      const webRelation = tagEdges.find(e => 
-        (e.source.includes('project1') && e.target.includes('area1')) ||
-        (e.source.includes('area1') && e.target.includes('project1'))
+      const webRelation = tagEdges.find(
+        (e) =>
+          (e.source.includes('project1') && e.target.includes('area1')) ||
+          (e.source.includes('area1') && e.target.includes('project1')),
       );
       expect(webRelation).toBeDefined();
     });
@@ -139,11 +140,13 @@ describe('GraphBuilder', () => {
       });
 
       // Check for category relation between project1 and project2
-      const categoryEdges = Array.from(graph.edges.values()).filter(e => e.type === 'category-relation');
+      const categoryEdges = Array.from(graph.edges.values()).filter(
+        (e) => e.type === 'category-relation',
+      );
       expect(categoryEdges.length).toBeGreaterThan(0);
 
-      const projectRelation = categoryEdges.find(e =>
-        e.source.includes('project1') && e.target.includes('project2')
+      const projectRelation = categoryEdges.find(
+        (e) => e.source.includes('project1') && e.target.includes('project2'),
       );
       expect(projectRelation).toBeDefined();
     });
@@ -174,10 +177,7 @@ describe('GraphBuilder', () => {
 
   describe('buildSubgraph', () => {
     it('should build a subgraph with depth limit', async () => {
-      const graph = await graphBuilder.buildSubgraph(
-        ['/test-root/projects/project1.md'],
-        1
-      );
+      const graph = await graphBuilder.buildSubgraph(['/test-root/projects/project1.md'], 1);
 
       // Depth 1: project1 and its direct neighbors (project2, area1)
       expect(graph.nodes.size).toBe(3);
@@ -188,10 +188,7 @@ describe('GraphBuilder', () => {
     });
 
     it('should build a larger subgraph with depth 2', async () => {
-      const graph = await graphBuilder.buildSubgraph(
-        ['/test-root/projects/project1.md'],
-        2
-      );
+      const graph = await graphBuilder.buildSubgraph(['/test-root/projects/project1.md'], 2);
 
       // Depth 2: Should include resource1 (linked from project2 and area1)
       expect(graph.nodes.size).toBe(4);
@@ -201,7 +198,7 @@ describe('GraphBuilder', () => {
     it('should handle multiple root paths', async () => {
       const graph = await graphBuilder.buildSubgraph(
         ['/test-root/projects/project1.md', '/test-root/archives/archive1.md'],
-        1
+        1,
       );
 
       // Should include both roots and project1's neighbors
@@ -214,7 +211,7 @@ describe('GraphBuilder', () => {
   describe('node creation', () => {
     it('should create nodes with correct metadata', async () => {
       const graph = await graphBuilder.buildGraph();
-      
+
       const project1Node = graph.nodes.get('/test-root/projects/project1.md');
       expect(project1Node).toBeDefined();
       expect(project1Node?.title).toBe('Project 1');
@@ -227,11 +224,12 @@ describe('GraphBuilder', () => {
   describe('edge creation', () => {
     it('should create edges with correct metadata', async () => {
       const graph = await graphBuilder.buildGraph();
-      
+
       const edges = Array.from(graph.edges.values());
-      const project1ToProject2 = edges.find(e =>
-        e.source === '/test-root/projects/project1.md' &&
-        e.target === '/test-root/projects/project2.md'
+      const project1ToProject2 = edges.find(
+        (e) =>
+          e.source === '/test-root/projects/project1.md' &&
+          e.target === '/test-root/projects/project2.md',
       );
 
       expect(project1ToProject2).toBeDefined();
@@ -243,11 +241,11 @@ describe('GraphBuilder', () => {
   describe('cyclic graphs', () => {
     it('should handle cyclic references correctly', async () => {
       const graph = await graphBuilder.buildGraph();
-      
+
       // project1 -> project2 and project2 -> project1 form a cycle
       const project1Neighbors = graph.adjacencyList.get('/test-root/projects/project1.md');
       const project2Neighbors = graph.adjacencyList.get('/test-root/projects/project2.md');
-      
+
       expect(project1Neighbors?.has('/test-root/projects/project2.md')).toBe(true);
       expect(project2Neighbors?.has('/test-root/projects/project1.md')).toBe(true);
     });
@@ -256,13 +254,13 @@ describe('GraphBuilder', () => {
   describe('orphan nodes', () => {
     it('should include orphan nodes in the graph', async () => {
       const graph = await graphBuilder.buildGraph();
-      
+
       const archiveNode = graph.nodes.get('/test-root/archives/archive1.md');
       expect(archiveNode).toBeDefined();
-      
+
       const archiveOutgoing = graph.adjacencyList.get('/test-root/archives/archive1.md');
       const archiveIncoming = graph.reverseAdjacencyList.get('/test-root/archives/archive1.md');
-      
+
       expect(archiveOutgoing?.size).toBe(0);
       expect(archiveIncoming?.size).toBe(0);
     });

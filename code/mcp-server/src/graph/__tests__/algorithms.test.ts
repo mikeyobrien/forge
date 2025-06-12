@@ -113,9 +113,9 @@ describe('GraphAlgorithms', () => {
     it('should find all paths', () => {
       const paths = algorithms.allPaths(testGraph, 'A', 'D', 5);
       expect(paths.length).toBe(2);
-      
+
       // Should find both A->B->D and A->B->C->D
-      const pathStrings = paths.map(p => p.join('->'));
+      const pathStrings = paths.map((p) => p.join('->'));
       expect(pathStrings).toContain('A->B->D');
       expect(pathStrings).toContain('A->B->C->D');
     });
@@ -130,8 +130,8 @@ describe('GraphAlgorithms', () => {
     it('should find connected components', () => {
       const components = algorithms.findConnectedComponents(testGraph);
       expect(components.length).toBe(2); // Main component and E
-      
-      const componentSizes = components.map(c => c.length).sort();
+
+      const componentSizes = components.map((c) => c.length).sort();
       expect(componentSizes).toEqual([1, 4]); // E alone, and A-B-C-D connected
     });
 
@@ -146,14 +146,15 @@ describe('GraphAlgorithms', () => {
     it('should detect cycles', () => {
       const cycles = algorithms.detectCycles(testGraph);
       expect(cycles.length).toBeGreaterThan(0);
-      
+
       // Should find the A->B->C->D->A cycle
-      const hasCycle = cycles.some(cycle => 
-        cycle.length === 5 && // 4 nodes + repeated start
-        cycle.includes('A') &&
-        cycle.includes('B') &&
-        cycle.includes('C') &&
-        cycle.includes('D')
+      const hasCycle = cycles.some(
+        (cycle) =>
+          cycle.length === 5 && // 4 nodes + repeated start
+          cycle.includes('A') &&
+          cycle.includes('B') &&
+          cycle.includes('C') &&
+          cycle.includes('D'),
       );
       expect(hasCycle).toBe(true);
     });
@@ -201,18 +202,18 @@ describe('GraphAlgorithms', () => {
   describe('centrality metrics', () => {
     it('should calculate degree centrality', () => {
       const centrality = algorithms.degreeCentrality(testGraph);
-      
+
       // B has highest degree (2 out, 1 in)
       const bCentrality = centrality.get('B');
       const eCentrality = centrality.get('E');
-      
+
       expect(bCentrality).toBeGreaterThan(0);
       expect(eCentrality).toBe(0); // E has no connections
     });
 
     it('should calculate betweenness centrality', () => {
       const centrality = algorithms.betweennessCentrality(testGraph);
-      
+
       // B should have high betweenness (on shortest paths)
       const bCentrality = centrality.get('B');
       expect(bCentrality).toBeGreaterThan(0);
@@ -220,13 +221,13 @@ describe('GraphAlgorithms', () => {
 
     it('should calculate PageRank', () => {
       const pagerank = algorithms.pageRank(testGraph, 10);
-      
+
       // All connected nodes should have non-zero PageRank
       expect(pagerank.get('A')).toBeGreaterThan(0);
       expect(pagerank.get('B')).toBeGreaterThan(0);
       expect(pagerank.get('C')).toBeGreaterThan(0);
       expect(pagerank.get('D')).toBeGreaterThan(0);
-      
+
       // Sum of PageRank should be approximately 1
       const sum = Array.from(pagerank.values()).reduce((a, b) => a + b, 0);
       expect(sum).toBeCloseTo(1, 1);
@@ -262,8 +263,12 @@ describe('GraphAlgorithms', () => {
 
       // Add edges within clusters
       const clusterEdges = [
-        ['A', 'B'], ['B', 'C'], ['C', 'A'], // Cluster 1
-        ['D', 'E'], ['E', 'F'], ['F', 'D'], // Cluster 2
+        ['A', 'B'],
+        ['B', 'C'],
+        ['C', 'A'], // Cluster 1
+        ['D', 'E'],
+        ['E', 'F'],
+        ['F', 'D'], // Cluster 2
       ];
 
       for (const [source, target] of clusterEdges) {
@@ -272,7 +277,7 @@ describe('GraphAlgorithms', () => {
           const targetAdjacency = clusterGraph.adjacencyList.get(target);
           const sourceReverse = clusterGraph.reverseAdjacencyList.get(source);
           const targetReverse = clusterGraph.reverseAdjacencyList.get(target);
-          
+
           if (sourceAdjacency && targetAdjacency && sourceReverse && targetReverse) {
             sourceAdjacency.add(target);
             targetAdjacency.add(source);
@@ -283,7 +288,7 @@ describe('GraphAlgorithms', () => {
       }
 
       const clusters = algorithms.findClusters(clusterGraph);
-      
+
       // Should identify two distinct clusters
       const uniqueClusters = new Set(clusters.values());
       expect(uniqueClusters.size).toBe(2);

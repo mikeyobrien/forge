@@ -18,12 +18,32 @@ export interface LinkPattern {
 
 export class TestDataGenerator {
   private docCounter = 0;
-  private readonly categories: PARACategory[] = [PARACategory.Projects, PARACategory.Areas, PARACategory.Resources, PARACategory.Archives];
-  private readonly tags = ['javascript', 'typescript', 'testing', 'documentation', 'api', 'frontend', 'backend'];
+  private readonly categories: PARACategory[] = [
+    PARACategory.Projects,
+    PARACategory.Areas,
+    PARACategory.Resources,
+    PARACategory.Archives,
+  ];
+  private readonly tags = [
+    'javascript',
+    'typescript',
+    'testing',
+    'documentation',
+    'api',
+    'frontend',
+    'backend',
+  ];
   private readonly topics = [
-    'software development', 'project management', 'system design', 'code review',
-    'performance optimization', 'security best practices', 'debugging techniques',
-    'API design', 'database architecture', 'user experience'
+    'software development',
+    'project management',
+    'system design',
+    'code review',
+    'performance optimization',
+    'security best practices',
+    'debugging techniques',
+    'API design',
+    'database architecture',
+    'user experience',
   ];
 
   /**
@@ -44,7 +64,7 @@ export class TestDataGenerator {
     for (let i = 0; i < documents.length; i++) {
       const doc = documents[i];
       if (!doc) continue;
-      
+
       const linksToAdd = Math.floor(Math.random() * (size * linkDensity));
       const linkedPaths = new Set<string>();
 
@@ -56,7 +76,7 @@ export class TestDataGenerator {
       }
 
       // Add links to content
-      const links = Array.from(linkedPaths).map(path => {
+      const links = Array.from(linkedPaths).map((path) => {
         const shouldUseDisplayText = Math.random() > 0.5;
         if (shouldUseDisplayText) {
           const displayText = this.generateDisplayText();
@@ -83,16 +103,16 @@ export class TestDataGenerator {
     const category = this.randomChoice(this.categories);
     const topic = this.randomChoice(this.topics);
     const docType = this.randomChoice(['guide', 'reference', 'tutorial', 'overview', 'notes']);
-    
+
     const title = `${topic} ${docType} ${this.docCounter}`.replace(/\s+/g, ' ').trim();
     const path = `${category}/${title.toLowerCase().replace(/\s+/g, '-')}.md`;
-    
+
     const metadata: DocumentFrontmatter = {
       title,
       tags: this.randomSubset(this.tags, 1, 4),
       created: this.randomDate(-90, -30).toISOString(),
       modified: this.randomDate(-29, 0).toISOString(),
-      category
+      category,
     };
 
     // Add project-specific metadata
@@ -132,7 +152,9 @@ export class TestDataGenerator {
     }
 
     // Conclusion
-    paragraphs.push(`In summary, understanding ${baseKeywords[0]} is crucial for modern development.`);
+    paragraphs.push(
+      `In summary, understanding ${baseKeywords[0]} is crucial for modern development.`,
+    );
 
     return paragraphs.join('\n\n');
   }
@@ -146,20 +168,20 @@ export class TestDataGenerator {
     // Simple links
     patterns.push({
       from: 'projects/main-project.md',
-      to: 'resources/reference-guide.md'
+      to: 'resources/reference-guide.md',
     });
 
     // Links with display text
     patterns.push({
       from: 'areas/development.md',
       to: 'resources/api-documentation.md',
-      displayText: 'API docs'
+      displayText: 'API docs',
     });
 
     // Circular references
     patterns.push(
       { from: 'projects/project-a.md', to: 'projects/project-b.md' },
-      { from: 'projects/project-b.md', to: 'projects/project-a.md' }
+      { from: 'projects/project-b.md', to: 'projects/project-a.md' },
     );
 
     // Hub document (many outgoing links)
@@ -167,7 +189,7 @@ export class TestDataGenerator {
     for (let i = 0; i < 5; i++) {
       patterns.push({
         from: hub,
-        to: `resources/topic-${i}.md`
+        to: `resources/topic-${i}.md`,
       });
     }
 
@@ -192,7 +214,7 @@ export class TestDataGenerator {
     for (let i = 0; i < sectionCount; i++) {
       sections.push(`## ${this.generateSectionTitle()}`);
       sections.push(this.generateParagraph(topic));
-      
+
       // Sometimes add a list
       if (Math.random() > 0.6) {
         sections.push(this.generateList());
@@ -207,20 +229,20 @@ export class TestDataGenerator {
       `When working with ${topic}, it's important to consider various factors that affect the overall system.`,
       `The ${topic} approach provides several benefits including improved maintainability and scalability.`,
       `Best practices for ${topic} include following established patterns and maintaining consistency.`,
-      `Understanding ${topic} requires knowledge of fundamental concepts and practical experience.`
+      `Understanding ${topic} requires knowledge of fundamental concepts and practical experience.`,
     ];
-    
+
     return this.randomChoice(templates);
   }
 
   private generateList(): string {
     const items = [];
     const count = 3 + Math.floor(Math.random() * 4);
-    
+
     for (let i = 0; i < count; i++) {
       items.push(`- ${this.generateListItem()}`);
     }
-    
+
     return items.join('\n');
   }
 
@@ -232,19 +254,25 @@ export class TestDataGenerator {
       'Follow coding standards',
       'Optimize for performance',
       'Consider security implications',
-      'Maintain backward compatibility'
+      'Maintain backward compatibility',
     ];
-    
+
     return this.randomChoice(items);
   }
 
   private generateSectionTitle(): string {
     const titles = [
-      'Overview', 'Implementation Details', 'Best Practices',
-      'Common Patterns', 'Troubleshooting', 'Performance Considerations',
-      'Security Guidelines', 'Examples', 'Advanced Topics'
+      'Overview',
+      'Implementation Details',
+      'Best Practices',
+      'Common Patterns',
+      'Troubleshooting',
+      'Performance Considerations',
+      'Security Guidelines',
+      'Examples',
+      'Advanced Topics',
     ];
-    
+
     return this.randomChoice(titles);
   }
 
@@ -266,10 +294,16 @@ class Implementation implements Example {
 
   private generateDisplayText(): string {
     const texts = [
-      'see here', 'more details', 'related topic', 'reference',
-      'documentation', 'example', 'guide', 'tutorial'
+      'see here',
+      'more details',
+      'related topic',
+      'reference',
+      'documentation',
+      'example',
+      'guide',
+      'tutorial',
     ];
-    
+
     return this.randomChoice(texts);
   }
 
@@ -279,9 +313,9 @@ class Implementation implements Example {
       keyword.charAt(0).toUpperCase() + keyword.slice(1),
       keyword.toUpperCase(),
       `${keyword}s`,
-      `${keyword}ing`
+      `${keyword}ing`,
     ];
-    
+
     return this.randomChoice(variations);
   }
 

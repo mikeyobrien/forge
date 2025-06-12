@@ -10,7 +10,7 @@ import { join } from 'path';
 
 // Mock the config module
 jest.mock('../../../config/index', () => ({
-  getConfig: () => ({ contextRoot: '/test/context' })
+  getConfig: () => ({ contextRoot: '/test/context' }),
 }));
 
 describe('context_move tool', () => {
@@ -33,25 +33,31 @@ describe('context_move tool', () => {
     await backlinks.initialize();
 
     // Create test documents
-    await fs.writeFile(join(contextRoot, 'Projects/test-doc.md'), `---
+    await fs.writeFile(
+      join(contextRoot, 'Projects/test-doc.md'),
+      `---
 title: Test Document
 tags: [test]
 ---
 
 # Test Document
 
-Content here.`);
+Content here.`,
+    );
 
-    await fs.writeFile(join(contextRoot, 'Areas/linking-doc.md'), `---
+    await fs.writeFile(
+      join(contextRoot, 'Areas/linking-doc.md'),
+      `---
 title: Linking Document
 ---
 
-This links to [[/Projects/test-doc]].`);
+This links to [[/Projects/test-doc]].`,
+    );
 
     // Update backlink index
     await backlinks.updateDocumentLinks(
       join(contextRoot, 'Areas/linking-doc.md'),
-      await fs.readFile(join(contextRoot, 'Areas/linking-doc.md'))
+      await fs.readFile(join(contextRoot, 'Areas/linking-doc.md')),
     );
   });
 
@@ -64,17 +70,17 @@ This links to [[/Projects/test-doc]].`);
 
     it('should validate input schema', () => {
       const schema = tool.inputSchema;
-      
+
       // Valid input
       const validResult = schema.safeParse({
         sourcePath: 'Projects/doc.md',
-        destinationPath: 'Archives/doc.md'
+        destinationPath: 'Archives/doc.md',
       });
       expect(validResult.success).toBe(true);
 
       // Invalid input - missing required fields
       const invalidResult = schema.safeParse({
-        sourcePath: ''
+        sourcePath: '',
       });
       expect(invalidResult.success).toBe(false);
     });
@@ -86,7 +92,7 @@ This links to [[/Projects/test-doc]].`);
         sourcePath: 'Projects/test-doc.md',
         destinationPath: 'Projects/test-doc-renamed.md',
         updateLinks: true,
-        overwrite: false
+        overwrite: false,
       });
 
       expect(result.content[0]?.type).toBe('text');
@@ -102,7 +108,7 @@ This links to [[/Projects/test-doc]].`);
         sourcePath: 'Projects/test-doc.md',
         destinationPath: 'Archives/test-doc.md',
         updateLinks: true,
-        overwrite: false
+        overwrite: false,
       });
 
       expect(result.content[0]?.type).toBe('text');
@@ -116,7 +122,7 @@ This links to [[/Projects/test-doc]].`);
         sourcePath: 'Projects/test-doc.md',
         destinationPath: 'Archives/test-doc.md',
         updateLinks: true,
-        overwrite: false
+        overwrite: false,
       });
 
       const text = result.content[0]?.text || '';
@@ -130,7 +136,7 @@ This links to [[/Projects/test-doc]].`);
         sourcePath: 'Projects/test-doc.md',
         destinationPath: 'Archives/test-doc.md',
         updateLinks: false,
-        overwrite: false
+        overwrite: false,
       });
 
       const text = result.content[0]?.text || '';
@@ -145,7 +151,7 @@ This links to [[/Projects/test-doc]].`);
         sourcePath: 'Resources/isolated.md',
         destinationPath: 'Archives/isolated.md',
         updateLinks: true,
-        overwrite: false
+        overwrite: false,
       });
 
       const text = result.content[0]?.text || '';
@@ -160,7 +166,7 @@ This links to [[/Projects/test-doc]].`);
         sourcePath: 'Projects/nonexistent.md',
         destinationPath: 'Archives/new.md',
         updateLinks: true,
-        overwrite: false
+        overwrite: false,
       });
 
       expect(result.isError).toBe(true);
@@ -175,7 +181,7 @@ This links to [[/Projects/test-doc]].`);
         sourcePath: 'Projects/test-doc.md',
         destinationPath: 'Archives/existing.md',
         updateLinks: true,
-        overwrite: false
+        overwrite: false,
       });
 
       expect(result.isError).toBe(true);
@@ -189,7 +195,7 @@ This links to [[/Projects/test-doc]].`);
         sourcePath: 'Projects/test-doc.md',
         destinationPath: 'Archives/existing.md',
         updateLinks: true,
-        overwrite: true
+        overwrite: true,
       });
 
       expect(result.isError).not.toBe(true);
@@ -201,7 +207,7 @@ This links to [[/Projects/test-doc]].`);
         sourcePath: '../outside/doc.md',
         destinationPath: 'Projects/new.md',
         updateLinks: true,
-        overwrite: false
+        overwrite: false,
       });
 
       expect(result.isError).toBe(true);
@@ -213,7 +219,7 @@ This links to [[/Projects/test-doc]].`);
         sourcePath: '',
         destinationPath: 'Projects/new.md',
         updateLinks: true,
-        overwrite: false
+        overwrite: false,
       });
 
       expect(result.isError).toBe(true);
@@ -224,19 +230,22 @@ This links to [[/Projects/test-doc]].`);
   describe('output formatting', () => {
     it('should format successful move with multiple link updates', async () => {
       // Create another linking document
-      await fs.writeFile(join(contextRoot, 'Resources/another-link.md'), `
-See [[/Projects/test-doc|Test]] and [[/Projects/test-doc]].`);
-      
+      await fs.writeFile(
+        join(contextRoot, 'Resources/another-link.md'),
+        `
+See [[/Projects/test-doc|Test]] and [[/Projects/test-doc]].`,
+      );
+
       await backlinks.updateDocumentLinks(
         join(contextRoot, 'Resources/another-link.md'),
-        await fs.readFile(join(contextRoot, 'Resources/another-link.md'))
+        await fs.readFile(join(contextRoot, 'Resources/another-link.md')),
       );
 
       const result = await tool.handler({
         sourcePath: 'Projects/test-doc.md',
         destinationPath: 'Archives/archived-doc.md',
         updateLinks: true,
-        overwrite: false
+        overwrite: false,
       });
 
       const text = result.content[0]?.text || '';
@@ -254,7 +263,7 @@ See [[/Projects/test-doc|Test]] and [[/Projects/test-doc]].`);
         sourcePath: 'Projects/test-doc.md',
         destinationPath: 'Projects/renamed.md',
         updateLinks: true,
-        overwrite: false
+        overwrite: false,
       });
 
       const text = result.content[0]?.text || '';

@@ -13,24 +13,22 @@ export class IntegrationAssertions {
   static assertLinkConsistency(
     _documents: Map<string, Document>,
     linkIndex: Map<string, WikiLink[]>,
-    backlinkIndex: Map<string, BacklinkEntry[]>
+    backlinkIndex: Map<string, BacklinkEntry[]>,
   ): void {
     // Check that every forward link has a corresponding backlink
     for (const [docPath, links] of linkIndex.entries()) {
       for (const link of links) {
         const targetBacklinks = backlinkIndex.get(link.target);
-        
+
         if (!targetBacklinks) {
           throw new Error(
-            `Missing backlinks for document "${link.target}" referenced from "${docPath}"`
+            `Missing backlinks for document "${link.target}" referenced from "${docPath}"`,
           );
         }
 
-        const hasBacklink = targetBacklinks.some(bl => bl.sourcePath === docPath);
+        const hasBacklink = targetBacklinks.some((bl) => bl.sourcePath === docPath);
         if (!hasBacklink) {
-          throw new Error(
-            `Document "${link.target}" is missing backlink from "${docPath}"`
-          );
+          throw new Error(`Document "${link.target}" is missing backlink from "${docPath}"`);
         }
       }
     }
@@ -39,17 +37,17 @@ export class IntegrationAssertions {
     for (const [docPath, backlinks] of backlinkIndex.entries()) {
       for (const backlink of backlinks) {
         const sourceLinks = linkIndex.get(backlink.sourcePath);
-        
+
         if (!sourceLinks) {
           throw new Error(
-            `Document "${backlink.sourcePath}" has no forward links but claims to link to "${docPath}"`
+            `Document "${backlink.sourcePath}" has no forward links but claims to link to "${docPath}"`,
           );
         }
 
-        const hasForwardLink = sourceLinks.some(link => link.target === docPath);
+        const hasForwardLink = sourceLinks.some((link) => link.target === docPath);
         if (!hasForwardLink) {
           throw new Error(
-            `Document "${backlink.sourcePath}" claims to link to "${docPath}" but no such link found`
+            `Document "${backlink.sourcePath}" claims to link to "${docPath}" but no such link found`,
           );
         }
       }
@@ -66,23 +64,23 @@ export class IntegrationAssertions {
       exactMatch?: boolean;
       ordered?: boolean;
       minScore?: number;
-    } = {}
+    } = {},
   ): void {
-    const actualPaths = actual.results.map(r => r.path);
+    const actualPaths = actual.results.map((r) => r.path);
 
     if (options.exactMatch) {
       // Check exact match and order
       if (options.ordered) {
         if (actualPaths.length !== expectedPaths.length) {
           throw new Error(
-            `Expected exactly ${expectedPaths.length} results, got ${actualPaths.length}`
+            `Expected exactly ${expectedPaths.length} results, got ${actualPaths.length}`,
           );
         }
 
         for (let i = 0; i < expectedPaths.length; i++) {
           if (actualPaths[i] !== expectedPaths[i]) {
             throw new Error(
-              `Expected result ${i} to be "${expectedPaths[i]}", got "${actualPaths[i]}"`
+              `Expected result ${i} to be "${expectedPaths[i]}", got "${actualPaths[i]}"`,
             );
           }
         }
@@ -93,7 +91,7 @@ export class IntegrationAssertions {
 
         if (actualSet.size !== expectedSet.size) {
           throw new Error(
-            `Expected exactly ${expectedSet.size} unique results, got ${actualSet.size}`
+            `Expected exactly ${expectedSet.size} unique results, got ${actualSet.size}`,
           );
         }
 
@@ -118,7 +116,7 @@ export class IntegrationAssertions {
         if (result.relevanceScore < options.minScore) {
           throw new Error(
             `Result "${result.path}" has score ${result.relevanceScore}, ` +
-            `expected at least ${options.minScore}`
+              `expected at least ${options.minScore}`,
           );
         }
       }
@@ -132,9 +130,9 @@ export class IntegrationAssertions {
     docPath: string,
     actualBacklinks: BacklinkEntry[],
     expectedSources: string[],
-    options: { exactMatch?: boolean } = {}
+    options: { exactMatch?: boolean } = {},
   ): void {
-    const actualSources = actualBacklinks.map(bl => bl.sourcePath);
+    const actualSources = actualBacklinks.map((bl) => bl.sourcePath);
 
     if (options.exactMatch) {
       const actualSet = new Set(actualSources);
@@ -142,14 +140,14 @@ export class IntegrationAssertions {
 
       if (actualSet.size !== expectedSet.size) {
         throw new Error(
-          `Document "${docPath}" expected exactly ${expectedSet.size} backlinks, got ${actualSet.size}`
+          `Document "${docPath}" expected exactly ${expectedSet.size} backlinks, got ${actualSet.size}`,
         );
       }
 
       for (const expected of expectedSet) {
         if (!actualSet.has(expected)) {
           throw new Error(
-            `Document "${docPath}" expected backlink from "${expected}" but not found`
+            `Document "${docPath}" expected backlink from "${expected}" but not found`,
           );
         }
       }
@@ -158,7 +156,7 @@ export class IntegrationAssertions {
       for (const expected of expectedSources) {
         if (!actualSources.includes(expected)) {
           throw new Error(
-            `Document "${docPath}" expected backlink from "${expected}" but not found`
+            `Document "${docPath}" expected backlink from "${expected}" but not found`,
           );
         }
       }
@@ -172,9 +170,9 @@ export class IntegrationAssertions {
     docPath: string,
     actualLinks: WikiLink[],
     expectedTargets: string[],
-    options: { exactMatch?: boolean } = {}
+    options: { exactMatch?: boolean } = {},
   ): void {
-    const actualTargets = actualLinks.map(link => link.target);
+    const actualTargets = actualLinks.map((link) => link.target);
 
     if (options.exactMatch) {
       const actualSet = new Set(actualTargets);
@@ -182,24 +180,20 @@ export class IntegrationAssertions {
 
       if (actualSet.size !== expectedSet.size) {
         throw new Error(
-          `Document "${docPath}" expected exactly ${expectedSet.size} forward links, got ${actualSet.size}`
+          `Document "${docPath}" expected exactly ${expectedSet.size} forward links, got ${actualSet.size}`,
         );
       }
 
       for (const expected of expectedSet) {
         if (!actualSet.has(expected)) {
-          throw new Error(
-            `Document "${docPath}" expected link to "${expected}" but not found`
-          );
+          throw new Error(`Document "${docPath}" expected link to "${expected}" but not found`);
         }
       }
     } else {
       // Check that all expected are present
       for (const expected of expectedTargets) {
         if (!actualTargets.includes(expected)) {
-          throw new Error(
-            `Document "${docPath}" expected link to "${expected}" but not found`
-          );
+          throw new Error(`Document "${docPath}" expected link to "${expected}" but not found`);
         }
       }
     }
@@ -208,26 +202,23 @@ export class IntegrationAssertions {
   /**
    * Assert document metadata
    */
-  static assertDocumentMetadata(
-    document: Document,
-    expected: Record<string, unknown>
-  ): void {
+  static assertDocumentMetadata(document: Document, expected: Record<string, unknown>): void {
     for (const [key, value] of Object.entries(expected)) {
       const actual = document.frontmatter[key];
-      
+
       if (Array.isArray(value) && Array.isArray(actual)) {
         // For arrays, check if all expected values are present
         const actualSet = new Set(actual);
         for (const expectedItem of value) {
           if (!actualSet.has(expectedItem)) {
             throw new Error(
-              `Document "${document.path}" metadata.${key} missing expected value "${expectedItem}"`
+              `Document "${document.path}" metadata.${key} missing expected value "${expectedItem}"`,
             );
           }
         }
       } else if (actual !== value) {
         throw new Error(
-          `Document "${document.path}" metadata.${key} expected "${value}", got "${actual}"`
+          `Document "${document.path}" metadata.${key} expected "${value}", got "${actual}"`,
         );
       }
     }
@@ -242,18 +233,16 @@ export class IntegrationAssertions {
     options: {
       exactMatch?: boolean;
       checkBroken?: boolean;
-    } = {}
+    } = {},
   ): void {
-    const actualPaths = results.map(r => r.path);
+    const actualPaths = results.map((r) => r.path);
 
     if (options.exactMatch) {
       const actualSet = new Set(actualPaths);
       const expectedSet = new Set(expectedPaths);
 
       if (actualSet.size !== expectedSet.size) {
-        throw new Error(
-          `Expected exactly ${expectedSet.size} link results, got ${actualSet.size}`
-        );
+        throw new Error(`Expected exactly ${expectedSet.size} link results, got ${actualSet.size}`);
       }
 
       for (const expected of expectedSet) {
@@ -271,10 +260,10 @@ export class IntegrationAssertions {
 
     // Check broken links if requested
     if (options.checkBroken) {
-      const brokenLinks = results.filter(r => r.exists === false);
+      const brokenLinks = results.filter((r) => r.exists === false);
       if (brokenLinks.length > 0) {
         throw new Error(
-          `Found ${brokenLinks.length} broken links: ${brokenLinks.map(l => l.path).join(', ')}`
+          `Found ${brokenLinks.length} broken links: ${brokenLinks.map((l) => l.path).join(', ')}`,
         );
       }
     }
@@ -286,19 +275,15 @@ export class IntegrationAssertions {
   static assertContentContains(
     document: Document,
     expectedText: string,
-    options: { caseSensitive?: boolean } = {}
+    options: { caseSensitive?: boolean } = {},
   ): void {
-    const content = options.caseSensitive 
-      ? document.content 
-      : document.content.toLowerCase();
-    
-    const searchText = options.caseSensitive 
-      ? expectedText 
-      : expectedText.toLowerCase();
+    const content = options.caseSensitive ? document.content : document.content.toLowerCase();
+
+    const searchText = options.caseSensitive ? expectedText : expectedText.toLowerCase();
 
     if (!content.includes(searchText)) {
       throw new Error(
-        `Document "${document.path}" content does not contain expected text "${expectedText}"`
+        `Document "${document.path}" content does not contain expected text "${expectedText}"`,
       );
     }
   }
@@ -309,7 +294,7 @@ export class IntegrationAssertions {
   static async assertOperationTime<T>(
     operation: () => Promise<T>,
     maxDuration: number,
-    operationName: string
+    operationName: string,
   ): Promise<T> {
     const startTime = Date.now();
     const result = await operation();
@@ -317,7 +302,7 @@ export class IntegrationAssertions {
 
     if (duration > maxDuration) {
       throw new Error(
-        `Operation "${operationName}" took ${duration}ms, expected max ${maxDuration}ms`
+        `Operation "${operationName}" took ${duration}ms, expected max ${maxDuration}ms`,
       );
     }
 
@@ -330,7 +315,7 @@ export class IntegrationAssertions {
   static assertNoOrphanedDocuments(
     documents: Map<string, Document>,
     backlinkIndex: Map<string, BacklinkEntry[]>,
-    allowedOrphans: string[] = []
+    allowedOrphans: string[] = [],
   ): void {
     const orphans: string[] = [];
 
@@ -342,9 +327,7 @@ export class IntegrationAssertions {
     }
 
     if (orphans.length > 0) {
-      throw new Error(
-        `Found ${orphans.length} orphaned documents: ${orphans.join(', ')}`
-      );
+      throw new Error(`Found ${orphans.length} orphaned documents: ${orphans.join(', ')}`);
     }
   }
 
@@ -353,21 +336,19 @@ export class IntegrationAssertions {
    */
   static assertSearchFacets(
     facets: Record<string, Array<{ value: string; count: number }>>,
-    expectedFacets: Record<string, string[]>
+    expectedFacets: Record<string, string[]>,
   ): void {
     for (const [facetName, expectedValues] of Object.entries(expectedFacets)) {
       const actualFacet = facets[facetName];
-      
+
       if (!actualFacet) {
         throw new Error(`Expected facet "${facetName}" not found in results`);
       }
 
-      const actualValues = actualFacet.map(f => f.value);
+      const actualValues = actualFacet.map((f) => f.value);
       for (const expected of expectedValues) {
         if (!actualValues.includes(expected)) {
-          throw new Error(
-            `Facet "${facetName}" missing expected value "${expected}"`
-          );
+          throw new Error(`Facet "${facetName}" missing expected value "${expected}"`);
         }
       }
     }

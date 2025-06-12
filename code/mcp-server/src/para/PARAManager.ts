@@ -68,9 +68,11 @@ export class PARAManager {
       // Normalize both paths for comparison
       const normalizedResolved = resolvedPath.replace(/\\/g, '/');
       const normalizedCategory = categoryPath.replace(/\\/g, '/');
-      
-      if (normalizedResolved.startsWith(normalizedCategory + '/') || 
-          normalizedResolved.startsWith(normalizedCategory + path.sep)) {
+
+      if (
+        normalizedResolved.startsWith(normalizedCategory + '/') ||
+        normalizedResolved.startsWith(normalizedCategory + path.sep)
+      ) {
         return category as PARACategory;
       }
     }

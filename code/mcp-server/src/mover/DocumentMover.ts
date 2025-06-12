@@ -7,13 +7,13 @@ import { BacklinkManager } from '../backlinks/index.js';
 import { DocumentUpdater } from '../updater/index.js';
 import { parseWikiLinks, WikiLink } from '../parser/index.js';
 import { FrontmatterParser } from '../parsers/index.js';
-import { 
-  MoveOptions, 
-  MoveResult, 
-  LinkUpdate, 
+import {
+  MoveOptions,
+  MoveResult,
+  LinkUpdate,
   MoveValidation,
   DocumentMoveError,
-  RollbackState 
+  RollbackState,
 } from './types.js';
 import { join, dirname, basename, extname } from 'path';
 
@@ -25,11 +25,10 @@ export class DocumentMover {
     private readonly para: PARAManager,
     private readonly backlinks: BacklinkManager,
     _updater: DocumentUpdater, // Reserved for future use
-    private readonly contextRoot: string
+    private readonly contextRoot: string,
   ) {
     this.frontmatterParser = new FrontmatterParser();
   }
-
 
   /**
    * Move a document from source to destination with automatic link updates
@@ -37,17 +36,14 @@ export class DocumentMover {
   async moveDocument(
     sourcePath: string,
     destinationPath: string,
-    options: MoveOptions = {}
+    options: MoveOptions = {},
   ): Promise<MoveResult> {
     const { updateLinks = true, overwrite = false } = options;
 
     // Validate the move operation
     const validation = await this.validateMove(sourcePath, destinationPath, overwrite);
     if (!validation.isValid) {
-      throw new DocumentMoveError(
-        validation.error || 'Invalid move operation',
-        'INVALID_PATH'
-      );
+      throw new DocumentMoveError(validation.error || 'Invalid move operation', 'INVALID_PATH');
     }
 
     const resolvedSource = validation.resolvedSource!;
@@ -57,7 +53,7 @@ export class DocumentMover {
     const rollbackState: RollbackState = {
       originalPath: resolvedSource,
       originalContent: '',
-      modifiedDocuments: []
+      modifiedDocuments: [],
     };
 
     try {
@@ -69,15 +65,15 @@ export class DocumentMover {
         oldPath: resolvedSource,
         newPath: resolvedDest,
         updatedLinks: [],
-        totalLinksUpdated: 0
+        totalLinksUpdated: 0,
       };
 
       // Check if this is a cross-category move
       const oldCategory = this.para.getDocumentCategory(resolvedSource);
       const newCategory = this.para.getDocumentCategory(resolvedDest);
-      
+
       // Debug: console.log('Categories:', { oldCategory, newCategory, resolvedSource, resolvedDest });
-      
+
       if (oldCategory && newCategory) {
         if (oldCategory !== newCategory) {
           result.oldCategory = oldCategory;
@@ -88,14 +84,14 @@ export class DocumentMover {
       // Update links if requested
       if (updateLinks) {
         const linkUpdates = await this.updateIncomingLinks(
-          resolvedSource, 
+          resolvedSource,
           resolvedDest,
-          rollbackState
+          rollbackState,
         );
         result.updatedLinks = linkUpdates;
         result.totalLinksUpdated = linkUpdates.reduce(
-          (sum, update) => sum + update.linksUpdated, 
-          0
+          (sum, update) => sum + update.linksUpdated,
+          0,
         );
       }
 
@@ -111,19 +107,18 @@ export class DocumentMover {
       await this.backlinks.handleDocumentMove(resolvedSource, resolvedDest);
 
       return result;
-
     } catch (error) {
       // Attempt rollback on failure
       await this.rollbackMove(rollbackState);
-      
+
       if (error instanceof DocumentMoveError) {
         throw error;
       }
-      
+
       throw new DocumentMoveError(
         `Failed to move document: ${error instanceof Error ? error.message : 'Unknown error'}`,
         'LINK_UPDATE_FAILED',
-        error
+        error,
       );
     }
   }
@@ -134,7 +129,7 @@ export class DocumentMover {
   private async validateMove(
     sourcePath: string,
     destinationPath: string,
-    overwrite: boolean
+    overwrite: boolean,
   ): Promise<MoveValidation> {
     // Resolve paths relative to context root
     const resolvedSource = this.resolvePath(sourcePath);
@@ -144,36 +139,36 @@ export class DocumentMover {
     if (!resolvedSource.startsWith(this.contextRoot)) {
       return {
         isValid: false,
-        error: `Source path is outside context root: ${sourcePath}`
+        error: `Source path is outside context root: ${sourcePath}`,
       };
     }
 
     if (!resolvedDest.startsWith(this.contextRoot)) {
       return {
         isValid: false,
-        error: `Destination path is outside context root: ${destinationPath}`
+        error: `Destination path is outside context root: ${destinationPath}`,
       };
     }
 
     // Check if source exists
-    if (!await this.fs.exists(resolvedSource)) {
+    if (!(await this.fs.exists(resolvedSource))) {
       return {
         isValid: false,
-        error: `Source document not found: ${sourcePath}`
+        error: `Source document not found: ${sourcePath}`,
       };
     }
 
     // Check if destination exists
-    if (!overwrite && await this.fs.exists(resolvedDest)) {
+    if (!overwrite && (await this.fs.exists(resolvedDest))) {
       return {
         isValid: false,
-        error: `Destination already exists: ${destinationPath}`
+        error: `Destination already exists: ${destinationPath}`,
       };
     }
 
     // Ensure destination directory exists
     const destDir = dirname(resolvedDest);
-    if (!await this.fs.exists(destDir)) {
+    if (!(await this.fs.exists(destDir))) {
       await this.fs.mkdir(destDir, true);
     }
 
@@ -181,8 +176,9 @@ export class DocumentMover {
       isValid: true,
       resolvedSource,
       resolvedDestination: resolvedDest,
-      isCrossCategory: this.para.getDocumentCategory(resolvedSource) !== 
-                       this.para.getDocumentCategory(resolvedDest)
+      isCrossCategory:
+        this.para.getDocumentCategory(resolvedSource) !==
+        this.para.getDocumentCategory(resolvedDest),
     };
   }
 
@@ -192,27 +188,27 @@ export class DocumentMover {
   private async updateIncomingLinks(
     oldPath: string,
     newPath: string,
-    rollbackState: RollbackState
+    rollbackState: RollbackState,
   ): Promise<LinkUpdate[]> {
     const updates: LinkUpdate[] = [];
-    
+
     // Get all documents that link to the old path
     const backlinks = await this.backlinks.getBacklinks(oldPath);
-    
+
     for (const linkingDocPath of backlinks) {
       try {
         // Read the linking document
         const content = await this.fs.readFile(linkingDocPath);
-        
+
         // Store original content for rollback
         rollbackState.modifiedDocuments.push({
           path: linkingDocPath,
-          originalContent: content
+          originalContent: content,
         });
 
         // Extract wiki links
         const links = parseWikiLinks(content);
-        
+
         // Find links that point to the old path
         const relevantLinks = links.filter((link: WikiLink) => {
           const resolvedTarget = this.resolveWikiLink(link.target, dirname(linkingDocPath));
@@ -226,18 +222,18 @@ export class DocumentMover {
 
         // Calculate the new link target
         const newLinkTarget = this.calculateNewLinkTarget(oldPath, newPath, linkingDocPath);
-        
+
         // Replace links in content
         let updatedContent = content;
         const oldLinks: string[] = [];
         const newLinks: string[] = [];
-        
+
         for (const link of relevantLinks) {
           const oldLinkText = link.raw;
-          const newLinkText = link.displayText 
+          const newLinkText = link.displayText
             ? `[[${newLinkTarget}|${link.displayText}]]`
             : `[[${newLinkTarget}]]`;
-          
+
           updatedContent = updatedContent.replace(oldLinkText, newLinkText);
           oldLinks.push(oldLinkText);
           newLinks.push(newLinkText);
@@ -250,14 +246,13 @@ export class DocumentMover {
           documentPath: linkingDocPath,
           linksUpdated: relevantLinks.length,
           oldLinks,
-          newLinks
+          newLinks,
         });
-
       } catch (error) {
         throw new DocumentMoveError(
           `Failed to update links in ${linkingDocPath}: ${error instanceof Error ? error.message : 'Unknown error'}`,
           'LINK_UPDATE_FAILED',
-          error
+          error,
         );
       }
     }
@@ -280,11 +275,11 @@ export class DocumentMover {
   private async updateDocumentCategory(path: string, newCategory: string): Promise<void> {
     const content = await this.fs.readFile(path);
     const parsed = this.frontmatterParser.parse(content);
-    
+
     // Update category in frontmatter
     const updatedFrontmatter = {
       ...parsed.frontmatter,
-      category: newCategory
+      category: newCategory,
     };
 
     // Serialize back to content
@@ -292,7 +287,7 @@ export class DocumentMover {
     const updatedContent = serializeDocument({
       path: path,
       content: parsed.content,
-      metadata: updatedFrontmatter
+      metadata: updatedFrontmatter,
     });
     await this.fs.writeFile(path, updatedContent);
   }
@@ -308,14 +303,14 @@ export class DocumentMover {
       }
 
       // If the original file was moved/deleted, restore it
-      if (state.originalContent && !await this.fs.exists(state.originalPath)) {
+      if (state.originalContent && !(await this.fs.exists(state.originalPath))) {
         await this.fs.writeFile(state.originalPath, state.originalContent);
       }
     } catch (error) {
       throw new DocumentMoveError(
         `Rollback failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
         'ROLLBACK_FAILED',
-        error
+        error,
       );
     }
   }
@@ -360,9 +355,9 @@ export class DocumentMover {
    * Calculate the new link target for updating wiki links
    */
   private calculateNewLinkTarget(
-    _oldPath: string, 
-    newPath: string, 
-    linkingDocPath: string
+    _oldPath: string,
+    newPath: string,
+    linkingDocPath: string,
   ): string {
     // Get relative paths from context root
     const newRelative = newPath.replace(this.contextRoot + '/', '');

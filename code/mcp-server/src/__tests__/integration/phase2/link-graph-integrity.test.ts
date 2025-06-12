@@ -22,7 +22,7 @@ describe('Link Graph Integrity', () => {
   it('should maintain link consistency in complex document networks', async () => {
     const result = await harness.executeScenario({
       name: 'Complex Link Network Consistency',
-      
+
       setup: async () => {
         // Create a hub-and-spoke network with interconnections
         return [
@@ -44,21 +44,22 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['index', 'hub'],
               created: new Date(),
               modified: new Date(),
-              category: 'resources' as const
-            }
+              category: 'resources' as const,
+            },
           },
           // Spoke documents with cross-links
           {
             path: 'resources/api-docs.md',
             title: 'API Documentation',
-            content: 'API reference. See also [[resources/dev-guide]] and [[resources/user-guide]].',
+            content:
+              'API reference. See also [[resources/dev-guide]] and [[resources/user-guide]].',
             metadata: {
               title: 'API Documentation',
               tags: ['api', 'docs'],
               created: new Date(),
               modified: new Date(),
-              category: 'resources' as const
-            }
+              category: 'resources' as const,
+            },
           },
           {
             path: 'resources/user-guide.md',
@@ -69,8 +70,8 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['user', 'guide'],
               created: new Date(),
               modified: new Date(),
-              category: 'resources' as const
-            }
+              category: 'resources' as const,
+            },
           },
           {
             path: 'resources/dev-guide.md',
@@ -81,8 +82,8 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['developer', 'guide'],
               created: new Date(),
               modified: new Date(),
-              category: 'resources' as const
-            }
+              category: 'resources' as const,
+            },
           },
           {
             path: 'resources/troubleshooting.md',
@@ -93,8 +94,8 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['troubleshooting', 'support'],
               created: new Date(),
               modified: new Date(),
-              category: 'resources' as const
-            }
+              category: 'resources' as const,
+            },
           },
           {
             path: 'projects/main-project.md',
@@ -106,9 +107,9 @@ Also see [[projects/main-project]] for implementation details.`,
               created: new Date(),
               modified: new Date(),
               category: 'projects' as const,
-              status: 'active'
-            }
-          }
+              status: 'active',
+            },
+          },
         ];
       },
 
@@ -120,15 +121,15 @@ Also see [[projects/main-project]] for implementation details.`,
         // Verify hub has backlinks
         const hubBacklinksResult = context.backlinkManager.getBacklinks('resources/index.md');
         const hubBacklinks = hubBacklinksResult.backlinks;
-        IntegrationAssertions.assertBacklinks(
-          'resources/index.md',
-          hubBacklinks,
-          ['resources/troubleshooting.md', 'projects/main-project.md']
-        );
+        IntegrationAssertions.assertBacklinks('resources/index.md', hubBacklinks, [
+          'resources/troubleshooting.md',
+          'projects/main-project.md',
+        ]);
 
         // Update a spoke document to add more cross-links
         await context.documentUpdater.updateDocument('resources/api-docs.md', {
-          content: 'API reference. See also [[resources/dev-guide]], [[resources/user-guide]], and [[resources/troubleshooting]]. Back to [[resources/index]].'
+          content:
+            'API reference. See also [[resources/dev-guide]], [[resources/user-guide]], and [[resources/troubleshooting]]. Back to [[resources/index]].',
         });
       },
 
@@ -138,7 +139,7 @@ Also see [[projects/main-project]] for implementation details.`,
         IntegrationAssertions.assertLinkConsistency(
           context.documents,
           context.linkIndex,
-          allBacklinks
+          allBacklinks,
         );
 
         // Verify no orphaned documents (all should have at least one backlink except the hub)
@@ -146,15 +147,16 @@ Also see [[projects/main-project]] for implementation details.`,
         expect(orphans.length).toBe(0); // All documents are connected
 
         // Verify graph traversal works
-        const apiDocsBacklinksResult = context.backlinkManager.getBacklinks('resources/api-docs.md');
+        const apiDocsBacklinksResult =
+          context.backlinkManager.getBacklinks('resources/api-docs.md');
         const apiDocsBacklinks = apiDocsBacklinksResult.backlinks;
         IntegrationAssertions.assertBacklinks(
           'resources/api-docs.md',
           apiDocsBacklinks,
           ['resources/index.md', 'resources/dev-guide.md'],
-          { exactMatch: true }
+          { exactMatch: true },
         );
-      }
+      },
     });
 
     expect(result.success).toBe(true);
@@ -163,7 +165,7 @@ Also see [[projects/main-project]] for implementation details.`,
   it('should detect and handle circular references', async () => {
     const result = await harness.executeScenario({
       name: 'Circular Reference Detection',
-      
+
       setup: async () => {
         return [
           {
@@ -175,8 +177,8 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['area'],
               created: new Date(),
               modified: new Date(),
-              category: 'areas' as const
-            }
+              category: 'areas' as const,
+            },
           },
           {
             path: 'areas/area-b.md',
@@ -187,8 +189,8 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['area'],
               created: new Date(),
               modified: new Date(),
-              category: 'areas' as const
-            }
+              category: 'areas' as const,
+            },
           },
           {
             path: 'areas/area-c.md',
@@ -199,9 +201,9 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['area'],
               created: new Date(),
               modified: new Date(),
-              category: 'areas' as const
-            }
-          }
+              category: 'areas' as const,
+            },
+          },
         ];
       },
 
@@ -210,8 +212,8 @@ Also see [[projects/main-project]] for implementation details.`,
         for (const doc of ['areas/area-a.md', 'areas/area-b.md', 'areas/area-c.md']) {
           const forwardLinks = await context.backlinkManager.getForwardLinks(doc);
           const backlinksResult = context.backlinkManager.getBacklinks(doc);
-        const backlinks = backlinksResult.backlinks;
-          
+          const backlinks = backlinksResult.backlinks;
+
           expect(forwardLinks.length).toBe(2);
           expect(backlinks.length).toBe(2);
         }
@@ -222,14 +224,14 @@ Also see [[projects/main-project]] for implementation details.`,
         IntegrationAssertions.assertLinkConsistency(
           context.documents,
           context.linkIndex,
-          await context.backlinkManager.getAllBacklinks()
+          await context.backlinkManager.getAllBacklinks(),
         );
 
         // Verify graph stats
         const stats = context.backlinkManager.getStats();
         expect(stats.documentCount || stats.totalDocuments).toBe(3);
         expect(stats.linkCount || stats.totalBacklinks).toBe(6); // Each doc has 2 backlinks
-      }
+      },
     });
 
     expect(result.success).toBe(true);
@@ -238,7 +240,7 @@ Also see [[projects/main-project]] for implementation details.`,
   it('should handle broken links correctly', async () => {
     const result = await harness.executeScenario({
       name: 'Broken Link Detection',
-      
+
       setup: async () => {
         return [
           {
@@ -254,8 +256,8 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['project', 'test'],
               created: new Date(),
               modified: new Date(),
-              category: 'projects' as const
-            }
+              category: 'projects' as const,
+            },
           },
           {
             path: 'projects/existing-project.md',
@@ -266,8 +268,8 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['project'],
               created: new Date(),
               modified: new Date(),
-              category: 'projects' as const
-            }
+              category: 'projects' as const,
+            },
           },
           {
             path: 'areas/valid-area.md',
@@ -278,47 +280,49 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['area'],
               created: new Date(),
               modified: new Date(),
-              category: 'areas' as const
-            }
-          }
+              category: 'areas' as const,
+            },
+          },
         ];
       },
 
       execute: async (context) => {
         // Get broken links
         const brokenLinks = await context.backlinkManager.getBrokenLinks();
-        
+
         expect(brokenLinks.length).toBe(2);
         expect(brokenLinks).toContainEqual({
           source: 'projects/project-with-broken-links.md',
           target: 'projects/non-existent-project.md',
           line: expect.any(Number),
-          column: expect.any(Number)
+          column: expect.any(Number),
         });
         expect(brokenLinks).toContainEqual({
           source: 'projects/project-with-broken-links.md',
           target: 'resources/missing-resource.md',
           line: expect.any(Number),
-          column: expect.any(Number)
+          column: expect.any(Number),
         });
       },
 
       verify: async (context) => {
         // Verify valid links still have proper backlinks
-        const existingBacklinksResult = context.backlinkManager.getBacklinks('projects/existing-project.md');
+        const existingBacklinksResult = context.backlinkManager.getBacklinks(
+          'projects/existing-project.md',
+        );
         const existingBacklinks = existingBacklinksResult.backlinks;
         IntegrationAssertions.assertBacklinks(
           'projects/existing-project.md',
           existingBacklinks,
           ['projects/project-with-broken-links.md'],
-          { exactMatch: true }
+          { exactMatch: true },
         );
 
         // Verify stats account for broken links
         const stats = context.backlinkManager.getStats();
         // Broken links might be tracked separately
         expect(brokenLinks.length).toBe(2);
-      }
+      },
     });
 
     expect(result.success).toBe(true);
@@ -327,7 +331,7 @@ Also see [[projects/main-project]] for implementation details.`,
   it('should handle link updates during document moves', async () => {
     const result = await harness.executeScenario({
       name: 'Link Updates on Document Move',
-      
+
       setup: async () => {
         return [
           {
@@ -339,8 +343,8 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['project', 'movable'],
               created: new Date(),
               modified: new Date(),
-              category: 'projects' as const
-            }
+              category: 'projects' as const,
+            },
           },
           {
             path: 'resources/guide.md',
@@ -351,8 +355,8 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['guide'],
               created: new Date(),
               modified: new Date(),
-              category: 'resources' as const
-            }
+              category: 'resources' as const,
+            },
           },
           {
             path: 'areas/development.md',
@@ -363,9 +367,9 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['development'],
               created: new Date(),
               modified: new Date(),
-              category: 'areas' as const
-            }
-          }
+              category: 'areas' as const,
+            },
+          },
         ];
       },
 
@@ -373,29 +377,29 @@ Also see [[projects/main-project]] for implementation details.`,
         // Simulate moving a document (delete and recreate)
         const oldPath = 'projects/project-to-move.md';
         const newPath = 'archives/project-moved.md';
-        
+
         // Read old content
         const oldContent = await context.fs.readFile(oldPath);
         const oldDoc = parseWikiLinks(oldContent);
-        
+
         // Delete old file
         await context.fs.deleteFile(oldPath);
-        
+
         // Create new file with updated category
         const newContent = oldContent.replace('category: projects', 'category: archives');
         await context.fs.writeFile(newPath, newContent);
-        
+
         // Update references in other documents
         const filesToUpdate = ['resources/guide.md', 'areas/development.md'];
         for (const file of filesToUpdate) {
           const content = await context.fs.readFile(file);
           const updatedContent = content.replace(
             `[[${oldPath.replace('.md', '')}]]`,
-            `[[${newPath.replace('.md', '')}]]`
+            `[[${newPath.replace('.md', '')}]]`,
           );
           await context.fs.writeFile(file, updatedContent);
         }
-        
+
         // Rebuild index
         await context.backlinkManager.rebuildIndex();
       },
@@ -406,19 +410,21 @@ Also see [[projects/main-project]] for implementation details.`,
         expect(oldExists).toBe(false);
 
         // Verify new path has correct backlinks
-        const newBacklinksResult = context.backlinkManager.getBacklinks('archives/project-moved.md');
+        const newBacklinksResult = context.backlinkManager.getBacklinks(
+          'archives/project-moved.md',
+        );
         const newBacklinks = newBacklinksResult.backlinks;
         IntegrationAssertions.assertBacklinks(
           'archives/project-moved.md',
           newBacklinks,
           ['resources/guide.md', 'areas/development.md'],
-          { exactMatch: true }
+          { exactMatch: true },
         );
 
         // Verify no broken links remain
         const brokenLinks = await context.backlinkManager.getBrokenLinks();
         expect(brokenLinks.length).toBe(0);
-      }
+      },
     });
 
     expect(result.success).toBe(true);
@@ -426,17 +432,18 @@ Also see [[projects/main-project]] for implementation details.`,
 
   it('should maintain performance with deep link chains', async () => {
     const CHAIN_LENGTH = 20;
-    
+
     const result = await harness.executeScenario({
       name: 'Deep Link Chain Performance',
-      
+
       setup: async () => {
         const docs = [];
-        
+
         // Create a chain of documents, each linking to the next
         for (let i = 0; i < CHAIN_LENGTH; i++) {
-          const nextLink = i < CHAIN_LENGTH - 1 ? `[[resources/doc-${i + 1}]]` : '[[resources/doc-0]]'; // Make it circular
-          
+          const nextLink =
+            i < CHAIN_LENGTH - 1 ? `[[resources/doc-${i + 1}]]` : '[[resources/doc-0]]'; // Make it circular
+
           docs.push({
             path: `resources/doc-${i}.md`,
             title: `Document ${i}`,
@@ -446,11 +453,11 @@ Also see [[projects/main-project]] for implementation details.`,
               tags: ['chain', `level-${i}`],
               created: new Date(),
               modified: new Date(),
-              category: 'resources' as const
-            }
+              category: 'resources' as const,
+            },
           });
         }
-        
+
         return docs;
       },
 
@@ -458,17 +465,17 @@ Also see [[projects/main-project]] for implementation details.`,
         // Traverse the chain
         let currentDoc = 'resources/doc-0.md';
         const visited = new Set<string>();
-        
+
         while (!visited.has(currentDoc)) {
           visited.add(currentDoc);
-          
+
           const forwardLinks = await context.backlinkManager.getForwardLinks(currentDoc);
           expect(forwardLinks.length).toBe(1);
-          
+
           // Move to next document
           currentDoc = forwardLinks[0].target + '.md';
         }
-        
+
         expect(visited.size).toBe(CHAIN_LENGTH);
       },
 
@@ -478,8 +485,8 @@ Also see [[projects/main-project]] for implementation details.`,
           const doc = `resources/doc-${i}.md`;
           const forwardLinks = await context.backlinkManager.getForwardLinks(doc);
           const backlinksResult = context.backlinkManager.getBacklinks(doc);
-        const backlinks = backlinksResult.backlinks;
-          
+          const backlinks = backlinksResult.backlinks;
+
           expect(forwardLinks.length).toBe(1);
           expect(backlinks.length).toBe(1);
         }
@@ -488,7 +495,7 @@ Also see [[projects/main-project]] for implementation details.`,
         const stats = context.backlinkManager.getStats();
         expect(stats.documentCount || stats.totalDocuments).toBe(CHAIN_LENGTH);
         expect(stats.linkCount || stats.totalBacklinks).toBe(CHAIN_LENGTH); // Each doc has one backlink
-      }
+      },
     });
 
     expect(result.success).toBe(true);

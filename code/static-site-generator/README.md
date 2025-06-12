@@ -470,8 +470,21 @@ para-ssg generates completely self-contained static websites that work with any 
 
 #### GitHub Pages
 
+##### Project Sites (Subpath Deployment)
+
+When deploying to `username.github.io/repository/`, use the `PARA_SSG_BASE_URL` environment variable:
+
 ```bash
-# Generate site
+# Generate site with base URL for GitHub Pages project site
+PARA_SSG_BASE_URL="/repository/" para-ssg docs/ ./public
+
+# Or use GitHub Actions (see .github/workflows/deploy-gh-pages.yml)
+```
+
+##### User/Organization Sites (Root Deployment)
+
+```bash
+# Generate site for root deployment
 para-ssg docs/ ./public
 
 # Deploy to GitHub Pages
@@ -479,6 +492,19 @@ cp -r public/* docs/
 git add docs/
 git commit -m "Update documentation site"
 git push
+```
+
+##### Automated Deployment with GitHub Actions
+
+See `.github/workflows/deploy-gh-pages.yml` for a complete example that:
+- Builds the Rust binary
+- Generates the site with correct base URL
+- Deploys to gh-pages branch automatically
+
+```yaml
+- name: Generate static site
+  run: |
+    PARA_SSG_BASE_URL="/forge/" cargo run --release -- ../../context ../../build
 ```
 
 #### Netlify

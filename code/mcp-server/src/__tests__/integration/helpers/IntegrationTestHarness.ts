@@ -88,7 +88,7 @@ export class IntegrationTestHarness {
       documentUpdater,
       testRoot: this.testRoot,
       documents: new Map(),
-      linkIndex: new Map()
+      linkIndex: new Map(),
     };
   }
 
@@ -117,7 +117,7 @@ export class IntegrationTestHarness {
     try {
       // Run scenario setup
       const generatedDocs = await scenario.setup();
-      
+
       // Create documents in the test environment
       await this.createDocuments(generatedDocs);
 
@@ -143,7 +143,7 @@ export class IntegrationTestHarness {
       success,
       duration,
       error,
-      metrics: this.collectMetrics()
+      metrics: this.collectMetrics(),
     };
   }
 
@@ -163,7 +163,7 @@ export class IntegrationTestHarness {
         content: doc.content,
         tags: doc.metadata.tags || [],
         category: doc.metadata.category,
-        frontmatter: doc.metadata as any
+        frontmatter: doc.metadata as any,
       });
 
       // Write to filesystem
@@ -199,7 +199,7 @@ export class IntegrationTestHarness {
     return {
       documentCount: this.context.documents.size,
       totalLinks: totalLinks,
-      backlinkCount: this.context.backlinkManager.getStats().linkCount
+      backlinkCount: this.context.backlinkManager.getStats().linkCount,
     };
   }
 
@@ -215,12 +215,12 @@ export class IntegrationTestHarness {
    */
   async waitFor(condition: () => boolean, timeout = 5000, interval = 100): Promise<void> {
     const startTime = Date.now();
-    
+
     while (!condition()) {
       if (Date.now() - startTime > timeout) {
         throw new Error(`Timeout waiting for condition after ${timeout}ms`);
       }
-      await new Promise(resolve => setTimeout(resolve, interval));
+      await new Promise((resolve) => setTimeout(resolve, interval));
     }
   }
 

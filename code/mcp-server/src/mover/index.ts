@@ -7,6 +7,6 @@ export type {
   MoveResult,
   LinkUpdate,
   MoveValidation,
-  RollbackState
+  RollbackState,
 } from './types.js';
 export { DocumentMoveError } from './types.js';
