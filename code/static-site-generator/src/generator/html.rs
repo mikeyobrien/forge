@@ -255,6 +255,110 @@ impl HtmlGenerator {
         )
     }
 
+    /// Generate a subdirectory index page with directory cards
+    pub fn generate_subdirectory_page_with_dirs(
+        &self,
+        subdir_path: &Path,
+        documents: &[Document],
+        subdirectories: &[&crate::utils::DirectoryInfo],
+    ) -> Result<String> {
+        // Convert documents to summaries
+        let mut summaries: Vec<DocumentSummary> = documents.iter()
+            .filter(|doc| !doc.is_draft()) // Exclude drafts from listings
+            .map(|doc| {
+                let url = format!("/{}", doc.output_path.display());
+                let summary = crate::parser::extract_summary(&doc.raw_content, 200);
+
+                DocumentSummary {
+                    url,
+                    title: doc.title().to_string(),
+                    date: doc.date().map(|d| d.format("%Y-%m-%d %H:%M:%S").to_string()),
+                    tags: doc.metadata.tags.clone(),
+                    summary: Some(summary),
+                }
+            })
+            .collect();
+
+        // Sort by date (newest first) or title if no date
+        summaries.sort_by(|a, b| match (&b.date, &a.date) {
+            (Some(d1), Some(d2)) => d1.cmp(d2),
+            (Some(_), None) => std::cmp::Ordering::Less,
+            (None, Some(_)) => std::cmp::Ordering::Greater,
+            (None, None) => a.title.cmp(&b.title),
+        });
+
+        // Generate breadcrumbs
+        let mut breadcrumbs = vec![BreadcrumbItem {
+            title: "Home".to_string(),
+            url: Some("/".to_string()),
+        }];
+
+        let mut current_path = PathBuf::new();
+        for component in subdir_path.components() {
+            if let std::path::Component::Normal(name) = component {
+                let name_str = name.to_string_lossy();
+                current_path.push(name_str.as_ref());
+
+                // Check if it's a PARA category
+                let title = if matches!(
+                    name_str.as_ref(),
+                    "projects" | "areas" | "resources" | "archives"
+                ) {
+                    category_title(&name_str).to_string()
+                } else {
+                    humanize_filename(&name_str)
+                };
+
+                let url = if current_path == subdir_path {
+                    None // Current directory, no link
+                } else {
+                    Some(format!("/{}/", current_path.display()))
+                };
+
+                breadcrumbs.push(BreadcrumbItem { title, url });
+            }
+        }
+
+        let breadcrumb_html = self.template_engine.render_breadcrumbs(&breadcrumbs)?;
+
+        // Get the category from the first path component
+        let category = subdir_path
+            .components()
+            .next()
+            .and_then(|c| {
+                if let std::path::Component::Normal(name) = c {
+                    Some(name.to_string_lossy().to_string())
+                } else {
+                    None
+                }
+            })
+            .filter(|c| matches!(c.as_str(), "projects" | "areas" | "resources" | "archives"));
+
+        // Get the subdirectory name for the title
+        let subdir_name = subdir_path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .map(humanize_filename)
+            .unwrap_or_else(|| "Subdirectory".to_string());
+
+        // Generate subdirectory page content with directory cards
+        let content = self.template_engine.render_subdirectory_index_with_dirs(
+            &subdir_name,
+            &summaries,
+            subdirectories,
+        )?;
+
+        // Generate full page
+        self.template_engine.render_base(
+            &subdir_name,
+            &content,
+            category.as_deref(),
+            Some(&breadcrumb_html),
+            &self.styles,
+            &self.site_title,
+        )
+    }
+
     /// Generate the home page with recently modified files
     pub fn generate_home_page(&self, documents: &[Document]) -> Result<String> {
         // Convert documents to summaries and sort by modification date
@@ -379,6 +483,7 @@ fn category_title(category: &str) -> &str {
 }
 
 /// Get category description
+#[allow(dead_code)]
 fn category_description(category: &str) -> &str {
     match category {
         "projects" => "Active projects with specific outcomes and deadlines",
@@ -390,7 +495,7 @@ fn category_description(category: &str) -> &str {
 }
 
 /// Convert filename to human-readable title
-fn humanize_filename(filename: &str) -> String {
+pub fn humanize_filename(filename: &str) -> String {
     filename
         .replace('-', " ")
         .replace('_', " ")
@@ -490,7 +595,7 @@ mod tests {
         doc.metadata.title = Some("Test Project".to_string());
         doc.metadata.tags = vec!["rust".to_string()];
 
-        let html = generator.generate_home_page(&[&doc]).unwrap();
+        let html = generator.generate_home_page(&[doc]).unwrap();
 
         assert!(html.contains("Test Site"));
         assert!(html.contains(r#"<table class="file-list""#));

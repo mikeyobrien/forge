@@ -98,6 +98,17 @@ const BREADCRUMB_TEMPLATE: &str = r#"
 </nav>
 "#;
 
+/// Subdirectory index page template
+const SUBDIRECTORY_INDEX_TEMPLATE: &str = r#"
+<div class="subdirectory-index">
+    <h1>{subdirectory_title}</h1>
+    <p class="subdirectory-description">{subdirectory_description}</p>
+    <p class="item-count">{item_count} items in this directory</p>
+    
+    {content}
+</div>
+"#;
+
 /// Home page template with modern card layout
 const HOME_PAGE_TEMPLATE: &str = r#"
 <div class="home-page">
@@ -270,6 +281,99 @@ impl TemplateEngine {
         Ok(html)
     }
 
+    /// Render a subdirectory index page with directory cards
+    pub fn render_subdirectory_index_with_dirs(
+        &self,
+        subdirectory_name: &str,
+        documents: &[DocumentSummary],
+        subdirectories: &[&crate::utils::DirectoryInfo],
+    ) -> Result<String> {
+        let mut content = String::new();
+
+        // Add directory cards if there are subdirectories
+        if !subdirectories.is_empty() {
+            content.push_str("<div class=\"directory-cards\">\n");
+            content.push_str("<h2>Subdirectories</h2>\n");
+            content.push_str("<div class=\"directory-grid\">\n");
+
+            for dir in subdirectories {
+                let dir_name = dir
+                    .relative_path
+                    .file_name()
+                    .and_then(|n| n.to_str())
+                    .unwrap_or("Unknown");
+
+                let dir_title = crate::generator::html::humanize_filename(dir_name);
+                let dir_url = format!("/{}/", dir.relative_path.display());
+
+                content.push_str(&format!(
+                    r#"<div class="directory-card">
+                        <a href="{}" class="directory-link">
+                            <h3>{}</h3>
+                            <div class="directory-meta">
+                                <span class="doc-count">{} document{}</span>
+                                {}
+                            </div>
+                        </a>
+                    </div>
+"#,
+                    html_escape(&dir_url),
+                    html_escape(&dir_title),
+                    dir.document_count,
+                    if dir.document_count == 1 { "" } else { "s" },
+                    if dir.subdirectories.is_empty() {
+                        String::new()
+                    } else {
+                        format!(
+                            r#"<span class="subdir-count">{} subdirector{}</span>"#,
+                            dir.subdirectories.len(),
+                            if dir.subdirectories.len() == 1 {
+                                "y"
+                            } else {
+                                "ies"
+                            }
+                        )
+                    }
+                ));
+            }
+
+            content.push_str("</div>\n");
+            content.push_str("</div>\n\n");
+        }
+
+        // Add document entries if there are documents
+        if !documents.is_empty() {
+            content.push_str("<div class=\"document-entries\">\n");
+            content.push_str("<h2>Documents</h2>\n");
+
+            for doc in documents {
+                content.push_str(&self.render_document_entry(doc)?);
+                content.push('\n');
+            }
+
+            content.push_str("</div>\n");
+        }
+
+        // If there's nothing in the directory, show a message
+        if subdirectories.is_empty() && documents.is_empty() {
+            content.push_str("<p class=\"empty-directory\">This directory is empty.</p>\n");
+        }
+
+        // Create the full page with the custom content
+        let total_items = documents.len() + subdirectories.len();
+        let html = self
+            .get_template("subdirectory_index")
+            .replace("{subdirectory_title}", subdirectory_name)
+            .replace(
+                "{subdirectory_description}",
+                &format!("Contents of {}", subdirectory_name),
+            )
+            .replace("{item_count}", &total_items.to_string())
+            .replace("{content}", &content);
+
+        Ok(html)
+    }
+
     /// Render a single document entry for lists
     pub fn render_document_entry(&self, doc: &DocumentSummary) -> Result<String> {
         let mut entry = self
@@ -413,6 +517,7 @@ impl TemplateEngine {
             "base" => BASE_TEMPLATE,
             "document" => DOCUMENT_TEMPLATE,
             "category_index" => CATEGORY_INDEX_TEMPLATE,
+            "subdirectory_index" => SUBDIRECTORY_INDEX_TEMPLATE,
             "document_entry" => DOCUMENT_ENTRY_TEMPLATE,
             "breadcrumb" => BREADCRUMB_TEMPLATE,
             "home_page" => HOME_PAGE_TEMPLATE,

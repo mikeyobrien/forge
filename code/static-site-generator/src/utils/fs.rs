@@ -18,6 +18,19 @@ pub struct DocumentInfo {
     pub category: String,
 }
 
+/// Directory metadata collected during traversal
+#[derive(Debug, Clone, PartialEq)]
+pub struct DirectoryInfo {
+    /// Relative path from root directory
+    pub relative_path: PathBuf,
+    /// PARA category (projects, areas, resources, archives, or subdirectory)
+    pub category: String,
+    /// Direct subdirectories within this directory
+    pub subdirectories: Vec<String>,
+    /// Number of documents directly in this directory
+    pub document_count: usize,
+}
+
 /// Recursively traverse directory and collect markdown files
 ///
 /// # Errors
@@ -27,6 +40,18 @@ pub fn traverse_directory(path: &Path) -> Result<Vec<DocumentInfo>> {
     let mut documents = Vec::new();
     traverse_recursive(path, path, &mut documents)?;
     Ok(documents)
+}
+
+/// Recursively traverse directory and collect both documents and directories
+///
+/// # Errors
+///
+/// Returns error if directory cannot be read or permission denied
+pub fn traverse_directory_full(path: &Path) -> Result<(Vec<DocumentInfo>, Vec<DirectoryInfo>)> {
+    let mut documents = Vec::new();
+    let mut directories = Vec::new();
+    traverse_recursive_full(path, path, &mut documents, &mut directories)?;
+    Ok((documents, directories))
 }
 
 fn traverse_recursive(
@@ -105,6 +130,117 @@ fn traverse_recursive(
                 }
             }
         }
+    }
+
+    Ok(())
+}
+
+fn traverse_recursive_full(
+    root: &Path,
+    current: &Path,
+    documents: &mut Vec<DocumentInfo>,
+    directories: &mut Vec<DirectoryInfo>,
+) -> Result<()> {
+    let entries = fs::read_dir(current).map_err(|e| {
+        ParaSsgError::Io(std::io::Error::new(
+            e.kind(),
+            format!("Failed to read directory '{}': {}", current.display(), e),
+        ))
+    })?;
+
+    let mut subdirs = Vec::new();
+    let mut doc_count = 0;
+
+    for entry in entries {
+        let entry = entry.map_err(|e| {
+            ParaSsgError::Io(std::io::Error::new(
+                e.kind(),
+                format!("Failed to read directory entry: {}", e),
+            ))
+        })?;
+
+        let path = entry.path();
+        let file_type = entry.file_type().map_err(|e| {
+            ParaSsgError::Io(std::io::Error::new(
+                e.kind(),
+                format!("Failed to get file type for '{}': {}", path.display(), e),
+            ))
+        })?;
+
+        if file_type.is_dir() {
+            // Skip hidden directories (starting with .)
+            if let Some(name) = path.file_name() {
+                let name_str = name.to_string_lossy();
+                if name_str.starts_with('.') {
+                    continue;
+                }
+                subdirs.push(name_str.to_string());
+            }
+            // Recursively traverse subdirectories
+            traverse_recursive_full(root, &path, documents, directories)?;
+        } else if file_type.is_file() {
+            // Check if it's a markdown file
+            if let Some(ext) = path.extension() {
+                if ext == "md" {
+                    doc_count += 1;
+
+                    // Get relative path from root
+                    let relative_path = path
+                        .strip_prefix(root)
+                        .map_err(|_| {
+                            ParaSsgError::InvalidPath(format!(
+                                "Failed to get relative path for '{}'",
+                                path.display()
+                            ))
+                        })?
+                        .to_path_buf();
+
+                    // Get file stem (name without extension)
+                    let stem = path
+                        .file_stem()
+                        .and_then(|s| s.to_str())
+                        .ok_or_else(|| {
+                            ParaSsgError::InvalidPath(format!(
+                                "Invalid file name: '{}'",
+                                path.display()
+                            ))
+                        })?
+                        .to_string();
+
+                    // Detect PARA category
+                    let category = crate::utils::detect_para_category(&relative_path)?;
+
+                    documents.push(DocumentInfo {
+                        path: path.clone(),
+                        relative_path,
+                        stem,
+                        category,
+                    });
+                }
+            }
+        }
+    }
+
+    // Add directory info if this is not the root directory
+    if current != root {
+        let relative_path = current
+            .strip_prefix(root)
+            .map_err(|_| {
+                ParaSsgError::InvalidPath(format!(
+                    "Failed to get relative path for '{}'",
+                    current.display()
+                ))
+            })?
+            .to_path_buf();
+
+        let category = crate::utils::detect_para_category(&relative_path)?;
+
+        directories.push(DirectoryInfo {
+            relative_path,
+            category,
+            subdirectories: subdirs,
+            document_count: doc_count,
+        });
     }
 
     Ok(())
@@ -275,6 +411,66 @@ mod tests {
     fn test_traverse_directory_handles_nonexistent_path() {
         let result = traverse_directory(Path::new("/nonexistent/path"));
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_traverse_directory_full() -> Result<()> {
+        let temp_dir = create_test_structure()?;
+        let root = temp_dir.path();
+
+        // Create nested directory structure
+        fs::create_dir_all(root.join("areas/development"))?;
+        fs::create_dir_all(root.join("areas/development/rust"))?;
+        fs::create_dir_all(root.join("areas/development/python"))?;
+
+        // Add files to nested directories
+        File::create(root.join("areas/development/rust/learning.md"))?
+            .write_all(b"# Rust Learning")?;
+        File::create(root.join("areas/development/python/django.md"))?.write_all(b"# Django")?;
+
+        let (documents, directories) = traverse_directory_full(root)?;
+
+        // Verify we found all documents including nested ones
+        let doc_paths: Vec<String> = documents
+            .iter()
+            .map(|d| d.relative_path.to_string_lossy().to_string())
+            .collect();
+
+        assert!(doc_paths.contains(&"areas/development/rust/learning.md".to_string()));
+        assert!(doc_paths.contains(&"areas/development/python/django.md".to_string()));
+
+        // Verify we found all directories including intermediate ones
+        let dir_paths: Vec<String> = directories
+            .iter()
+            .map(|d| d.relative_path.to_string_lossy().to_string())
+            .collect();
+
+        assert!(dir_paths.contains(&"areas".to_string()));
+        assert!(dir_paths.contains(&"areas/development".to_string()));
+        assert!(dir_paths.contains(&"areas/development/rust".to_string()));
+        assert!(dir_paths.contains(&"areas/development/python".to_string()));
+
+        // Verify directory metadata
+        let dev_dir = directories
+            .iter()
+            .find(|d| d.relative_path.to_str() == Some("areas/development"))
+            .expect("Should find development directory");
+
+        assert_eq!(dev_dir.subdirectories.len(), 2);
+        assert!(dev_dir.subdirectories.contains(&"rust".to_string()));
+        assert!(dev_dir.subdirectories.contains(&"python".to_string()));
+        assert_eq!(dev_dir.document_count, 0); // No documents directly in development/
+
+        // Verify nested directories have correct document counts
+        let rust_dir = directories
+            .iter()
+            .find(|d| d.relative_path.to_str() == Some("areas/development/rust"))
+            .expect("Should find rust directory");
+
+        assert_eq!(rust_dir.document_count, 1);
+        assert_eq!(rust_dir.subdirectories.len(), 0);
+
+        Ok(())
     }
 
     #[test]

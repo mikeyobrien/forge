@@ -727,36 +727,39 @@
        ========================================================================== */
     
     .category-index h1 {
-        font-size: clamp(1.75rem, 4vw, 2rem);
-        margin-bottom: 0.5rem;
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        margin-bottom: var(--space-2);
         color: var(--text-primary);
-        font-weight: 600;
+        font-weight: 700;
         letter-spacing: -0.025em;
         line-height: 1.2;
     }
     
     .category-description {
         color: var(--text-secondary);
-        margin-bottom: var(--space-4);
+        margin-bottom: var(--space-3);
         font-style: italic;
+        line-height: 1.5;
     }
     
     .document-count {
         color: var(--text-muted);
         font-size: 0.9rem;
         margin-bottom: var(--space-4);
+        padding-bottom: var(--space-2);
+        border-bottom: 1px solid var(--border-primary);
     }
     
     .document-list {
         display: grid;
-        gap: var(--space-2);
+        gap: var(--space-3);
         grid-template-columns: 1fr;
     }
     
     .document-entry {
-        padding: var(--space-2);
+        padding: var(--space-3);
         border: 1px solid var(--border-primary);
-        border-radius: 5px;
+        border-radius: 8px;
         background-color: var(--surface-raised);
         transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
                     background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
@@ -794,6 +797,121 @@
     .summary {
         color: var(--text-secondary);
         line-height: 1.5;
+    }
+    
+    /* ==========================================================================
+       Directory Cards
+       ========================================================================== */
+    
+    .directory-cards {
+        margin-bottom: var(--space-4);
+    }
+    
+    .directory-cards h2 {
+        font-size: 1.5rem;
+        margin-bottom: var(--space-3);
+        color: var(--text-primary);
+    }
+    
+    .directory-grid {
+        display: grid;
+        gap: var(--space-3);
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    
+    .directory-card {
+        background-color: var(--surface-raised);
+        border: 1px solid var(--border-primary);
+        border-radius: 8px;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .directory-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent-primary);
+        background-color: var(--surface-overlay);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    
+    .directory-link {
+        display: block;
+        padding: var(--space-3);
+        text-decoration: none;
+        color: inherit;
+        height: 100%;
+    }
+    
+    .directory-card h3 {
+        font-size: 1.25rem;
+        margin-bottom: var(--space-2);
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+    
+    .directory-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+        font-size: 0.875rem;
+        color: var(--text-muted);
+    }
+    
+    .directory-meta .doc-count {
+        background-color: var(--bg-tertiary);
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+    
+    .directory-meta .subdir-count {
+        background-color: var(--bg-tertiary);
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+    
+    .subdirectory-index .document-entries {
+        margin-top: var(--space-4);
+    }
+    
+    .subdirectory-index .document-entries h2 {
+        font-size: 1.5rem;
+        margin-bottom: var(--space-3);
+        color: var(--text-primary);
+    }
+    
+    .empty-directory {
+        text-align: center;
+        color: var(--text-muted);
+        padding: var(--space-6) var(--space-3);
+        font-style: italic;
+    }
+    
+    /* Subdirectory index spacing */
+    .subdirectory-index h1 {
+        font-size: 2.5rem;
+        margin-bottom: var(--space-2);
+        background: var(--gradient-primary);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+    
+    .subdirectory-description {
+        color: var(--text-secondary);
+        margin-bottom: var(--space-3);
+        font-style: italic;
+        line-height: 1.5;
+    }
+    
+    .item-count {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: var(--space-4);
+        padding-bottom: var(--space-2);
+        border-bottom: 1px solid var(--border-primary);
     }
     
     /* ==========================================================================
@@ -1082,63 +1200,45 @@
 </nav>
 
             
-<div class="category-index">
+<div class="subdirectory-index">
     <h1>Areas</h1>
-    <p class="category-description">Ongoing responsibilities and areas of focus</p>
-    <p class="document-count">7 documents in this category</p>
+    <p class="subdirectory-description">Contents of Areas</p>
+    <p class="item-count">3 items in this directory</p>
     
-    <div class="document-list">
-        
-<div class="document-entry">
-    <h2><a href="/areas/active-sessions/do-hot-reloading-para-ssg-2025-01-11.html">Do Session: Add hot-reloading to para-ssg</a></h2>
-    <div class="entry-meta"><time>2025-06-12 03:30:27</time> <div class="tags"><span class="tag">do</span> <span class="tag">session</span> <span class="tag">active</span> <span class="tag">para-ssg</span> <span class="tag">hot-reload</span></div></div>
-    <p class="summary">Do Session: Add hot-reloading to para-ssg Created: 2025-01-11 10:00:00 Request Analysis Original Request Add a new argument to para-ssg that allows for hot-reloading. Task Type Implementation Scope...</p>
+    <div class="directory-cards">
+<h2>Subdirectories</h2>
+<div class="directory-grid">
+<div class="directory-card">
+                        <a href="/areas/journal/" class="directory-link">
+                            <h3>Journal</h3>
+                            <div class="directory-meta">
+                                <span class="doc-count">1 document</span>
+                                
+                            </div>
+                        </a>
+                    </div>
+<div class="directory-card">
+                        <a href="/areas/development/" class="directory-link">
+                            <h3>Development</h3>
+                            <div class="directory-meta">
+                                <span class="doc-count">1 document</span>
+                                
+                            </div>
+                        </a>
+                    </div>
+<div class="directory-card">
+                        <a href="/areas/active-sessions/" class="directory-link">
+                            <h3>Active Sessions</h3>
+                            <div class="directory-meta">
+                                <span class="doc-count">4 documents</span>
+                                
+                            </div>
+                        </a>
+                    </div>
+</div>
 </div>
 
 
-<div class="document-entry">
-    <h2><a href="/areas/active-sessions/prompt-execution-landing-page-modernization-2025-06-11.html">Prompt Execution Log: Landing Page Modernization - June 11, 2025</a></h2>
-    <div class="entry-meta"><time>2025-06-12 02:03:31</time> <div class="tags"><span class="tag">prompt-execution</span> <span class="tag">systematic</span> <span class="tag">active</span> <span class="tag">session-log</span> <span class="tag">landing-page-modernization</span></div></div>
-    <p class="summary">Prompt Execution Log: Landing Page Modernization - June 11, 2025 This document tracks all prompt executions for landing-page-modernization on June 11, 2025. Session 1: Starting Systematic Execution...</p>
-</div>
-
-
-<div class="document-entry">
-    <h2><a href="/areas/journal/ssg-minimal-theme-improvements-2025-06-11.html">SSG Minimal Theme Improvements - 2025-06-11</a></h2>
-    <div class="entry-meta"><time>2025-06-12 01:20:54</time> <div class="tags"><span class="tag">journal</span> <span class="tag">development</span> <span class="tag">ssg</span> <span class="tag">theme</span> <span class="tag">improvements</span> <span class="tag">dark-mode</span></div></div>
-    <p class="summary">SSG Minimal Theme Improvements - 2025-06-11 Overview Successfully implemented major improvements to the static site generator&#39;s minimal dark theme, addressing user feedback about empty columns,...</p>
-</div>
-
-
-<div class="document-entry">
-    <h2><a href="/areas/development/context-update-tool-enhancement-plan.html">Context Update Tool Enhancement Plan</a></h2>
-    <div class="entry-meta"><time>2025-06-12 00:35:35</time> <div class="tags"><span class="tag">mcp</span> <span class="tag">context-manager</span> <span class="tag">enhancement</span> <span class="tag">design</span></div></div>
-    <p class="summary">Context Update Tool Enhancement Plan Problem Statement The current   tool has significant limitations:  blindly appends, causing duplicates  replaces everything, losing granular control No ability to...</p>
-</div>
-
-
-<div class="document-entry">
-    <h2><a href="/areas/active-sessions/prompt-execution-static-website-generator-2025-06-11.html">Prompt Execution Log: Static Website Generator - 2025-06-11</a></h2>
-    <div class="entry-meta"><time>2025-06-11 22:29:07</time> <div class="tags"><span class="tag">prompt-execution</span> <span class="tag">systematic</span> <span class="tag">active</span> <span class="tag">session-log</span></div></div>
-    <p class="summary">Prompt Execution Log: Static Website Generator - 2025-06-11 This document tracks all prompt executions for static-website-generator on 2025-06-11. Session 1: 14:45 Prompt Plan Status Plan :...</p>
-</div>
-
-
-<div class="document-entry">
-    <h2><a href="/areas/active-sessions/prompt-execution-static-website-generator-20250106.html">Prompt Execution: Static Website Generator</a></h2>
-    <div class="entry-meta"><time>2025-06-11 21:59:27</time> <div class="tags"><span class="tag">prompt-execution</span> <span class="tag">systematic</span> <span class="tag">active</span> <span class="tag">rust</span> <span class="tag">static-site-generator</span></div></div>
-    <p class="summary">Prompt Execution Session: Static Website Generator Session: 2025-06-11 15:35:00 Prompt Plan Status Plan : projects/static-website-generator-prompt-plan  Total Prompts : 16  Completed : 0 ✅ ...</p>
-</div>
-
-
-<div class="document-entry">
-    <h2><a href="/projects/test-area-moved.html">Test Area</a></h2>
-    <div class="entry-meta"><time>2025-06-11 20:27:46</time> <div class="tags"><span class="tag">test</span> <span class="tag">area</span> <span class="tag">updated</span></div></div>
-    <p class="summary">This is a test area for ongoing responsibilities. \n\nThis content has been updated!</p>
-</div>
-
-
-    </div>
 </div>
 
         </div>

@@ -92,11 +92,11 @@ pub fn generate_site(config: &Config) -> Result<()> {
     let start_time = std::time::Instant::now();
     config.validate()?;
 
-    // Discover all markdown documents
+    // Discover all markdown documents and directories
     let input_path = Path::new(&config.input_dir);
     println!("📂 Discovering documents in '{}'...", config.input_dir);
 
-    let document_infos = utils::traverse_directory(input_path)?;
+    let (document_infos, directory_infos) = utils::traverse_directory_full(input_path)?;
     let stats = utils::ParaStatistics::from_documents(&document_infos);
 
     if stats.total_count == 0 {
@@ -410,27 +410,52 @@ pub fn generate_site(config: &Config) -> Result<()> {
             generator.write_page(&index_path, &html)?;
 
             // Generate subdirectory index pages
-            let mut subdirs: std::collections::HashMap<PathBuf, Vec<&Document>> =
+            // First, collect all directories under this category
+            let category_dirs: Vec<&utils::DirectoryInfo> = directory_infos
+                .iter()
+                .filter(|dir| dir.relative_path.starts_with(category))
+                .collect();
+
+            // Group documents by their parent directory
+            let mut docs_by_dir: std::collections::HashMap<PathBuf, Vec<&Document>> =
                 std::collections::HashMap::new();
 
-            // Group documents by subdirectory
             for doc in docs {
                 if let Some(parent) = doc.relative_path.parent() {
-                    // Check if this is a subdirectory (not just the category root)
-                    if parent != Path::new(category) && parent.starts_with(category) {
-                        subdirs
-                            .entry(parent.to_path_buf())
-                            .or_insert_with(Vec::new)
-                            .push(doc);
-                    }
+                    docs_by_dir
+                        .entry(parent.to_path_buf())
+                        .or_insert_with(Vec::new)
+                        .push(doc);
                 }
             }
 
             // Generate index page for each subdirectory
-            for (subdir_path, subdir_docs) in subdirs {
-                let subdir_docs_owned: Vec<Document> = subdir_docs.into_iter().cloned().collect();
-                let html =
-                    generator.generate_subdirectory_page(&subdir_path, &subdir_docs_owned)?;
+            for dir_info in category_dirs {
+                let subdir_path = &dir_info.relative_path;
+
+                // Get documents in this directory
+                let subdir_docs = docs_by_dir
+                    .get(subdir_path)
+                    .map(|docs| docs.iter().map(|&d| d.clone()).collect())
+                    .unwrap_or_else(Vec::new);
+
+                // Get subdirectories of this directory
+                let child_dirs: Vec<&utils::DirectoryInfo> = directory_infos
+                    .iter()
+                    .filter(|d| {
+                        if let Some(parent) = d.relative_path.parent() {
+                            parent == subdir_path
+                        } else {
+                            false
+                        }
+                    })
+                    .collect();
+
+                let html = generator.generate_subdirectory_page_with_dirs(
+                    subdir_path,
+                    &subdir_docs,
+                    &child_dirs,
+                )?;
                 let index_path = subdir_path.join("index.html");
                 generator.write_page(&index_path, &html)?;
             }
