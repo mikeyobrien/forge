@@ -32,6 +32,9 @@ rayon = "1.8"
 
 [dev-dependencies]
 tempfile = "3.0"
+walkdir = "2.4"
+criterion = "0.5"
+regex = "1.10"
 
 [profile.release]
 lto = true
