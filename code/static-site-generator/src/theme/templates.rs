@@ -21,12 +21,12 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
     <header>
         <nav>
             <div class="nav-container">
-                <h1><a href="/">{site_title}</a></h1>
+                <h1><a href="{base_url}">{site_title}</a></h1>
                 <ul class="nav-menu">
-                    <li><a href="/projects/" class="{projects_active}">P</a></li>
-                    <li><a href="/areas/" class="{areas_active}">A</a></li>
-                    <li><a href="/resources/" class="{resources_active}">R</a></li>
-                    <li><a href="/archives/" class="{archives_active}">A</a></li>
+                    <li><a href="{base_url}projects/" class="{projects_active}">P</a></li>
+                    <li><a href="{base_url}areas/" class="{areas_active}">A</a></li>
+                    <li><a href="{base_url}resources/" class="{resources_active}">R</a></li>
+                    <li><a href="{base_url}archives/" class="{archives_active}">A</a></li>
                 </ul>
             </div>
         </nav>
@@ -114,10 +114,10 @@ const HOME_PAGE_TEMPLATE: &str = r#"
 <div class="home-page">
     <div class="para-hero">
         <div class="para-letters">
-            <a href="/projects/" class="para-letter">P</a>
-            <a href="/areas/" class="para-letter">A</a>
-            <a href="/resources/" class="para-letter">R</a>
-            <a href="/archives/" class="para-letter">A</a>
+            <a href="{base_url}projects/" class="para-letter">P</a>
+            <a href="{base_url}areas/" class="para-letter">A</a>
+            <a href="{base_url}resources/" class="para-letter">R</a>
+            <a href="{base_url}archives/" class="para-letter">A</a>
         </div>
         <p class="para-subtitle">Recently modified files</p>
     </div>
@@ -151,6 +151,7 @@ impl TemplateEngine {
         breadcrumbs: Option<&str>,
         styles: &str,
         site_title: &str,
+        base_url: &str,
     ) -> Result<String> {
         let title_separator = if title.is_empty() { "" } else { " | " };
         let mut html = self
@@ -160,6 +161,7 @@ impl TemplateEngine {
             .replace("{site_title}", &html_escape(site_title))
             .replace("{content}", content)
             .replace("{styles}", styles)
+            .replace("{base_url}", base_url)
             .replace("{search_script}", &generate_search_script());
 
         // Set active navigation state
@@ -448,7 +450,7 @@ impl TemplateEngine {
     }
 
     /// Render home page with recently modified files
-    pub fn render_home_page(&self, documents: &[DocumentSummary]) -> Result<String> {
+    pub fn render_home_page(&self, documents: &[DocumentSummary], base_url: &str) -> Result<String> {
         let mut file_entries = String::new();
 
         for doc in documents {
@@ -502,7 +504,8 @@ impl TemplateEngine {
 
         let html = self
             .get_template("home_page")
-            .replace("{file_entries}", &file_entries);
+            .replace("{file_entries}", &file_entries)
+            .replace("{base_url}", base_url);
 
         Ok(html)
     }
@@ -631,6 +634,7 @@ mod tests {
                 None,
                 "body { margin: 0; }",
                 "Test Site",
+                "/",
             )
             .unwrap();
 

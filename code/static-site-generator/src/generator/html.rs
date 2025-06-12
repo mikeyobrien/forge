@@ -16,16 +16,18 @@ pub struct HtmlGenerator {
     output_dir: PathBuf,
     styles: String,
     site_title: String,
+    base_url: String,
 }
 
 impl HtmlGenerator {
     /// Create a new HTML generator
-    pub fn new(output_dir: PathBuf, site_title: String) -> Self {
+    pub fn new(output_dir: PathBuf, site_title: String, base_url: String) -> Self {
         Self {
             template_engine: TemplateEngine::new(),
             output_dir,
             styles: get_default_styles(),
             site_title,
+            base_url,
         }
     }
 
@@ -95,6 +97,7 @@ impl HtmlGenerator {
             Some(&breadcrumb_html),
             &self.styles,
             &self.site_title,
+            &self.base_url,
         )
     }
 
@@ -151,6 +154,7 @@ impl HtmlGenerator {
             Some(&breadcrumb_html),
             &self.styles,
             &self.site_title,
+            &self.base_url,
         )
     }
 
@@ -252,6 +256,7 @@ impl HtmlGenerator {
             Some(&breadcrumb_html),
             &self.styles,
             &self.site_title,
+            &self.base_url,
         )
     }
 
@@ -356,6 +361,7 @@ impl HtmlGenerator {
             Some(&breadcrumb_html),
             &self.styles,
             &self.site_title,
+            &self.base_url,
         )
     }
 
@@ -386,7 +392,7 @@ impl HtmlGenerator {
         });
 
         // Generate home page content
-        let content = self.template_engine.render_home_page(&summaries)?;
+        let content = self.template_engine.render_home_page(&summaries, &self.base_url)?;
 
         // Generate full page
         self.template_engine.render_base(
@@ -396,6 +402,7 @@ impl HtmlGenerator {
             None,
             &self.styles,
             &self.site_title,
+            &self.base_url,
         )
     }
 
@@ -537,7 +544,7 @@ mod tests {
     #[test]
     fn test_generate_document_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string());
+        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string(), "/".to_string());
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/test.md"),
@@ -562,7 +569,7 @@ mod tests {
     #[test]
     fn test_generate_category_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string());
+        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string(), "/".to_string());
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/test.md"),
@@ -585,7 +592,7 @@ mod tests {
     #[test]
     fn test_generate_home_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string());
+        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string(), "/".to_string());
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/test.md"),
@@ -606,7 +613,7 @@ mod tests {
     #[test]
     fn test_write_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string());
+        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string(), "/".to_string());
 
         let content = "<html><body>Test</body></html>";
         generator
@@ -620,7 +627,7 @@ mod tests {
     #[test]
     fn test_breadcrumb_generation_for_document() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string());
+        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string(), "/".to_string());
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/rust/test.md"),

@@ -44,7 +44,7 @@ jobs:
       - name: Generate static site
         run: |
           cd code/static-site-generator
-          RUSTFLAGS="" cargo run --release -- ../../context ../../build
+          RUSTFLAGS="" PARA_SSG_BASE_URL="/forge/" cargo run --release -- ../../context ../../build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
