@@ -70,7 +70,8 @@ pub fn generate_search_script() -> String {
             transform: translateX(-50%);
             width: 90%;
             max-width: 600px;
-            background: #f5f2e8;
+            background: #2a2a2a;
+            border: 1px solid #333;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             max-height: 80vh;
@@ -86,10 +87,10 @@ pub fn generate_search_script() -> String {
             padding: 20px;
             font-size: 18px;
             border: none;
-            border-bottom: 2px solid #8b4513;
+            border-bottom: 1px solid #333;
             background: transparent;
             outline: none;
-            color: #3e2723;
+            color: #e0e0e0;
         `;
 
         // Create results container
@@ -153,7 +154,7 @@ pub fn generate_search_script() -> String {
         }
 
         if (!searchIndex || !searchIndex.entries) {
-            searchResults.innerHTML = '<p style="color: #8b4513;">Search index not loaded yet...</p>';
+            searchResults.innerHTML = '<p style="color: #a0a0a0;">Search index not loaded yet...</p>';
             return;
         }
 
@@ -213,7 +214,7 @@ pub fn generate_search_script() -> String {
 
     function displayResults(results, query) {
         if (results.length === 0) {
-            searchResults.innerHTML = '<p style="color: #8b4513;">No results found</p>';
+            searchResults.innerHTML = '<p style="color: #a0a0a0;">No results found</p>';
             return;
         }
 
@@ -226,25 +227,26 @@ pub fn generate_search_script() -> String {
                 <div class="search-result" data-index="${index}" style="
                     padding: 15px;
                     margin-bottom: 10px;
-                    background: white;
+                    background: #1a1a1a;
+                    border: 1px solid #333;
                     border-radius: 4px;
                     cursor: pointer;
                     transition: background 0.2s;
-                " onmouseover="this.style.background='#f5deb3'" onmouseout="this.style.background='white'">
-                    <h3 style="margin: 0 0 5px 0; color: #8b4513;">
+                " onmouseover="this.style.background='#333'" onmouseout="this.style.background='#1a1a1a'">
+                    <h3 style="margin: 0 0 5px 0; color: #4a9eff;">
                         <a href="${entry.path}" style="text-decoration: none; color: inherit;">
                             ${highlightedTitle}
                         </a>
                     </h3>
-                    <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">
+                    <p style="margin: 0 0 5px 0; color: #a0a0a0; font-size: 14px;">
                         ${highlightedExcerpt}
                     </p>
-                    <div style="font-size: 12px; color: #999;">
-                        <span style="background: #f5deb3; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
+                    <div style="font-size: 12px; color: #666;">
+                        <span style="background: #333; color: #a0a0a0; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
                             ${entry.category}
                         </span>
                         ${entry.tags.slice(0, 3).map(tag => 
-                            `<span style="background: #e8dcc8; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
+                            `<span style="background: #2a2a2a; color: #a0a0a0; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
                                 ${tag}
                             </span>`
                         ).join('')}
@@ -275,7 +277,7 @@ pub fn generate_search_script() -> String {
         
         for (const word of words) {
             const regex = new RegExp(`(${escapeRegex(word)})`, 'gi');
-            highlighted = highlighted.replace(regex, '<mark style="background: #daa520; padding: 0 2px;">$1</mark>');
+            highlighted = highlighted.replace(regex, '<mark style="background: #007acc; color: #e0e0e0; padding: 0 2px;">$1</mark>');
         }
         
         return highlighted;
@@ -304,10 +306,10 @@ pub fn generate_search_script() -> String {
     function setFocus(results) {
         results.forEach((el, index) => {
             if (index === currentFocus) {
-                el.style.background = '#daa520';
+                el.style.background = '#007acc';
                 el.scrollIntoView({ block: 'nearest' });
             } else {
-                el.style.background = 'white';
+                el.style.background = '#1a1a1a';
             }
         });
     }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>verify-search | forge</title>
+    <title>Context Update Tool Enhancement Plan | forge</title>
     <style>
         
     /* Reset and base styles */
@@ -462,8 +462,8 @@
             <div class="nav-container">
                 <h1><a href="/">forge</a></h1>
                 <ul class="nav-menu">
-                    <li><a href="/projects/" class="active">P</a></li>
-                    <li><a href="/areas/" class="">A</a></li>
+                    <li><a href="/projects/" class="">P</a></li>
+                    <li><a href="/areas/" class="active">A</a></li>
                     <li><a href="/resources/" class="">R</a></li>
                     <li><a href="/archives/" class="">A</a></li>
                 </ul>
@@ -476,67 +476,281 @@
             
 <nav class="breadcrumbs">
     <ol>
-        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/projects/">Projects</a></li><li class="separator">/</li><li><a href="/projects/mcp-server-implementation/">Mcp Server Implementation</a></li><li class="separator">/</li><li class="current">verify-search</li>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/areas/">Areas</a></li><li class="separator">/</li><li><a href="/areas/development/">Development</a></li><li class="separator">/</li><li class="current">Context Update Tool Enhancement Plan</li>
     </ol>
 </nav>
 
             
 <article class="document">
     <header class="document-header">
-        <h1>verify-search</h1>
-        <div class="document-meta"><time class="date">2025-06-11</time></div>
+        <h1>Context Update Tool Enhancement Plan</h1>
+        <div class="document-meta"><time class="date">2025-06-12</time>
+<div class="tags"><span class="tag">mcp</span> <span class="tag">context-manager</span> <span class="tag">enhancement</span> <span class="tag">design</span></div></div>
     </header>
     
     <div class="document-content">
-        <h1>Search Tool Verification</h1>
-<p>The context_search MCP tool has been successfully implemented and tested:</p>
-<h2>Implementation Complete ✓</h2>
+        <h1>Context Update Tool Enhancement Plan</h1>
+<h2>Problem Statement</h2>
+<p>The current <code>context_update</code> tool has significant limitations:</p>
 <ul>
-<li>SearchEngine with document indexing</li>
-<li>Relevance scoring algorithm</li>
-<li>Full MCP tool integration</li>
-<li>Comprehensive test coverage (460+ tests passing)</li>
+<li><code>replace_content=false</code> blindly appends, causing duplicates</li>
+<li><code>replace_content=true</code> replaces everything, losing granular control</li>
+<li>No ability to update specific sections or fields in-place</li>
+<li>Cannot intelligently merge changes with existing content</li>
 </ul>
-<h2>Features Working ✓</h2>
-<ul>
-<li>Content search with snippets</li>
-<li>Tag matching (exact and prefix)</li>
-<li>Title search</li>
-<li>PARA category filtering</li>
-<li>Date range filtering</li>
-<li>Pagination support</li>
-</ul>
-<h2>Direct MCP Protocol Test ✓</h2>
-<p>When tested directly via MCP protocol, the server responded correctly:</p>
-<pre><code class="language-json">{
-  "success": true,
-  "results": [
-    {
-      "path": "projects/search-implementation.md",
-      "title": "Search Implementation Project",
-      "score": 21,
-      "snippet": "...for the **MCP** server...",
-      "tags": ["search", "implementation", "mcp"]
-    },
-    {
-      "path": "resources/mcp-documentation.md",
-      "title": "MCP Server Documentation",
-      "score": 21,
-      "snippet": "# **MCP** Server Documentation...",
-      "tags": ["documentation", "mcp", "reference"]
-    }
-  ],
-  "totalCount": 2,
-  "executionTime": 1
+<p>This is particularly problematic for structured documents like prompt plans where we need to update specific fields (status, completion time) without affecting the rest of the document.</p>
+<h2>Design Goals</h2>
+<ol>
+<li><strong>Intelligent Updates</strong>: Update specific parts of documents without affecting others</li>
+<li><strong>Pattern Matching</strong>: Find and replace based on patterns/regex</li>
+<li><strong>Section Awareness</strong>: Update content within specific sections/headers</li>
+<li><strong>Structured Updates</strong>: Support common document patterns (status fields, checkboxes, etc.)</li>
+<li><strong>Backward Compatibility</strong>: Maintain existing API for simple use cases</li>
+</ol>
+<h2>Proposed Implementation</h2>
+<h3>1. Enhanced Update Modes</h3>
+<p>Add an <code>update_mode</code> parameter with the following options:</p>
+<pre><code class="language-typescript">enum UpdateMode {
+  Replace = "replace",      // Current behavior with replace_content=true
+  Append = "append",        // Current behavior with replace_content=false
+  Patch = "patch",          // New: Apply specific changes
+  Merge = "merge",          // New: Intelligently merge content
+  InPlace = "in_place"      // New: Update specific patterns
 }
 </code></pre>
-<h2>Claude CLI Integration</h2>
-<p>The MCP server is configured and the search tool is available. While there are some timeout issues with the Claude CLI in the current environment, the underlying functionality is working correctly as demonstrated by:</p>
+<h3>2. Pattern-Based Updates</h3>
+<p>Add support for finding and updating specific patterns:</p>
+<pre><code class="language-typescript">interface PatternUpdate {
+  pattern: string | RegExp;   // Pattern to find
+  replacement: string;        // Replacement text
+  occurrence?: "first" | "last" | "all";  // Which occurrences to replace
+  caseInsensitive?: boolean;
+}
+</code></pre>
+<p>Example usage:</p>
+<pre><code class="language-javascript">context_update({
+  path: "projects/prompt-plan",
+  update_mode: "in_place",
+  updates: [{
+    pattern: "**Status**: ⏳ Not Started",
+    replacement: "**Status**: ✅ Complete",
+    occurrence: "first"
+  }]
+})
+</code></pre>
+<h3>3. Section-Based Updates</h3>
+<p>Add ability to update content within specific sections:</p>
+<pre><code class="language-typescript">interface SectionUpdate {
+  section: string;            // Section header to find
+  level?: number;             // Header level (1-6)
+  content?: string;           // New content for the section
+  subsection?: string;        // Optional subsection within the section
+  operation?: "replace" | "append" | "prepend";
+}
+</code></pre>
+<p>Example usage:</p>
+<pre><code class="language-javascript">context_update({
+  path: "projects/prompt-plan",
+  update_mode: "patch",
+  sections: [{
+    section: "Prompt 4.3: Integration Testing &amp; End-to-End Validation",
+    subsection: "Status",
+    content: "✅ Complete"
+  }]
+})
+</code></pre>
+<h3>4. Structured Field Updates</h3>
+<p>Support for common document patterns:</p>
+<pre><code class="language-typescript">interface FieldUpdate {
+  field: string;              // Field name
+  value: string | boolean | number;  // New value
+  format?: "yaml" | "markdown" | "checkbox";  // Field format
+}
+</code></pre>
+<p>Example usage:</p>
+<pre><code class="language-javascript">context_update({
+  path: "projects/prompt-plan",
+  update_mode: "patch",
+  fields: [
+    { field: "status", value: "completed", format: "yaml" },
+    { field: "modified", value: new Date().toISOString(), format: "yaml" },
+    { field: "- [ ] All tests pass", value: true, format: "checkbox" }
+  ]
+})
+</code></pre>
+<h3>5. Smart Merge Capabilities</h3>
+<p>Implement intelligent merging for common scenarios:</p>
+<pre><code class="language-typescript">interface MergeOptions {
+  strategy: "yaml" | "sections" | "lines";
+  conflict_resolution: "ours" | "theirs" | "prompt";
+  preserve_formatting: boolean;
+}
+</code></pre>
+<h3>6. Update Transactions</h3>
+<p>Support atomic updates with rollback:</p>
+<pre><code class="language-typescript">interface UpdateTransaction {
+  operations: UpdateOperation[];
+  atomic: boolean;            // All succeed or all fail
+  validate?: (content: string) =&gt; boolean;  // Validation function
+}
+</code></pre>
+<h2>Implementation Plan</h2>
+<h3>Phase 1: Core Pattern Matching (Week 1)</h3>
 <ul>
-<li>Unit tests passing</li>
-<li>Direct MCP protocol test successful</li>
-<li>Server starting and indexing documents correctly</li>
+<li><input disabled="" type="checkbox"/>
+Implement pattern-based find/replace engine</li>
+<li><input disabled="" type="checkbox"/>
+Add regex support with proper escaping</li>
+<li><input disabled="" type="checkbox"/>
+Create unit tests for pattern matching</li>
+<li><input disabled="" type="checkbox"/>
+Handle edge cases (multiline patterns, special characters)</li>
 </ul>
+<h3>Phase 2: Section Awareness (Week 2)</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Implement markdown section parser</li>
+<li><input disabled="" type="checkbox"/>
+Add section-based content extraction</li>
+<li><input disabled="" type="checkbox"/>
+Create section update logic</li>
+<li><input disabled="" type="checkbox"/>
+Support nested sections and subsections</li>
+</ul>
+<h3>Phase 3: Structured Updates (Week 3)</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Implement YAML frontmatter field updates</li>
+<li><input disabled="" type="checkbox"/>
+Add checkbox state toggling</li>
+<li><input disabled="" type="checkbox"/>
+Support common markdown list patterns</li>
+<li><input disabled="" type="checkbox"/>
+Create field validation logic</li>
+</ul>
+<h3>Phase 4: Smart Merge Engine (Week 4)</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Implement diff/merge algorithms</li>
+<li><input disabled="" type="checkbox"/>
+Add conflict detection and resolution</li>
+<li><input disabled="" type="checkbox"/>
+Create merge strategies for different content types</li>
+<li><input disabled="" type="checkbox"/>
+Build merge preview functionality</li>
+</ul>
+<h3>Phase 5: API Integration (Week 5)</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Update MCP protocol definitions</li>
+<li><input disabled="" type="checkbox"/>
+Maintain backward compatibility</li>
+<li><input disabled="" type="checkbox"/>
+Create comprehensive API documentation</li>
+<li><input disabled="" type="checkbox"/>
+Build migration guide for existing users</li>
+</ul>
+<h3>Phase 6: Testing &amp; Optimization (Week 6)</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Create comprehensive test suite</li>
+<li><input disabled="" type="checkbox"/>
+Performance optimization for large documents</li>
+<li><input disabled="" type="checkbox"/>
+Edge case handling and error recovery</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests with real-world documents</li>
+</ul>
+<h2>Example Use Cases</h2>
+<h3>1. Updating Prompt Plan Status</h3>
+<pre><code class="language-javascript">// Update a specific prompt's status
+context_update({
+  path: "projects/static-website-generator-prompt-plan",
+  update_mode: "in_place",
+  updates: [{
+    pattern: /#### Prompt 4\.3:.*?\n\*\*Status\*\*: ⏳ Not Started/s,
+    replacement: (match) =&gt; match.replace("⏳ Not Started", "✅ Complete")
+  }]
+})
+</code></pre>
+<h3>2. Updating Progress Counts</h3>
+<pre><code class="language-javascript">// Smart update of progress counts
+context_update({
+  path: "projects/prompt-plan",
+  update_mode: "patch",
+  sections: [{
+    section: "Overall Progress",
+    operation: "replace",
+    content: generateProgressSection(completedCount, totalCount)
+  }]
+})
+</code></pre>
+<h3>3. Adding Completion Notes</h3>
+<pre><code class="language-javascript">// Add completion notes to a specific prompt
+context_update({
+  path: "projects/prompt-plan",
+  update_mode: "patch",
+  sections: [{
+    section: "Prompt 4.3: Integration Testing",
+    subsection: "Completion",
+    content: "2025-06-11 15:30:00"
+  }, {
+    section: "Prompt 4.3: Integration Testing",
+    subsection: "Notes",
+    content: "Successfully implemented with 95% test coverage"
+  }]
+})
+</code></pre>
+<h3>4. Batch Status Updates</h3>
+<pre><code class="language-javascript">// Update multiple checkboxes at once
+context_update({
+  path: "projects/prompt-plan",
+  update_mode: "patch",
+  fields: [
+    { field: "- [ ] Integration tests cover all major functionality", value: true, format: "checkbox" },
+    { field: "- [ ] Test document sets comprehensive and realistic", value: true, format: "checkbox" },
+    { field: "- [ ] End-to-end tests validate complete build process", value: true, format: "checkbox" }
+  ]
+})
+</code></pre>
+<h2>Benefits</h2>
+<ol>
+<li><strong>Precise Updates</strong>: No more full document replacements for small changes</li>
+<li><strong>Reduced Errors</strong>: Pattern matching prevents accidental content corruption</li>
+<li><strong>Better Performance</strong>: Only update what needs changing</li>
+<li><strong>Improved UX</strong>: More intuitive API for common operations</li>
+<li><strong>Automation Friendly</strong>: Easier to build tools that update documents</li>
+</ol>
+<h2>Backward Compatibility</h2>
+<p>The existing API remains unchanged:</p>
+<ul>
+<li><code>replace_content=true</code> maps to <code>update_mode="replace"</code></li>
+<li><code>replace_content=false</code> maps to <code>update_mode="append"</code></li>
+<li>New functionality requires explicit use of new parameters</li>
+</ul>
+<h2>Success Metrics</h2>
+<ol>
+<li><strong>Accuracy</strong>: 99%+ success rate for pattern-based updates</li>
+<li><strong>Performance</strong>: &lt;100ms for typical document updates</li>
+<li><strong>Adoption</strong>: 50%+ of update operations use new modes within 3 months</li>
+<li><strong>Error Reduction</strong>: 90% fewer duplicate content issues</li>
+</ol>
+<h2>Open Questions</h2>
+<ol>
+<li>Should we support update previews/dry-runs?</li>
+<li>How to handle updates that would create invalid markdown?</li>
+<li>Should we add undo/redo functionality?</li>
+<li>What level of regex support is needed?</li>
+<li>How to handle concurrent updates to the same document?</li>
+</ol>
+<h2>Next Steps</h2>
+<ol>
+<li>Review and refine API design</li>
+<li>Create detailed technical specification</li>
+<li>Build prototype for pattern matching</li>
+<li>Gather feedback from early users</li>
+<li>Implement in phases with continuous testing</li>
+</ol>
 
     </div>
     

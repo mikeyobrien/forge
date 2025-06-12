@@ -1,8 +1,8 @@
 ---
 title: MCP Server Troubleshooting Guide for Claude CLI
 tags: [mcp, troubleshooting, claude-cli, debugging, stdio]
-created: 2025-01-06T16:00:00Z
-modified: 2025-01-06T16:00:00Z
+created: 2025-06-11T16:00:00Z
+modified: 2025-06-11T16:00:00Z
 ---
 
 # MCP Server Troubleshooting Guide for Claude CLI

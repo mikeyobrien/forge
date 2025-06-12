@@ -62,7 +62,7 @@ impl Config {
             input_dir,
             output_dir,
             base_url: "/".to_string(),
-            site_title: "Knowledge Base".to_string(),
+            site_title: "forge".to_string(),
             verbose: false,
         }
     }
@@ -358,7 +358,7 @@ pub fn generate_site(config: &Config) -> Result<()> {
 
     // Generate HTML pages
     println!("🔨 Generating HTML pages...");
-    let generator = Arc::new(generator::HtmlGenerator::new(output_path.to_path_buf()));
+    let generator = Arc::new(generator::HtmlGenerator::new(output_path.to_path_buf(), config.site_title.clone()));
 
     // Save document count before moving documents
     let total_document_count = documents.len();
@@ -405,14 +405,9 @@ pub fn generate_site(config: &Config) -> Result<()> {
         }
     }
 
-    // Generate home page
-    let mut category_counts = std::collections::HashMap::new();
-    category_counts.insert("projects".to_string(), stats.projects_count);
-    category_counts.insert("areas".to_string(), stats.areas_count);
-    category_counts.insert("resources".to_string(), stats.resources_count);
-    category_counts.insert("archives".to_string(), stats.archives_count);
-
-    let home_html = generator.generate_home_page(&category_counts)?;
+    // Generate home page with all documents for the file list
+    let all_documents: Vec<_> = categories.values().flatten().cloned().collect();
+    let home_html = generator.generate_home_page(&all_documents)?;
     generator.write_page(Path::new("index.html"), &home_html)?;
 
     println!("✅ Generated {} HTML pages", generated_count);
@@ -467,7 +462,7 @@ mod tests {
         assert_eq!(config.input_dir, "/input");
         assert_eq!(config.output_dir, "/output");
         assert_eq!(config.base_url, "/");
-        assert_eq!(config.site_title, "Knowledge Base");
+        assert_eq!(config.site_title, "forge");
     }
 
     #[test]

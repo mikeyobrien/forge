@@ -12,6 +12,7 @@ pub use markdown::*;
 pub use wiki_links::*;
 
 use crate::{ParaSsgError, Result};
+use chrono::{DateTime, Utc};
 use std::fs;
 use std::path::Path;
 
@@ -37,7 +38,16 @@ pub fn parse_document(
     })?;
 
     // Parse frontmatter and extract content
-    let (metadata, raw_content) = parse_frontmatter(&content)?;
+    let (mut metadata, raw_content) = parse_frontmatter(&content)?;
+
+    // If no dates in frontmatter, use file modification time
+    if metadata.date.is_none() && metadata.modified.is_none() && metadata.created.is_none() {
+        if let Ok(file_metadata) = fs::metadata(source_path) {
+            if let Ok(modified_time) = file_metadata.modified() {
+                metadata.modified = Some(DateTime::from(modified_time));
+            }
+        }
+    }
 
     // Convert markdown to HTML
     let html_content = markdown_to_html(&raw_content)?;

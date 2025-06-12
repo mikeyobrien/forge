@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Plan: Context Update Tool Enhancement | forge</title>
+    <style>
+        
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    /* Minimal Dark Theme */
+    :root {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #2a2a2a;
+        --text-primary: #e0e0e0;
+        --text-secondary: #a0a0a0;
+        --text-muted: #666;
+        --border-color: #333;
+        --accent: #007acc;
+        --accent-hover: #0099ff;
+        --link-color: #4a9eff;
+        --link-hover: #66b3ff;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background-color: var(--bg-primary);
+        min-height: 100vh;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Header - minimal navigation */
+    header {
+        background-color: var(--bg-secondary);
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem 0;
+    }
+    
+    .nav-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    header h1 a {
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+    
+    header h1 a:hover {
+        color: var(--accent-hover);
+    }
+    
+    /* Navigation - simple P | A | R | A style */
+    .nav-menu {
+        list-style: none;
+        display: flex;
+        gap: 0;
+        margin: 0;
+    }
+    
+    .nav-menu li:not(:last-child)::after {
+        content: " | ";
+        color: var(--text-muted);
+        margin: 0 0.75rem;
+    }
+    
+    .nav-menu a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s ease;
+    }
+    
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: var(--accent);
+    }
+    
+    /* Hide nav toggle and search in minimal theme */
+    .nav-toggle,
+    .nav-search {
+        display: none;
+    }
+    
+    /* Main content */
+    main {
+        min-height: calc(100vh - 120px);
+        padding: 2rem 0;
+    }
+    
+    /* PARA Hero Section */
+    .para-hero {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem 0;
+    }
+    
+    .para-letters {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .para-letter {
+        font-size: 4rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-shadow: 0 2px 4px rgba(0, 122, 204, 0.3);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .para-letter:hover {
+        color: var(--accent-hover);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+    
+    .para-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin: 0;
+        font-weight: 300;
+    }
+    
+    /* File list table for landing page */
+    .file-list {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+    }
+    
+    .file-list th {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .file-list td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: top;
+    }
+    
+    .file-list tr:hover {
+        background-color: var(--bg-secondary);
+    }
+    
+    .file-list .date {
+        color: var(--text-muted);
+        white-space: nowrap;
+        width: 120px;
+    }
+    
+    .file-list .title a {
+        color: var(--link-color);
+        text-decoration: none;
+    }
+    
+    .file-list .title a:hover {
+        color: var(--link-hover);
+        text-decoration: underline;
+    }
+    
+    .file-list .category {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        width: 100px;
+    }
+    
+    .file-list .tags {
+        font-size: 0.85rem;
+    }
+    
+    .file-list .tag {
+        color: var(--text-secondary);
+        margin-right: 0.5rem;
+    }
+    
+    .file-list .tag:before {
+        content: "\\#";
+        color: var(--text-muted);
+    }
+    
+    .no-tags {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+    
+    /* Document pages */
+    .document h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+    
+    .document-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .document-meta {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+    
+    .document-content {
+        color: var(--text-primary);
+        line-height: 1.7;
+    }
+    
+    .document-content h2,
+    .document-content h3,
+    .document-content h4 {
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+    }
+    
+    .document-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .document-content ul,
+    .document-content ol {
+        margin-bottom: 1rem;
+        margin-left: 1.5rem;
+    }
+    
+    .document-content blockquote {
+        border-left: 3px solid var(--accent);
+        padding-left: 1rem;
+        margin: 1.5rem 0;
+        color: var(--text-secondary);
+        font-style: italic;
+    }
+    
+    .document-content code {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+        font-size: 0.9em;
+    }
+    
+    .document-content pre {
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        padding: 1rem;
+        border-radius: 5px;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+    }
+    
+    .document-content pre code {
+        background: none;
+        padding: 0;
+    }
+    
+    /* Category pages - minimal list */
+    .category-index h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+    
+    .category-description {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    
+    .document-count {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+    
+    .document-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .document-entry {
+        padding: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        background-color: var(--bg-secondary);
+    }
+    
+    .document-entry h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .document-entry h2 a {
+        color: var(--link-color);
+        text-decoration: none;
+    }
+    
+    .document-entry h2 a:hover {
+        color: var(--link-hover);
+    }
+    
+    .entry-meta {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary {
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+    
+    /* Links */
+    a {
+        color: var(--link-color);
+        text-decoration: none;
+    }
+    
+    a:hover {
+        color: var(--link-hover);
+        text-decoration: underline;
+    }
+    
+    /* Tags */
+    .tag {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-right: 0.5rem;
+    }
+    
+    .tag:before {
+        content: "\\#";
+    }
+    
+    /* Breadcrumbs - minimal */
+    .breadcrumbs {
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+    
+    .breadcrumbs ol {
+        list-style: none;
+        display: flex;
+        align-items: center;
+    }
+    
+    .breadcrumbs li {
+        display: inline;
+    }
+    
+    .breadcrumbs a {
+        color: var(--text-secondary);
+        text-decoration: none;
+    }
+    
+    .breadcrumbs a:hover {
+        color: var(--accent);
+    }
+    
+    .breadcrumbs .separator {
+        margin: 0 0.5rem;
+        color: var(--text-muted);
+    }
+    
+    .breadcrumbs .current {
+        color: var(--text-primary);
+    }
+    
+    /* Footer - minimal */
+    footer {
+        background-color: var(--bg-secondary);
+        border-top: 1px solid var(--border-color);
+        padding: 1.5rem 0;
+        margin-top: 3rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .nav-menu {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .file-list {
+            font-size: 0.9rem;
+        }
+        
+        .file-list th,
+        .file-list td {
+            padding: 0.5rem;
+        }
+        
+        .file-list .category,
+        .file-list .tags {
+            display: none;
+        }
+        
+        .container {
+            padding: 0 15px;
+        }
+    }
+    
+    /* Search overlay will be created dynamically by JavaScript */
+    
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1><a href="/">forge</a></h1>
+                <ul class="nav-menu">
+                    <li><a href="/projects/" class="active">P</a></li>
+                    <li><a href="/areas/" class="">A</a></li>
+                    <li><a href="/resources/" class="">R</a></li>
+                    <li><a href="/archives/" class="">A</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/projects/">Projects</a></li><li class="separator">/</li><li class="current">Prompt Plan: Context Update Tool Enhancement</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>Prompt Plan: Context Update Tool Enhancement</h1>
+        <div class="document-meta"><time class="date">2025-06-12</time>
+<span class="status status-active">active</span>
+<div class="tags"><span class="tag">prompt-plan</span> <span class="tag">systematic</span> <span class="tag">development</span> <span class="tag">mcp</span> <span class="tag">context-manager</span></div></div>
+    </header>
+    
+    <div class="document-content">
+        <h1>Prompt Plan: Context Update Tool Enhancement</h1>
+<h2>Created: 2025-06-11 22:00:00</h2>
+<h2>Project Overview</h2>
+<h3>Objective</h3>
+<p>Enhance the MCP context-manager’s update tool to support intelligent, pattern-based updates that can modify specific parts of documents without affecting others, solving issues like duplicate content and enabling precise in-place updates.</p>
+<h3>Technical Context</h3>
+<ul>
+<li><strong>Language</strong>: TypeScript/JavaScript</li>
+<li><strong>Framework</strong>: MCP (Model Context Protocol) SDK</li>
+<li><strong>Testing</strong>: Jest/Mocha with comprehensive unit and integration tests</li>
+<li><strong>Integration</strong>: Existing context-manager MCP server</li>
+<li><strong>Constraints</strong>: Must maintain backward compatibility with existing API</li>
+</ul>
+<h3>Success Definition</h3>
+<p>A fully enhanced context update tool that can perform pattern-based updates, section-aware modifications, structured field updates, and smart merging while maintaining 100% backward compatibility with the existing API.</p>
+<h2>Prompt Sequence</h2>
+<h3>Phase 1: Core Pattern Matching Engine</h3>
+<p><strong>Goal</strong>: Establish the foundation for pattern-based find/replace functionality</p>
+<h4>Prompt 1.1: Pattern Matching Infrastructure</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Create core pattern matching engine with regex support
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Pattern matching module with TypeScript interfaces</li>
+<li><input disabled="" type="checkbox"/>
+Regex and string pattern support</li>
+<li><input disabled="" type="checkbox"/>
+Occurrence control (first/last/all)</li>
+<li><input disabled="" type="checkbox"/>
+Case sensitivity options</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests for pattern matching</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Create a pattern matching engine for the context-manager MCP tool. Implement in TypeScript:
+1. Define interfaces for PatternUpdate with pattern (string|RegExp), replacement, occurrence control
+2. Create PatternMatcher class with findMatches() and applyReplacements() methods
+3. Support first/last/all occurrence modes and case sensitivity
+4. Handle edge cases: multiline patterns, special characters, overlapping matches
+5. Write comprehensive unit tests covering all pattern types and edge cases
+6. Ensure the module is reusable and well-documented
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+PatternMatcher class handles string and regex patterns</li>
+<li><input disabled="" type="checkbox"/>
+Occurrence modes work correctly (first/last/all)</li>
+<li><input disabled="" type="checkbox"/>
+Case sensitivity toggle functions properly</li>
+<li><input disabled="" type="checkbox"/>
+All unit tests pass with 100% coverage</li>
+<li><input disabled="" type="checkbox"/>
+Module exports clean TypeScript interfaces</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 1.2: Pattern Replacement Engine</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Implement safe pattern replacement with rollback capability
+<strong>Dependencies</strong>: [Requires Prompt 1.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Replacement engine with validation</li>
+<li><input disabled="" type="checkbox"/>
+Rollback/undo functionality</li>
+<li><input disabled="" type="checkbox"/>
+Preview mode for replacements</li>
+<li><input disabled="" type="checkbox"/>
+Performance optimization for large documents</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests with real content</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Extend the pattern matching engine with safe replacement functionality:
+1. Create ReplacementEngine class that uses PatternMatcher
+2. Implement applyPatternUpdates() with atomic operations
+3. Add validation to ensure replacements don't break document structure
+4. Create preview mode that shows changes without applying them
+5. Optimize for performance with large documents (&gt;10MB)
+6. Write integration tests using sample markdown documents
+7. Add proper error handling and descriptive error messages
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Replacements are atomic (all or nothing)</li>
+<li><input disabled="" type="checkbox"/>
+Preview mode accurately shows changes</li>
+<li><input disabled="" type="checkbox"/>
+Performance: &lt;100ms for typical documents</li>
+<li><input disabled="" type="checkbox"/>
+Validation prevents invalid markdown</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests pass with various document types</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h3>Phase 2: Section-Aware Document Parsing</h3>
+<p><strong>Goal</strong>: Enable updates within specific markdown sections and subsections</p>
+<h4>Prompt 2.1: Markdown Section Parser</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Parse markdown documents into hierarchical section structure
+<strong>Dependencies</strong>: [Requires Prompt 1.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Section parser for markdown headers</li>
+<li><input disabled="" type="checkbox"/>
+Hierarchical section tree structure</li>
+<li><input disabled="" type="checkbox"/>
+Section content extraction</li>
+<li><input disabled="" type="checkbox"/>
+Support for nested sections</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests for various markdown formats</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Create a markdown section parser for the context update tool:
+1. Implement MarkdownSectionParser class that parses headers (# to ######)
+2. Build hierarchical SectionNode tree with title, level, content, children
+3. Support section extraction by path (e.g., "Phase 1/Prompt 1.1")
+4. Handle edge cases: sections without content, duplicate names, special characters
+5. Create getSectionContent() and setSectionContent() methods
+6. Write unit tests covering various markdown structures and edge cases
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Parser correctly identifies all header levels</li>
+<li><input disabled="" type="checkbox"/>
+Section hierarchy accurately represents document structure</li>
+<li><input disabled="" type="checkbox"/>
+Section extraction works with nested paths</li>
+<li><input disabled="" type="checkbox"/>
+Content boundaries correctly identified</li>
+<li><input disabled="" type="checkbox"/>
+Unit tests cover all markdown variations</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 2.2: Section-Based Update Engine</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Implement section-aware content updates
+<strong>Dependencies</strong>: [Requires Prompt 2.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Section update functionality</li>
+<li><input disabled="" type="checkbox"/>
+Subsection support</li>
+<li><input disabled="" type="checkbox"/>
+Section operations (replace/append/prepend)</li>
+<li><input disabled="" type="checkbox"/>
+Section creation if missing</li>
+<li><input disabled="" type="checkbox"/>
+Integration with pattern engine</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Build section-based update functionality:
+1. Create SectionUpdateEngine using MarkdownSectionParser
+2. Implement updateSection() with operation modes (replace/append/prepend)
+3. Support subsection updates with path notation
+4. Add createSectionIfMissing option for new sections
+5. Integrate with PatternMatcher for section-scoped pattern updates
+6. Write integration tests simulating real update scenarios
+7. Ensure updates preserve document formatting and structure
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Section updates work for all header levels</li>
+<li><input disabled="" type="checkbox"/>
+Operations correctly replace/append/prepend content</li>
+<li><input disabled="" type="checkbox"/>
+Missing sections can be created automatically</li>
+<li><input disabled="" type="checkbox"/>
+Pattern updates can be scoped to sections</li>
+<li><input disabled="" type="checkbox"/>
+Document structure preserved after updates</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests pass</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h3>Phase 3: Structured Field Updates</h3>
+<p><strong>Goal</strong>: Support updates to YAML frontmatter, checkboxes, and structured content</p>
+<h4>Prompt 3.1: YAML Frontmatter Updates</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Enable precise updates to YAML frontmatter fields
+<strong>Dependencies</strong>: [Requires Prompt 2.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+YAML frontmatter parser and updater</li>
+<li><input disabled="" type="checkbox"/>
+Field-level update support</li>
+<li><input disabled="" type="checkbox"/>
+Type preservation (string/number/boolean/array)</li>
+<li><input disabled="" type="checkbox"/>
+Nested field updates</li>
+<li><input disabled="" type="checkbox"/>
+Frontmatter validation</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement YAML frontmatter field updates:
+1. Create FrontmatterUpdater class using existing YAML parser
+2. Support field updates preserving types and structure
+3. Handle nested fields with dot notation (e.g., "metadata.tags")
+4. Preserve formatting and comments in YAML
+5. Add validation for field types and required fields
+6. Support array operations (add/remove/replace items)
+7. Write comprehensive tests for various frontmatter structures
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Individual fields can be updated without affecting others</li>
+<li><input disabled="" type="checkbox"/>
+Field types are preserved correctly</li>
+<li><input disabled="" type="checkbox"/>
+Nested fields accessible via dot notation</li>
+<li><input disabled="" type="checkbox"/>
+YAML formatting and comments preserved</li>
+<li><input disabled="" type="checkbox"/>
+Array operations work correctly</li>
+<li><input disabled="" type="checkbox"/>
+All tests pass</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 3.2: Checkbox and List Updates</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Support toggling checkboxes and updating list items
+<strong>Dependencies</strong>: [Requires Prompt 3.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Checkbox state parser and toggler</li>
+<li><input disabled="" type="checkbox"/>
+List item updates by content or index</li>
+<li><input disabled="" type="checkbox"/>
+Ordered/unordered list support</li>
+<li><input disabled="" type="checkbox"/>
+Nested list handling</li>
+<li><input disabled="" type="checkbox"/>
+Batch checkbox operations</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Create checkbox and list update functionality:
+1. Implement CheckboxUpdater for markdown task lists
+2. Support finding checkboxes by content pattern or index
+3. Toggle checkbox states (checked/unchecked)
+4. Create ListItemUpdater for ordered/unordered lists
+5. Support updating list items by content match or position
+6. Handle nested lists correctly
+7. Add batch operations for multiple checkboxes
+8. Write tests covering various list formats
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Checkboxes can be toggled by content or index</li>
+<li><input disabled="" type="checkbox"/>
+List items can be updated precisely</li>
+<li><input disabled="" type="checkbox"/>
+Nested lists handled correctly</li>
+<li><input disabled="" type="checkbox"/>
+Batch operations work efficiently</li>
+<li><input disabled="" type="checkbox"/>
+Original formatting preserved</li>
+<li><input disabled="" type="checkbox"/>
+Tests cover all list variations</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h3>Phase 4: Smart Merge Engine</h3>
+<p><strong>Goal</strong>: Implement intelligent content merging with conflict resolution</p>
+<h4>Prompt 4.1: Diff and Merge Algorithms</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Create core diff/merge functionality
+<strong>Dependencies</strong>: [Requires Prompt 3.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Line-based diff algorithm</li>
+<li><input disabled="" type="checkbox"/>
+Three-way merge implementation</li>
+<li><input disabled="" type="checkbox"/>
+Conflict detection</li>
+<li><input disabled="" type="checkbox"/>
+Merge strategies (ours/theirs/manual)</li>
+<li><input disabled="" type="checkbox"/>
+Diff visualization for previews</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement smart merge engine core:
+1. Create DiffEngine with line-based diff algorithm
+2. Implement three-way merge for content conflicts
+3. Add conflict detection with clear markers
+4. Support merge strategies: ours, theirs, manual
+5. Create diff visualization for preview mode
+6. Handle special cases: YAML frontmatter, sections, lists
+7. Write comprehensive tests with conflict scenarios
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Diff algorithm correctly identifies changes</li>
+<li><input disabled="" type="checkbox"/>
+Three-way merge handles common scenarios</li>
+<li><input disabled="" type="checkbox"/>
+Conflicts clearly marked and reported</li>
+<li><input disabled="" type="checkbox"/>
+Merge strategies work as expected</li>
+<li><input disabled="" type="checkbox"/>
+Preview shows accurate diff visualization</li>
+<li><input disabled="" type="checkbox"/>
+Tests cover various merge scenarios</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 4.2: Content-Aware Merging</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Implement smart merging for specific content types
+<strong>Dependencies</strong>: [Requires Prompt 4.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+YAML-aware merging</li>
+<li><input disabled="" type="checkbox"/>
+Section-aware merging</li>
+<li><input disabled="" type="checkbox"/>
+List merging with order preservation</li>
+<li><input disabled="" type="checkbox"/>
+Wiki link resolution during merge</li>
+<li><input disabled="" type="checkbox"/>
+Merge validation and cleanup</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Extend merge engine with content awareness:
+1. Create YAMLMerger for intelligent frontmatter merging
+2. Implement SectionMerger preserving document structure
+3. Add ListMerger handling order and duplicates
+4. Create WikiLinkResolver for link conflicts
+5. Add post-merge validation and cleanup
+6. Support custom merge rules per content type
+7. Write integration tests with real document merges
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+YAML merging preserves structure and types</li>
+<li><input disabled="" type="checkbox"/>
+Section merging maintains hierarchy</li>
+<li><input disabled="" type="checkbox"/>
+Lists merge intelligently without duplicates</li>
+<li><input disabled="" type="checkbox"/>
+Wiki links resolved correctly</li>
+<li><input disabled="" type="checkbox"/>
+Validation ensures valid output</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests pass</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h3>Phase 5: API Integration</h3>
+<p><strong>Goal</strong>: Integrate all functionality into the MCP context-manager API</p>
+<h4>Prompt 5.1: API Design and Implementation</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Create new API endpoints maintaining backward compatibility
+<strong>Dependencies</strong>: [Requires Prompt 4.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Extended context_update API</li>
+<li><input disabled="" type="checkbox"/>
+New parameter validation</li>
+<li><input disabled="" type="checkbox"/>
+Backward compatibility layer</li>
+<li><input disabled="" type="checkbox"/>
+API documentation</li>
+<li><input disabled="" type="checkbox"/>
+Type definitions</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Integrate enhanced functionality into MCP API:
+1. Extend context_update tool with new parameters
+2. Add update_mode enum (replace/append/patch/merge/in_place)
+3. Implement parameter validation for all update types
+4. Create backward compatibility mapping for existing params
+5. Update TypeScript type definitions
+6. Write comprehensive API documentation
+7. Add API integration tests
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+New API accepts all update modes</li>
+<li><input disabled="" type="checkbox"/>
+Parameter validation prevents invalid requests</li>
+<li><input disabled="" type="checkbox"/>
+Existing API calls continue working</li>
+<li><input disabled="" type="checkbox"/>
+Type definitions accurate and complete</li>
+<li><input disabled="" type="checkbox"/>
+Documentation clear with examples</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests verify all modes</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 5.2: Error Handling and Responses</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Implement comprehensive error handling and response formatting
+<strong>Dependencies</strong>: [Requires Prompt 5.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Detailed error messages</li>
+<li><input disabled="" type="checkbox"/>
+Update result reporting</li>
+<li><input disabled="" type="checkbox"/>
+Rollback on failures</li>
+<li><input disabled="" type="checkbox"/>
+Warning system for non-critical issues</li>
+<li><input disabled="" type="checkbox"/>
+Response formatting</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Implement robust error handling and responses:
+1. Create detailed error types for each failure mode
+2. Add descriptive error messages with fix suggestions
+3. Implement transaction rollback on failures
+4. Create warning system for non-critical issues
+5. Design comprehensive response format with changes summary
+6. Add dry-run mode for testing updates
+7. Write tests for all error scenarios
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Error messages clearly explain issues</li>
+<li><input disabled="" type="checkbox"/>
+Rollback works correctly on failures</li>
+<li><input disabled="" type="checkbox"/>
+Warnings don’t stop valid updates</li>
+<li><input disabled="" type="checkbox"/>
+Response includes detailed change summary</li>
+<li><input disabled="" type="checkbox"/>
+Dry-run mode accurately predicts results</li>
+<li><input disabled="" type="checkbox"/>
+Error handling tests comprehensive</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h3>Phase 6: Testing and Optimization</h3>
+<p><strong>Goal</strong>: Ensure reliability, performance, and production readiness</p>
+<h4>Prompt 6.1: Comprehensive Test Suite</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Create exhaustive test coverage for all functionality
+<strong>Dependencies</strong>: [Requires Prompt 5.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Unit tests for all modules</li>
+<li><input disabled="" type="checkbox"/>
+Integration tests for workflows</li>
+<li><input disabled="" type="checkbox"/>
+Performance benchmarks</li>
+<li><input disabled="" type="checkbox"/>
+Edge case coverage</li>
+<li><input disabled="" type="checkbox"/>
+Test documentation</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Build comprehensive test suite:
+1. Achieve 95%+ code coverage with unit tests
+2. Create integration tests for common workflows
+3. Add performance benchmarks for large documents
+4. Test edge cases: empty docs, huge files, special characters
+5. Create test fixtures representing real documents
+6. Add stress tests for concurrent updates
+7. Document test scenarios and coverage
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Code coverage exceeds 95%</li>
+<li><input disabled="" type="checkbox"/>
+All integration tests pass</li>
+<li><input disabled="" type="checkbox"/>
+Performance meets &lt;100ms target</li>
+<li><input disabled="" type="checkbox"/>
+Edge cases handled gracefully</li>
+<li><input disabled="" type="checkbox"/>
+Stress tests show no race conditions</li>
+<li><input disabled="" type="checkbox"/>
+Test documentation complete</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 6.2: Performance Optimization</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Optimize performance for production use
+<strong>Dependencies</strong>: [Requires Prompt 6.1]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Performance profiling results</li>
+<li><input disabled="" type="checkbox"/>
+Optimized algorithms</li>
+<li><input disabled="" type="checkbox"/>
+Caching implementation</li>
+<li><input disabled="" type="checkbox"/>
+Memory usage optimization</li>
+<li><input disabled="" type="checkbox"/>
+Production deployment guide</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Optimize for production performance:
+1. Profile all operations identifying bottlenecks
+2. Optimize pattern matching with better algorithms
+3. Implement caching for parsed document structures
+4. Reduce memory usage for large documents
+5. Add streaming support for huge files
+6. Create performance monitoring hooks
+7. Write production deployment guide
+8. Document performance characteristics
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+All operations complete in &lt;100ms</li>
+<li><input disabled="" type="checkbox"/>
+Memory usage stays under 100MB</li>
+<li><input disabled="" type="checkbox"/>
+Large files (&gt;10MB) handled efficiently</li>
+<li><input disabled="" type="checkbox"/>
+Caching improves repeat operations by 50%+</li>
+<li><input disabled="" type="checkbox"/>
+Production guide comprehensive</li>
+<li><input disabled="" type="checkbox"/>
+Performance documented</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h4>Prompt 6.3: Documentation and Release</h4>
+<p><strong>Status</strong>: ⏳ Not Started
+<strong>Objective</strong>: Complete documentation and prepare for release
+<strong>Dependencies</strong>: [Requires Prompt 6.2]
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+User documentation</li>
+<li><input disabled="" type="checkbox"/>
+Migration guide</li>
+<li><input disabled="" type="checkbox"/>
+API reference</li>
+<li><input disabled="" type="checkbox"/>
+Example collection</li>
+<li><input disabled="" type="checkbox"/>
+Release notes</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Finalize documentation and release preparation:
+1. Write comprehensive user documentation with examples
+2. Create migration guide from old to new API
+3. Generate complete API reference documentation
+4. Build example collection for common use cases
+5. Write detailed release notes with breaking changes
+6. Create quick start guide for new users
+7. Add troubleshooting section
+8. Prepare version tags and changelog
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+User docs cover all features with examples</li>
+<li><input disabled="" type="checkbox"/>
+Migration guide helps existing users upgrade</li>
+<li><input disabled="" type="checkbox"/>
+API reference complete and accurate</li>
+<li><input disabled="" type="checkbox"/>
+20+ examples covering common scenarios</li>
+<li><input disabled="" type="checkbox"/>
+Release notes detail all changes</li>
+<li><input disabled="" type="checkbox"/>
+Documentation reviewed and polished</li>
+<li><input disabled="" type="checkbox"/>
+Ready for release</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git</li>
+</ul>
+<p><strong>Completion</strong>: <em>[Timestamp when completed]</em>
+<strong>Notes</strong>: <em>[Any notes from implementation]</em></p>
+<hr />
+<h2>Execution Instructions</h2>
+<p>When using this plan with Claude Code, use this exact prompt for each session:</p>
+<pre><code>1. Open @projects/context-update-tool-enhancement-prompt-plan.md and identify the next unfinished prompt (Status: ⏳ Not Started)
+2. For the next incomplete prompt:
+   - Verify if truly unfinished by checking the Success Criteria
+   - Implement exactly as described in the prompt section
+   - Ensure all deliverables are completed
+   - Ensure all success criteria are met
+   - Run tests and verify they pass
+   - Run linting and formatting checks
+   - Commit changes to repository with descriptive commit message (no --no-verify)
+   - Update the prompt plan to mark as completed (Status: ✅ Complete) with timestamp and notes
+3. Pause after completing the prompt for user review
+4. Ask if ready to proceed with next unfinished prompt
+</code></pre>
+<h2>Progress Tracking</h2>
+<h3>Overall Progress</h3>
+<ul>
+<li><strong>Total Prompts</strong>: 15</li>
+<li><strong>Completed</strong>: 0 ✅</li>
+<li><strong>In Progress</strong>: 0 🔄</li>
+<li><strong>Not Started</strong>: 15 ⏳</li>
+</ul>
+<h3>Status Legend</h3>
+<ul>
+<li>⏳ <strong>Not Started</strong>: Ready to be implemented</li>
+<li>🔄 <strong>In Progress</strong>: Currently being worked on</li>
+<li>✅ <strong>Complete</strong>: Fully implemented and verified</li>
+<li>❌ <strong>Blocked</strong>: Cannot proceed due to dependency</li>
+<li>⚠️ <strong>Needs Review</strong>: Implemented but needs verification</li>
+</ul>
+<h2>Quality Gates</h2>
+<p>Each prompt must pass these gates before marking complete:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+All deliverables achieved</li>
+<li><input disabled="" type="checkbox"/>
+All success criteria met</li>
+<li><input disabled="" type="checkbox"/>
+Tests written and passing</li>
+<li><input disabled="" type="checkbox"/>
+Code follows TypeScript/MCP conventions</li>
+<li><input disabled="" type="checkbox"/>
+Changes committed to git (no –no-verify)</li>
+<li><input disabled="" type="checkbox"/>
+Documentation updated where needed</li>
+<li><input disabled="" type="checkbox"/>
+Performance targets met</li>
+</ul>
+<h2>Completion Criteria</h2>
+<p>The entire prompt plan is complete when:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+All 15 prompts marked as ✅ Complete</li>
+<li><input disabled="" type="checkbox"/>
+Final integration testing passed</li>
+<li><input disabled="" type="checkbox"/>
+API maintains 100% backward compatibility</li>
+<li><input disabled="" type="checkbox"/>
+Performance meets all targets</li>
+<li><input disabled="" type="checkbox"/>
+Documentation is comprehensive</li>
+<li><input disabled="" type="checkbox"/>
+Ready for production deployment</li>
+</ul>
+<hr />
+<p><em>Use this systematic plan to enhance the context update tool incrementally with full testing and validation at each step</em></p>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Generated by para-ssg | Press Ctrl+K to search</p>
+        </div>
+    </footer>
+    
+    <script>
+        
+// Search functionality for para-ssg
+(function() {
+    let searchIndex = null;
+    let searchInput = null;
+    let searchResults = null;
+    let searchOverlay = null;
+    let currentFocus = -1;
+
+    // Initialize search on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeSearch();
+    });
+
+    function initializeSearch() {
+        // Create search overlay
+        createSearchOverlay();
+        
+        // Set up keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+K or Cmd+K to open search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                openSearch();
+            }
+            // Forward slash to open search (if not in input)
+            else if (e.key === '/' && !isInputElement(e.target)) {
+                e.preventDefault();
+                openSearch();
+            }
+            // Escape to close search
+            else if (e.key === 'Escape' && searchOverlay.style.display === 'block') {
+                closeSearch();
+            }
+        });
+
+        // Load search index
+        loadSearchIndex();
+    }
+
+    function createSearchOverlay() {
+        // Create overlay container
+        searchOverlay = document.createElement('div');
+        searchOverlay.id = 'search-overlay';
+        searchOverlay.style.cssText = `
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        `;
+
+        // Create search container
+        const searchContainer = document.createElement('div');
+        searchContainer.style.cssText = `
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        `;
+
+        // Create search input
+        searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = 'Search documents...';
+        searchInput.style.cssText = `
+            padding: 20px;
+            font-size: 18px;
+            border: none;
+            border-bottom: 1px solid #333;
+            background: transparent;
+            outline: none;
+            color: #e0e0e0;
+        `;
+
+        // Create results container
+        searchResults = document.createElement('div');
+        searchResults.style.cssText = `
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(80vh - 80px);
+        `;
+
+        // Assemble components
+        searchContainer.appendChild(searchInput);
+        searchContainer.appendChild(searchResults);
+        searchOverlay.appendChild(searchContainer);
+        document.body.appendChild(searchOverlay);
+
+        // Set up event listeners
+        searchInput.addEventListener('input', performSearch);
+        searchInput.addEventListener('keydown', handleSearchNavigation);
+        searchOverlay.addEventListener('click', function(e) {
+            if (e.target === searchOverlay) {
+                closeSearch();
+            }
+        });
+    }
+
+    function loadSearchIndex() {
+        fetch('/search-index.json')
+            .then(response => response.json())
+            .then(data => {
+                searchIndex = data;
+                console.log('Search index loaded:', data.stats);
+            })
+            .catch(error => {
+                console.error('Failed to load search index:', error);
+            });
+    }
+
+    function openSearch() {
+        if (!searchOverlay) return;
+        searchOverlay.style.display = 'block';
+        searchInput.value = '';
+        searchInput.focus();
+        searchResults.innerHTML = '';
+        currentFocus = -1;
+    }
+
+    function closeSearch() {
+        if (!searchOverlay) return;
+        searchOverlay.style.display = 'none';
+        searchInput.value = '';
+        searchResults.innerHTML = '';
+    }
+
+    function performSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        
+        if (!query) {
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        if (!searchIndex || !searchIndex.entries) {
+            searchResults.innerHTML = '<p style="color: #a0a0a0;">Search index not loaded yet...</p>';
+            return;
+        }
+
+        const results = searchDocuments(query);
+        displayResults(results, query);
+    }
+
+    function searchDocuments(query) {
+        const results = [];
+        const queryWords = query.split(/\s+/).filter(w => w.length > 0);
+
+        for (const entry of searchIndex.entries) {
+            let score = 0;
+            let matches = [];
+
+            // Search in title (higher weight)
+            for (const word of queryWords) {
+                if (entry.title.toLowerCase().includes(word)) {
+                    score += 10;
+                    matches.push('title');
+                }
+            }
+
+            // Search in tags (medium weight)
+            for (const tag of entry.tags) {
+                for (const word of queryWords) {
+                    if (tag.toLowerCase().includes(word)) {
+                        score += 5;
+                        matches.push('tag');
+                        break;
+                    }
+                }
+            }
+
+            // Search in content (lower weight)
+            for (const word of queryWords) {
+                if (entry.content.includes(word)) {
+                    score += 1;
+                    matches.push('content');
+                }
+            }
+
+            if (score > 0) {
+                results.push({
+                    entry: entry,
+                    score: score,
+                    matches: [...new Set(matches)]
+                });
+            }
+        }
+
+        // Sort by score (descending)
+        results.sort((a, b) => b.score - a.score);
+        
+        return results.slice(0, 20); // Limit to top 20 results
+    }
+
+    function displayResults(results, query) {
+        if (results.length === 0) {
+            searchResults.innerHTML = '<p style="color: #a0a0a0;">No results found</p>';
+            return;
+        }
+
+        const html = results.map((result, index) => {
+            const entry = result.entry;
+            const highlightedTitle = highlightText(entry.title, query);
+            const highlightedExcerpt = highlightText(entry.excerpt, query);
+            
+            return `
+                <div class="search-result" data-index="${index}" style="
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #1a1a1a;
+                    border: 1px solid #333;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background 0.2s;
+                " onmouseover="this.style.background='#333'" onmouseout="this.style.background='#1a1a1a'">
+                    <h3 style="margin: 0 0 5px 0; color: #4a9eff;">
+                        <a href="${entry.path}" style="text-decoration: none; color: inherit;">
+                            ${highlightedTitle}
+                        </a>
+                    </h3>
+                    <p style="margin: 0 0 5px 0; color: #a0a0a0; font-size: 14px;">
+                        ${highlightedExcerpt}
+                    </p>
+                    <div style="font-size: 12px; color: #666;">
+                        <span style="background: #333; color: #a0a0a0; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
+                            ${entry.category}
+                        </span>
+                        ${entry.tags.slice(0, 3).map(tag => 
+                            `<span style="background: #2a2a2a; color: #a0a0a0; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
+                                ${tag}
+                            </span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        searchResults.innerHTML = html;
+        
+        // Add click handlers
+        const resultElements = searchResults.querySelectorAll('.search-result');
+        resultElements.forEach(el => {
+            el.addEventListener('click', function(e) {
+                if (!e.target.closest('a')) {
+                    const link = this.querySelector('a');
+                    if (link) window.location.href = link.href;
+                }
+            });
+        });
+    }
+
+    function highlightText(text, query) {
+        if (!text) return '';
+        
+        const words = query.split(/\s+/).filter(w => w.length > 0);
+        let highlighted = text;
+        
+        for (const word of words) {
+            const regex = new RegExp(`(${escapeRegex(word)})`, 'gi');
+            highlighted = highlighted.replace(regex, '<mark style="background: #007acc; color: #e0e0e0; padding: 0 2px;">$1</mark>');
+        }
+        
+        return highlighted;
+    }
+
+    function handleSearchNavigation(e) {
+        const results = searchResults.querySelectorAll('.search-result');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentFocus++;
+            if (currentFocus >= results.length) currentFocus = 0;
+            setFocus(results);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentFocus--;
+            if (currentFocus < 0) currentFocus = results.length - 1;
+            setFocus(results);
+        } else if (e.key === 'Enter' && currentFocus >= 0 && currentFocus < results.length) {
+            e.preventDefault();
+            const link = results[currentFocus].querySelector('a');
+            if (link) window.location.href = link.href;
+        }
+    }
+
+    function setFocus(results) {
+        results.forEach((el, index) => {
+            if (index === currentFocus) {
+                el.style.background = '#007acc';
+                el.scrollIntoView({ block: 'nearest' });
+            } else {
+                el.style.background = '#1a1a1a';
+            }
+        });
+    }
+
+    function isInputElement(element) {
+        return element.tagName === 'INPUT' || 
+               element.tagName === 'TEXTAREA' || 
+               element.isContentEditable;
+    }
+
+    function escapeRegex(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // Also add inline search boxes
+    document.addEventListener('DOMContentLoaded', function() {
+        const inlineSearchBoxes = document.querySelectorAll('.search-box');
+        inlineSearchBoxes.forEach(box => {
+            box.addEventListener('click', openSearch);
+            box.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    openSearch();
+                }
+            });
+        });
+    });
+})();
+
+    </script>
+</body>
+</html>

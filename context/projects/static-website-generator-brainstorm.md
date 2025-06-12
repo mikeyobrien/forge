@@ -14,7 +14,7 @@ tags:
 
 # Brainstorm: Static Website Generator in Rust for PARA Documents
 
-## Created: 2025-01-06
+## Created: 2025-06-11
 
 ## Problem Statement
 
@@ -102,4 +102,4 @@ Focus is on learning and extracting maximum value rather than competing. Quartz 
 
 ---
 
-_Brainstorming session conducted on 2025-01-06_
+_Brainstorming session conducted on 2025-06-11_

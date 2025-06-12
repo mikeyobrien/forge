@@ -11,6 +11,7 @@ import { createAdvancedSearchTool } from './tools/context_advanced_search';
 import { queryLinks, contextQueryLinksToolDefinition } from './tools/context-query-links/index';
 import { createContextUpdateTool, handleContextUpdate } from './tools/context-update/index';
 import { createContextMoveTool } from './tools/context-move/index';
+import { screenshotTool, handleScreenshot } from './tools/screenshot/index';
 import { AdvancedSearchEngine } from './search/AdvancedSearchEngine';
 import { FileSystem } from './filesystem/FileSystem';
 import { PARAManager } from './para/PARAManager';
@@ -50,6 +51,7 @@ server.setRequestHandler(ListToolsRequestSchema, () => {
     contextCreateTool,
     contextReadTool,
     contextQueryLinksToolDefinition,
+    screenshotTool,
   ];
 
   // Add search tool if initialized
@@ -178,6 +180,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         updateLinks: args['updateLinks'] as boolean,
         overwrite: args['overwrite'] as boolean,
       });
+    }
+
+    case 'screenshot_page': {
+      console.error('Screenshot args received:', JSON.stringify(args));
+      return await handleScreenshot(args || {});
     }
 
     default:

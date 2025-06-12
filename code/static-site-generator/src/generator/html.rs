@@ -7,7 +7,6 @@ use crate::theme::templates::{
     BreadcrumbItem, DocumentMetadata as TemplateMetadata, DocumentSummary, TemplateEngine,
 };
 use crate::{ParaSsgError, Result};
-use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -16,15 +15,17 @@ pub struct HtmlGenerator {
     template_engine: TemplateEngine,
     output_dir: PathBuf,
     styles: String,
+    site_title: String,
 }
 
 impl HtmlGenerator {
     /// Create a new HTML generator
-    pub fn new(output_dir: PathBuf) -> Self {
+    pub fn new(output_dir: PathBuf, site_title: String) -> Self {
         Self {
             template_engine: TemplateEngine::new(),
             output_dir,
             styles: get_default_styles(),
+            site_title,
         }
     }
 
@@ -93,6 +94,7 @@ impl HtmlGenerator {
             active_category,
             Some(&breadcrumb_html),
             &self.styles,
+            &self.site_title,
         )
     }
 
@@ -143,60 +145,53 @@ impl HtmlGenerator {
 
         // Generate full page
         self.template_engine.render_base(
-            &format!("{} - PARA SSG", category_title(category)),
+            category_title(category),
             &category_content,
             Some(category),
             Some(&breadcrumb_html),
             &self.styles,
+            &self.site_title,
         )
     }
 
-    /// Generate the home page with overview of all categories
-    pub fn generate_home_page(&self, category_counts: &HashMap<String, usize>) -> Result<String> {
-        let mut content = String::from(
-            r#"
-        <div class="home-page">
-            <h1>PARA Knowledge Base</h1>
-            <p>Welcome to your personal knowledge management system organized using the PARA method.</p>
-            
-            <div class="search-box-container">
-                <input type="text" class="search-box" placeholder="Search documentation... (Ctrl+K)" readonly onclick="openSearch()" />
-            </div>
-            
-            <div class="category-overview">
-        "#,
-        );
+    /// Generate the home page with recently modified files
+    pub fn generate_home_page(&self, documents: &[Document]) -> Result<String> {
+        // Convert documents to summaries and sort by modification date
+        let mut summaries: Vec<DocumentSummary> = documents.iter()
+            .filter(|doc| !doc.is_draft()) // Exclude drafts
+            .map(|doc| {
+                let url = format!("/{}", doc.output_path.display());
+                
+                DocumentSummary {
+                    url,
+                    title: doc.title().to_string(),
+                    date: doc.date().map(|d| d.format("%Y-%m-%d").to_string()),
+                    tags: doc.metadata.tags.clone(),
+                    summary: None, // Don't need summary for home page
+                }
+            })
+            .collect();
 
-        // Add category cards
-        for category in &["projects", "areas", "resources", "archives"] {
-            let count = category_counts.get(*category).unwrap_or(&0);
-            let title = category_title(category);
-            let description = category_description(category);
+        // Sort by date (newest first), then by title
+        summaries.sort_by(|a, b| match (&b.date, &a.date) {
+            (Some(d1), Some(d2)) => d1.cmp(d2),
+            (Some(_), None) => std::cmp::Ordering::Less,
+            (None, Some(_)) => std::cmp::Ordering::Greater,
+            (None, None) => a.title.cmp(&b.title),
+        });
 
-            use std::fmt::Write;
-            write!(
-                content,
-                r#"
-                <div class="category-card">
-                    <h2><a href="/{}/">{}</a></h2>
-                    <p>{}</p>
-                    <span class="document-count">{} document{}</span>
-                </div>
-            "#,
-                category,
-                title,
-                description,
-                count,
-                if *count == 1 { "" } else { "s" }
-            )
-            .unwrap();
-        }
-
-        content.push_str("</div></div>");
+        // Generate home page content
+        let content = self.template_engine.render_home_page(&summaries)?;
 
         // Generate full page
-        self.template_engine
-            .render_base("Home", &content, None, None, &self.styles)
+        self.template_engine.render_base(
+            "",  // Empty title for home page
+            &content,
+            None,
+            None,
+            &self.styles,
+            &self.site_title,
+        )
     }
 
     /// Write an HTML page to disk
@@ -336,7 +331,7 @@ mod tests {
     #[test]
     fn test_generate_document_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf());
+        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string());
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/test.md"),
@@ -352,16 +347,16 @@ mod tests {
 
         let html = generator.generate_document_page(&doc).unwrap();
 
-        assert!(html.contains("<title>Test Project - PARA SSG</title>"));
+        assert!(html.contains("<title>Test Project | Test Site</title>"));
         assert!(html.contains("<p>Test content</p>"));
-        assert!(html.contains(r#"class="active">Projects</a>"#));
-        assert!(html.contains("Home"));
+        assert!(html.contains(r#"class="active">P</a>"#));
+        assert!(html.contains("Test Site"));
     }
 
     #[test]
     fn test_generate_category_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf());
+        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string());
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/test.md"),
@@ -384,26 +379,28 @@ mod tests {
     #[test]
     fn test_generate_home_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf());
+        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string());
 
-        let mut counts = HashMap::new();
-        counts.insert("projects".to_string(), 5);
-        counts.insert("areas".to_string(), 3);
-        counts.insert("resources".to_string(), 10);
-        counts.insert("archives".to_string(), 2);
+        let mut doc = Document::new(
+            PathBuf::from("/input/projects/test.md"),
+            PathBuf::from("projects/test.md"),
+            "projects".to_string(),
+        );
+        doc.metadata.title = Some("Test Project".to_string());
+        doc.metadata.tags = vec!["rust".to_string()];
 
-        let html = generator.generate_home_page(&counts).unwrap();
+        let html = generator.generate_home_page(&[&doc]).unwrap();
 
-        assert!(html.contains("<h1>PARA Knowledge Base</h1>"));
-        assert!(html.contains("5 documents"));
-        assert!(html.contains("3 documents"));
-        assert!(html.contains(r#"href="/projects/">Projects</a>"#));
+        assert!(html.contains("Test Site"));
+        assert!(html.contains(r#"<table class="file-list""#));
+        assert!(html.contains("Test Project"));
+        assert!(html.contains("projects"));
     }
 
     #[test]
     fn test_write_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf());
+        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string());
 
         let content = "<html><body>Test</body></html>";
         generator
@@ -417,7 +414,7 @@ mod tests {
     #[test]
     fn test_breadcrumb_generation_for_document() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf());
+        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string());
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/rust/test.md"),
