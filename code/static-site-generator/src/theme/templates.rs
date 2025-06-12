@@ -97,7 +97,7 @@ const BREADCRUMB_TEMPLATE: &str = r#"
 </nav>
 "#;
 
-/// Home page template with file list
+/// Home page template with modern card layout
 const HOME_PAGE_TEMPLATE: &str = r#"
 <div class="home-page">
     <div class="para-hero">
@@ -110,19 +110,9 @@ const HOME_PAGE_TEMPLATE: &str = r#"
         <p class="para-subtitle">Recently modified files</p>
     </div>
     
-    <table class="file-list">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Tags</th>
-            </tr>
-        </thead>
-        <tbody>
-            {file_entries}
-        </tbody>
-    </table>
+    <div class="file-cards">
+        {file_entries}
+    </div>
 </div>
 "#;
 
@@ -344,28 +334,33 @@ impl TemplateEngine {
             };
             
             let tags_str = if doc.tags.is_empty() {
-                r#"<span class="no-tags">—</span>"#.to_string()
+                r#"<span class="no-tags">No tags</span>"#.to_string()
             } else {
                 doc.tags.iter()
                     .map(|tag| format!(r#"<span class="tag">{}</span>"#, html_escape(tag)))
                     .collect::<Vec<_>>()
-                    .join("")
+                    .join(" ")
             };
             
             use std::fmt::Write;
             write!(
                 file_entries,
-                r#"            <tr>
-                <td class="date">{}</td>
-                <td class="title"><a href="{}">{}</a></td>
-                <td class="category">{}</td>
-                <td class="tags">{}</td>
-            </tr>
+                r#"        <article class="file-card">
+            <div class="file-card-header">
+                <h3 class="file-title"><a href="{}">{}</a></h3>
+                <span class="file-category category-{}">{}</span>
+            </div>
+            <div class="file-card-meta">
+                <time class="file-date">{}</time>
+                <div class="file-tags">{}</div>
+            </div>
+        </article>
 "#,
-                date_str,
                 html_escape(&doc.url),
                 html_escape(&doc.title),
                 category_str,
+                category_str,
+                date_str,
                 tags_str
             ).unwrap();
         }

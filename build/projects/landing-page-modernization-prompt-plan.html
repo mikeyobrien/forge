@@ -403,74 +403,179 @@
         }
     }
     
-    /* File list table for landing page */
-    .file-list {
-        width: 100%;
-        border-collapse: collapse;
+    /* Modern file cards for landing page */
+    .file-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-3);
         margin-top: var(--space-4);
     }
     
-    .file-list th {
+    .file-card {
         background-color: var(--surface-raised);
+        border: 1px solid var(--border-primary);
+        border-radius: 8px;
+        padding: var(--space-3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .file-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--accent-gradient);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .file-card:hover {
+        border-color: var(--border-secondary);
+        background-color: var(--surface-overlay);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .file-card:hover::before {
+        opacity: 1;
+    }
+    
+    .file-card:active {
+        transform: translateY(-1px);
+        transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .file-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--space-2);
+        margin-bottom: var(--space-2);
+    }
+    
+    .file-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.3;
+        flex: 1;
+        min-width: 0; /* Allow text truncation */
+    }
+    
+    .file-title a {
         color: var(--text-primary);
-        padding: var(--space-2) var(--space-2);
-        text-align: left;
-        border-bottom: 1px solid var(--border-primary);
-        font-weight: 500;
-        font-size: 0.9rem;
+        text-decoration: none;
+        transition: color 0.2s ease;
     }
     
-    .file-list td {
-        padding: var(--space-2) var(--space-2);
-        border-bottom: 1px solid var(--border-primary);
-        vertical-align: top;
-    }
-    
-    .file-list tr:hover {
-        background-color: var(--interactive-hover);
-    }
-    
-    .file-list .date {
-        color: var(--text-muted);
-        white-space: nowrap;
-        width: 120px;
-    }
-    
-    .file-list .title a {
-        color: var(--link-primary);
+    .file-title a:hover {
+        color: var(--accent-primary);
         text-decoration: none;
     }
     
-    .file-list .title a:hover {
-        color: var(--link-hover);
-        text-decoration: underline;
-    }
-    
-    .file-list .category {
-        color: var(--text-muted);
-        font-size: 0.85rem;
+    .file-category {
+        font-size: 0.75rem;
+        font-weight: 500;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        width: 100px;
+        letter-spacing: 0.05em;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        white-space: nowrap;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
     }
     
-    .file-list .tags {
+    /* Category color coding */
+    .category-projects {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+    
+    .category-areas {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: var(--accent-secondary);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+    
+    .category-resources {
+        background-color: rgba(245, 158, 11, 0.1);
+        color: var(--warning);
+        border-color: rgba(245, 158, 11, 0.3);
+    }
+    
+    .category-archives {
+        background-color: rgba(107, 114, 128, 0.1);
+        color: var(--text-muted);
+        border-color: rgba(107, 114, 128, 0.3);
+    }
+    
+    .category-other {
+        background-color: rgba(139, 92, 246, 0.1);
+        color: #8B5CF6;
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+    
+    .file-card-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-2);
         font-size: 0.85rem;
+        color: var(--text-muted);
     }
     
-    .file-list .tag {
+    .file-date {
+        white-space: nowrap;
+        font-feature-settings: 'tnum';
+    }
+    
+    .file-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        justify-content: flex-end;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .file-tags .tag {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.4rem;
+        background-color: var(--surface-elevated);
         color: var(--text-secondary);
-        margin-right: 0.5rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-subtle);
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     
-    .file-list .tag:before {
+    .file-tags .tag:hover {
+        background-color: var(--surface-overlay);
+        border-color: var(--border-primary);
+        color: var(--text-primary);
+    }
+    
+    .file-tags .tag:before {
         content: "\\#";
         color: var(--text-muted);
+        margin-right: 0.2rem;
+        font-weight: 500;
     }
     
     .no-tags {
         color: var(--text-muted);
         font-style: italic;
+        font-size: 0.8rem;
     }
     
     /* Document pages */
@@ -737,18 +842,29 @@
             max-width: 200px;
         }
         
-        .file-list {
-            font-size: 0.85rem;
+        .file-cards {
+            grid-template-columns: 1fr;
+            gap: var(--space-2);
         }
         
-        .file-list th,
-        .file-list td {
-            padding: var(--space-1);
+        .file-card {
+            padding: var(--space-2);
         }
         
-        .file-list .category,
-        .file-list .tags {
-            display: none;
+        .file-card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-1);
+        }
+        
+        .file-card-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-1);
+        }
+        
+        .file-tags {
+            justify-content: flex-start;
         }
         
         /* Stack content more compactly on mobile */
@@ -774,8 +890,8 @@
             max-width: 300px;
         }
         
-        .file-list .tags {
-            display: none;
+        .file-cards {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         }
     }
     
@@ -788,6 +904,11 @@
         .document-list {
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: var(--space-3);
+        }
+        
+        .file-cards {
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-4);
         }
         
         .nav-container {
@@ -1346,6 +1467,57 @@ Layout improvements visible across device sizes</li>
 </ul>
 <p><strong>Completion</strong>: 2025-06-12T02:22:45Z
 <strong>Notes</strong>: Successfully implemented comprehensive CSS Grid layout system with systematic 8px spacing scale. Added responsive breakpoints with mobile-first approach. PARA letters now display in 2x2 grid on mobile and 1x4 on desktop. All spacing throughout the codebase now uses consistent scale variables (–space-1 to –space-16). Navigation improved with CSS Grid for better alignment.</p>
+<h4>Prompt 2.1: PARA Hero Animation &amp; Interactions</h4>
+<p><strong>Status</strong>: ✅ Complete
+<strong>Objective</strong>: Transform the PARA hero section with gradient effects, animations, and enhanced interactivity
+<strong>Dependencies</strong>: Requires Prompts 1.1 ✅, 1.2 ✅
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Gradient effects on PARA letters</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Smooth hover animations and transitions</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Loading animations for page entry</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Enhanced visual feedback for interactions</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Enhance the PARA hero section with modern animations and effects in code/static-site-generator/src/theme/styles.rs:
+
+1. Add gradient effects to PARA letters:
+   - Implement CSS gradients for the large PARA letters
+   - Add subtle text shadows and glow effects
+   - Create animated gradient backgrounds on hover
+
+2. Implement micro-animations:
+   - Smooth scale and transform effects on hover
+   - Staggered entrance animations for the letters
+   - Subtle floating or pulse animations for visual interest
+
+3. Enhanced interaction feedback:
+   - Better focus states for accessibility
+   - Loading state animations
+   - Smooth transitions between states (0.3s ease curves)
+
+4. Ensure all animations respect prefers-reduced-motion
+5. Test that animations enhance rather than distract from usability
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Gradient effects applied to PARA letters</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Smooth hover and entrance animations</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Accessibility considerations for reduced motion</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Enhanced visual feedback for interactions</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Build and visual verification successful</li>
+</ul>
+<p><strong>Completion</strong>: 2025-06-12T02:35:22Z
+<strong>Notes</strong>: Successfully implemented comprehensive PARA hero animations including animated background glow, staggered entrance animations (0.1s-0.4s delays), individual floating animations for each letter, enhanced 3-color gradients with shift animations on hover, sophisticated focus/active states, and full accessibility support with prefers-reduced-motion. The PARA letters now have organic, lively movement while maintaining excellent usability.</p>
 
     </div>
     

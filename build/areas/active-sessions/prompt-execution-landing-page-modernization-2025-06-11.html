@@ -403,74 +403,179 @@
         }
     }
     
-    /* File list table for landing page */
-    .file-list {
-        width: 100%;
-        border-collapse: collapse;
+    /* Modern file cards for landing page */
+    .file-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-3);
         margin-top: var(--space-4);
     }
     
-    .file-list th {
+    .file-card {
         background-color: var(--surface-raised);
+        border: 1px solid var(--border-primary);
+        border-radius: 8px;
+        padding: var(--space-3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .file-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--accent-gradient);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .file-card:hover {
+        border-color: var(--border-secondary);
+        background-color: var(--surface-overlay);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .file-card:hover::before {
+        opacity: 1;
+    }
+    
+    .file-card:active {
+        transform: translateY(-1px);
+        transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .file-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--space-2);
+        margin-bottom: var(--space-2);
+    }
+    
+    .file-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1.3;
+        flex: 1;
+        min-width: 0; /* Allow text truncation */
+    }
+    
+    .file-title a {
         color: var(--text-primary);
-        padding: var(--space-2) var(--space-2);
-        text-align: left;
-        border-bottom: 1px solid var(--border-primary);
-        font-weight: 500;
-        font-size: 0.9rem;
+        text-decoration: none;
+        transition: color 0.2s ease;
     }
     
-    .file-list td {
-        padding: var(--space-2) var(--space-2);
-        border-bottom: 1px solid var(--border-primary);
-        vertical-align: top;
-    }
-    
-    .file-list tr:hover {
-        background-color: var(--interactive-hover);
-    }
-    
-    .file-list .date {
-        color: var(--text-muted);
-        white-space: nowrap;
-        width: 120px;
-    }
-    
-    .file-list .title a {
-        color: var(--link-primary);
+    .file-title a:hover {
+        color: var(--accent-primary);
         text-decoration: none;
     }
     
-    .file-list .title a:hover {
-        color: var(--link-hover);
-        text-decoration: underline;
-    }
-    
-    .file-list .category {
-        color: var(--text-muted);
-        font-size: 0.85rem;
+    .file-category {
+        font-size: 0.75rem;
+        font-weight: 500;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        width: 100px;
+        letter-spacing: 0.05em;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        white-space: nowrap;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
     }
     
-    .file-list .tags {
+    /* Category color coding */
+    .category-projects {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+    
+    .category-areas {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: var(--accent-secondary);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+    
+    .category-resources {
+        background-color: rgba(245, 158, 11, 0.1);
+        color: var(--warning);
+        border-color: rgba(245, 158, 11, 0.3);
+    }
+    
+    .category-archives {
+        background-color: rgba(107, 114, 128, 0.1);
+        color: var(--text-muted);
+        border-color: rgba(107, 114, 128, 0.3);
+    }
+    
+    .category-other {
+        background-color: rgba(139, 92, 246, 0.1);
+        color: #8B5CF6;
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+    
+    .file-card-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-2);
         font-size: 0.85rem;
+        color: var(--text-muted);
     }
     
-    .file-list .tag {
+    .file-date {
+        white-space: nowrap;
+        font-feature-settings: 'tnum';
+    }
+    
+    .file-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        justify-content: flex-end;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .file-tags .tag {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.4rem;
+        background-color: var(--surface-elevated);
         color: var(--text-secondary);
-        margin-right: 0.5rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-subtle);
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     
-    .file-list .tag:before {
+    .file-tags .tag:hover {
+        background-color: var(--surface-overlay);
+        border-color: var(--border-primary);
+        color: var(--text-primary);
+    }
+    
+    .file-tags .tag:before {
         content: "\\#";
         color: var(--text-muted);
+        margin-right: 0.2rem;
+        font-weight: 500;
     }
     
     .no-tags {
         color: var(--text-muted);
         font-style: italic;
+        font-size: 0.8rem;
     }
     
     /* Document pages */
@@ -737,18 +842,29 @@
             max-width: 200px;
         }
         
-        .file-list {
-            font-size: 0.85rem;
+        .file-cards {
+            grid-template-columns: 1fr;
+            gap: var(--space-2);
         }
         
-        .file-list th,
-        .file-list td {
-            padding: var(--space-1);
+        .file-card {
+            padding: var(--space-2);
         }
         
-        .file-list .category,
-        .file-list .tags {
-            display: none;
+        .file-card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-1);
+        }
+        
+        .file-card-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-1);
+        }
+        
+        .file-tags {
+            justify-content: flex-start;
         }
         
         /* Stack content more compactly on mobile */
@@ -774,8 +890,8 @@
             max-width: 300px;
         }
         
-        .file-list .tags {
-            display: none;
+        .file-cards {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         }
     }
     
@@ -788,6 +904,11 @@
         .document-list {
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: var(--space-3);
+        }
+        
+        .file-cards {
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-4);
         }
         
         .nav-container {
@@ -1084,6 +1205,105 @@ Build and visual verification successful</li>
 </ul>
 <h3>Implementation Progress</h3>
 <p>Starting enhancement of PARA hero animations and interactions…</p>
+<h3>Testing Phase</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests written (animation effects verified through build and visual inspection)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tests passing (build successful)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Integration verified (screenshots confirm enhanced animations working)</li>
+</ul>
+<h3>Verification</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+All deliverables completed</li>
+<li><input disabled="" type="checkbox" checked=""/>
+All success criteria met</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Code quality checks passed (clippy, fmt, tests all passed)</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Ready for commit</li>
+</ul>
+<h2>Completion Summary</h2>
+<p><strong>Duration</strong>: ~15 minutes
+<strong>Commit</strong>: f830348 - feat: implement enhanced PARA hero animations and interactions
+<strong>Outcomes</strong>: Successfully implemented comprehensive PARA hero animations with background glow, staggered entrance animations, individual floating effects, enhanced gradients, sophisticated hover states, and full accessibility support
+<strong>Notes</strong>: Major animation enhancements achieved. PARA letters now feature organic, lively animations while maintaining excellent usability and accessibility with prefers-reduced-motion support.</p>
+<h2>Next Prompt Preview</h2>
+<p><strong>Next</strong>: 2.2 - Modern Card-Based File Listing (replace table with card layout)
+<strong>Ready</strong>: Yes - all dependencies met
+<strong>Dependencies</strong>: Requires completed Prompts 1.1 ✅ and 1.2 ✅</p>
+<hr />
+<p><em>Prompt 2.1 completed: 2025-06-12T02:35:22Z</em></p>
+<hr />
+<h2>Session 4: Continuing with Prompt 2.2 - Modern Card-Based File Listing</h2>
+<h2>Prompt Plan Status</h2>
+<p><strong>Plan</strong>: projects/landing-page-modernization-prompt-plan
+<strong>Total Prompts</strong>: 6
+<strong>Completed</strong>: 3 ✅
+<strong>Remaining</strong>: 3 ⏳</p>
+<h2>Current Prompt</h2>
+<p><strong>Phase</strong>: Phase 2: Interactive Enhancements
+<strong>Prompt</strong>: 2.2 - Modern Card-Based File Listing
+<strong>Status</strong>: 🔄 In Progress
+<strong>Objective</strong>: Replace the basic table with modern card-based layout for file listings</p>
+<h3>Deliverables</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Card-based layout for file entries</li>
+<li><input disabled="" type="checkbox"/>
+Better visual hierarchy within cards</li>
+<li><input disabled="" type="checkbox"/>
+Hover effects and interactive states</li>
+<li><input disabled="" type="checkbox"/>
+Responsive card grid system</li>
+</ul>
+<h3>Success Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Table replaced with modern card grid</li>
+<li><input disabled="" type="checkbox"/>
+Enhanced visual hierarchy in card design</li>
+<li><input disabled="" type="checkbox"/>
+Responsive card layout working correctly</li>
+<li><input disabled="" type="checkbox"/>
+All file information still accessible</li>
+<li><input disabled="" type="checkbox"/>
+Hover effects and interactions implemented</li>
+</ul>
+<h2>Implementation Log</h2>
+<h3>Starting Prompt Execution</h3>
+<p><strong>Prompt Text</strong>:</p>
+<pre><code>Transform the file listing from table to modern cards in code/static-site-generator/src/theme/templates.rs and styles.rs:
+
+1. Update the HOME_PAGE_TEMPLATE to use card layout instead of table:
+   - Replace the table structure with a grid of cards
+   - Each card contains file title, date, category, and tags
+   - Better visual hierarchy with typography and spacing
+
+2. Implement card styling:
+   - Modern card design with subtle shadows and borders
+   - Hover effects with elevation changes
+   - Category indicators with color coding
+   - Tag pills with improved styling
+
+3. Create responsive card grid:
+   - CSS Grid for card layout with auto-fit columns
+   - Cards adapt to different screen sizes
+   - Maintain readability and accessibility
+
+4. Preserve all functionality while improving visual presentation
+5. Test the card layout across different screen sizes
+</code></pre>
+<p><strong>Analysis</strong>:</p>
+<ul>
+<li>Scope: Replace table layout with modern card grid in both templates and styles</li>
+<li>Dependencies: Prompts 1.1 ✅ and 1.2 ✅ completed</li>
+<li>Approach: Read current templates.rs and styles.rs, update HTML structure, implement card styling</li>
+</ul>
+<h3>Implementation Progress</h3>
+<p>Starting transformation from table to card-based layout…</p>
 
     </div>
     
