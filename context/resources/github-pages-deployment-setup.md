@@ -117,3 +117,33 @@ The workflows include several optimizations:
 - Workflows have minimal required permissions
 - gh-pages workflow uses GITHUB_TOKEN (no PAT needed)
 - Deployment happens in isolated GitHub-hosted runners
+
+## Troubleshooting Subpath Deployment
+
+If links are not working when deployed to a subpath like `username.github.io/repository/`:
+
+### Problem
+
+Links use absolute paths (e.g., `/projects/`) instead of relative paths, causing them to point to `username.github.io/projects/` instead of `username.github.io/repository/projects/`.
+
+### Solution
+
+The static site generator now supports a `PARA_SSG_BASE_URL` environment variable. The GitHub Actions workflow sets this automatically to match your repository name:
+
+```yaml
+PARA_SSG_BASE_URL="/forge/" cargo run --release -- ../../context ../../build
+```
+
+### Verification
+
+1. Check that document links include the base URL:
+
+   ```bash
+   curl -s https://username.github.io/repository/ | grep href
+   ```
+
+2. All links should include the repository name:
+   - ✅ `href="/repository/projects/"`
+   - ❌ `href="/projects/"`
+
+See [[github-pages-subpath-deployment-fix]] for detailed implementation notes.

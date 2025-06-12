@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-06-12T16:00:37.503Z",
+  "lastUpdated": "2025-06-12T17:44:07.804Z",
   "index": {
     "/Users/mobrienv/Code/why/code/mcp-server/resources/projects/test-project.md": [
       {
@@ -35,10 +35,28 @@
         "lineNumber": 146,
         "linkType": "wiki"
       }
+    ],
+    "/Users/mobrienv/Code/why/code/mcp-server/areas/completed-sessions/github-pages-deployment-setup.md": [
+      {
+        "sourcePath": "areas/completed-sessions/github-pages-deployment-troubleshooting-2025-06-12.md",
+        "targetPath": "/Users/mobrienv/Code/why/code/mcp-server/areas/completed-sessions/github-pages-deployment-setup.md",
+        "context": "... Related Documentation - [[github-pages-deployment-setup]] - Initial setup guide - ...",
+        "lineNumber": 68,
+        "linkType": "wiki"
+      }
+    ],
+    "/Users/mobrienv/Code/why/code/mcp-server/areas/completed-sessions/github-pages-subpath-deployment-fix.md": [
+      {
+        "sourcePath": "areas/completed-sessions/github-pages-deployment-troubleshooting-2025-06-12.md",
+        "targetPath": "/Users/mobrienv/Code/why/code/mcp-server/areas/completed-sessions/github-pages-subpath-deployment-fix.md",
+        "context": "... - Initial setup guide - [[github-pages-subpath-deployment-fix]] - Detailed fix documenta...",
+        "lineNumber": 69,
+        "linkType": "wiki"
+      }
     ]
   },
   "metadata": {
-    "documentCount": 6,
-    "linkCount": 4
+    "documentCount": 9,
+    "linkCount": 6
   }
 }
