@@ -1,6 +1,10 @@
 ---
 title: Test Links
 category: resources
+tags:
+  - test
+  - wiki-links
+  - documentation
 created: 2025-06-11T20:29:56.415Z
 modified: 2025-06-11T20:29:56.415Z
 ---

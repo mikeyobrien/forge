@@ -11,6 +11,7 @@ interface ScreenshotOptions {
   url?: string;
   permanent?: boolean;
   outputDir?: string;
+  skipServer?: boolean;
 }
 
 interface ScreenshotResult {
@@ -41,6 +42,11 @@ export const screenshotTool = {
       outputDir: {
         type: 'string',
         description: 'Directory to serve static files from (auto-detects para-ssg output)',
+      },
+      skipServer: {
+        type: 'boolean',
+        description: 'Skip starting the static server (use when URL points to existing server)',
+        default: false,
       },
     },
     required: [],
@@ -162,9 +168,16 @@ class ScreenshotService {
 
   async screenshot(args: ScreenshotOptions): Promise<ScreenshotResult> {
     try {
-      // Start static server if needed
-      const port = await this.startStaticServer(args.outputDir);
-      const url = args.url || `http://localhost:${port}`;
+      let url: string;
+
+      if (args.skipServer && args.url) {
+        // Use provided URL directly without starting server
+        url = args.url;
+      } else {
+        // Start static server if needed
+        const port = await this.startStaticServer(args.outputDir);
+        url = args.url || `http://localhost:${port}`;
+      }
 
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const baseFilename = `screenshot-${timestamp}`;

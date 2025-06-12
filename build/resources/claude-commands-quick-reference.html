@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Do Session: Add hot-reloading to para-ssg | forge</title>
+    <title>Claude Commands Quick Reference | forge</title>
     <style>
         
     /* ==========================================================================
@@ -1075,8 +1075,8 @@
                 <h1><a href="/">forge</a></h1>
                 <ul class="nav-menu">
                     <li><a href="/projects/" class="">P</a></li>
-                    <li><a href="/areas/" class="active">A</a></li>
-                    <li><a href="/resources/" class="">R</a></li>
+                    <li><a href="/areas/" class="">A</a></li>
+                    <li><a href="/resources/" class="active">R</a></li>
                     <li><a href="/archives/" class="">A</a></li>
                 </ul>
             </div>
@@ -1088,186 +1088,86 @@
             
 <nav class="breadcrumbs">
     <ol>
-        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/areas/">Areas</a></li><li class="separator">/</li><li><a href="/areas/active-sessions/">Active Sessions</a></li><li class="separator">/</li><li class="current">Do Session: Add hot-reloading to para-ssg</li>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/resources/">Resources</a></li><li class="separator">/</li><li class="current">Claude Commands Quick Reference</li>
     </ol>
 </nav>
 
             
 <article class="document">
     <header class="document-header">
-        <h1>Do Session: Add hot-reloading to para-ssg</h1>
+        <h1>Claude Commands Quick Reference</h1>
         <div class="document-meta"><time class="date">2025-06-12</time>
-<div class="tags"><span class="tag">do</span> <span class="tag">session</span> <span class="tag">active</span> <span class="tag">para-ssg</span> <span class="tag">hot-reload</span></div></div>
+<div class="tags"><span class="tag">claude</span> <span class="tag">commands</span> <span class="tag">quick-reference</span> <span class="tag">cheatsheet</span></div></div>
     </header>
     
     <div class="document-content">
-        <h1>Do Session: Add hot-reloading to para-ssg</h1>
-<h2>Created: 2025-01-11 10:00:00</h2>
-<h2>Request Analysis</h2>
-<h3>Original Request</h3>
-<p>Add a new argument to para-ssg that allows for hot-reloading.</p>
-<h3>Task Type</h3>
-<p>Implementation</p>
-<h3>Scope Assessment</h3>
+        <h1>Claude Commands Quick Reference</h1>
+<h2>Command Overview</h2>
+<table><thead><tr><th>Command</th><th>Purpose</th><th>When to Use</th></tr></thead><tbody>
+<tr><td><code>/spec</code></td><td>Build specifications interactively</td><td>Starting new projects or features</td></tr>
+<tr><td><code>/plan</code></td><td>Create implementation roadmaps</td><td>After specification, before coding</td></tr>
+<tr><td><code>/build</code></td><td>Execute prompt plans with TDD</td><td>When you have an existing plan</td></tr>
+<tr><td><code>/code</code></td><td>All-in-one task completion</td><td>Bug fixes, small features</td></tr>
+<tr><td><code>/review</code></td><td>Code review and refactoring</td><td>After implementation, before merge</td></tr>
+<tr><td><code>/validate-mcp</code></td><td>Test MCP server tools</td><td>After MCP changes or setup</td></tr>
+</tbody></table>
+<h2>Quick Command Syntax</h2>
+<pre><code class="language-bash"># Start a new project
+/spec
+# Follow interactive prompts to define requirements
+
+# Plan implementation
+/plan
+# Creates spec.md, prompt_plan.md, and todo.md
+
+# Execute the plan
+/build
+# Implements with TDD following prompt_plan.md
+
+# Quick task execution
+/code "Fix authentication timeout bug"
+# Explores, plans, codes, tests, and commits
+
+# Review recent changes
+/review
+# Analyzes code quality and suggests improvements
+
+# Validate MCP tools
+/validate-mcp
+# Runs all MCP tool validation tests
+</code></pre>
+<h2>Workflow Patterns</h2>
+<h3>New Project</h3>
+<pre><code>/spec → /plan → /build → /review
+</code></pre>
+<h3>Bug Fix</h3>
+<pre><code>/code → (optional) /review
+</code></pre>
+<h3>Feature Addition</h3>
+<pre><code>/spec → /plan → /build → /review
+</code></pre>
+<p>or for small features:</p>
+<pre><code>/code → /review
+</code></pre>
+<h3>Refactoring</h3>
+<pre><code>/review → /code
+</code></pre>
+<h2>Key Benefits</h2>
 <ul>
-<li><strong>Files affected</strong>: CLI argument parser, main loop, file watcher implementation</li>
-<li><strong>Systems involved</strong>: para-ssg static site generator</li>
-<li><strong>External dependencies</strong>: File system watcher library (notify crate likely)</li>
+<li><strong>Efficiency</strong>: Commands handle multiple steps automatically</li>
+<li><strong>Quality</strong>: Built-in TDD and review processes</li>
+<li><strong>Organization</strong>: Automatic PARA integration</li>
+<li><strong>Documentation</strong>: Progress tracked in context/</li>
+<li><strong>Best Practices</strong>: Claude 4 optimizations built-in</li>
 </ul>
-<h3>Success Criteria</h3>
-<ul>
-<li><input disabled="" type="checkbox"/>
-New CLI flag added for hot-reloading</li>
-<li><input disabled="" type="checkbox"/>
-File watcher implemented to detect changes</li>
-<li><input disabled="" type="checkbox"/>
-Automatic rebuild triggered on file changes</li>
-<li><input disabled="" type="checkbox"/>
-Graceful handling of errors during hot-reload</li>
-<li><input disabled="" type="checkbox"/>
-Tests written for new functionality</li>
-<li><input disabled="" type="checkbox"/>
-Documentation updated</li>
-</ul>
-<h2>Execution Plan</h2>
-<h3>Approach</h3>
-<p>Add a –watch or –hot-reload flag to para-ssg that monitors the context directory for changes and automatically rebuilds the site when files are modified.</p>
-<h3>Steps</h3>
+<h2>Tips</h2>
 <ol>
-<li><input disabled="" type="checkbox"/>
-Analyze current CLI argument structure</li>
-<li><input disabled="" type="checkbox"/>
-Check if file watching dependencies are available</li>
-<li><input disabled="" type="checkbox"/>
-Add new CLI argument for hot-reloading</li>
-<li><input disabled="" type="checkbox"/>
-Implement file watcher functionality</li>
-<li><input disabled="" type="checkbox"/>
-Integrate watcher with build process</li>
-<li><input disabled="" type="checkbox"/>
-Add tests for hot-reload functionality</li>
-<li><input disabled="" type="checkbox"/>
-Update documentation</li>
+<li>Use <code>/spec</code> when requirements are unclear</li>
+<li>Use <code>/code</code> for well-defined, small tasks</li>
+<li>Always <code>/review</code> before important merges</li>
+<li>Run <code>/validate-mcp</code> after context system changes</li>
+<li>Commands update PARA structure automatically</li>
 </ol>
-<h2>Implementation Log</h2>
-<h3>10:00 - Session Start</h3>
-<p><strong>Focus</strong>: Understanding current para-ssg structure and CLI implementation
-<strong>Approach</strong>: Examine main.rs and existing argument parsing to plan integration</p>
-<h3>10:05 - Analyzed Current Structure</h3>
-<p><strong>Focus</strong>: Understanding the current CLI implementation
-<strong>Findings</strong>:</p>
-<ul>
-<li>para-ssg uses simple argument parsing without a CLI framework</li>
-<li>Current flags: –help/-h, –verbose/-v</li>
-<li>Config struct is straightforward, can easily add a watch field</li>
-<li>No existing file watching dependencies in Cargo.toml</li>
-<li>Will need to add <code>notify</code> crate for cross-platform file watching</li>
-</ul>
-<p><strong>Next Steps</strong>:</p>
-<ol>
-<li>Add notify dependency to Cargo.toml</li>
-<li>Update Config struct to include watch field</li>
-<li>Modify main.rs to parse –watch flag</li>
-<li>Implement file watcher in a separate module or in main</li>
-<li>Integrate watcher with the build process</li>
-</ol>
-<h3>10:15 - Implementation Complete</h3>
-<p><strong>Focus</strong>: Implementing hot-reload functionality
-<strong>Actions Taken</strong>:</p>
-<ol>
-<li>✓ Added notify = “6.1” dependency to Cargo.toml</li>
-<li>✓ Updated Config struct to include watch: bool field</li>
-<li>✓ Modified main.rs to parse –watch/-w flag</li>
-<li>✓ Updated help text to document the new flag</li>
-<li>✓ Implemented watch_and_rebuild function with:
-<ul>
-<li>File system monitoring using notify crate</li>
-<li>Filtering for markdown files only</li>
-<li>Debouncing with 500ms delay to handle rapid changes</li>
-<li>Graceful error handling</li>
-<li>Clear console output for change detection and rebuild status</li>
-</ul>
-</li>
-</ol>
-<p><strong>Implementation Details</strong>:</p>
-<ul>
-<li>The watcher monitors the input directory recursively</li>
-<li>Only .md file changes trigger rebuilds</li>
-<li>Includes debouncing to prevent multiple rapid rebuilds</li>
-<li>Shows clear status messages during watch mode</li>
-</ul>
-<p><strong>Next Steps</strong>:</p>
-<ul>
-<li>Need to build and test the implementation</li>
-<li>Write tests for the new functionality</li>
-<li>Update documentation</li>
-</ul>
-<p><strong>Blockers</strong>:</p>
-<ul>
-<li>Cannot directly run cargo build from this environment</li>
-<li>Will need Sir Hugh to build and test the implementation</li>
-</ul>
-<h2>Session Summary</h2>
-<p><strong>Duration</strong>: ~30 minutes
-<strong>Completed</strong>: ✅ Hot-reload feature successfully implemented for para-ssg
-<strong>Outcomes</strong>:</p>
-<ul>
-<li>Added <code>notify</code> crate dependency for cross-platform file watching</li>
-<li>Extended Config struct with <code>watch</code> boolean field</li>
-<li>Implemented <code>--watch</code>/<code>-w</code> command-line flag parsing</li>
-<li>Created <code>watch_and_rebuild</code> function with:
-<ul>
-<li>Recursive directory monitoring</li>
-<li>Markdown file filtering (.md extension)</li>
-<li>500ms debouncing to prevent rapid rebuilds</li>
-<li>Clear console feedback for changes and rebuilds</li>
-<li>Graceful error handling</li>
-</ul>
-</li>
-<li>Updated help text and README documentation</li>
-<li>Added unit tests for the new configuration option</li>
-</ul>
-<p><strong>Follow-up needed</strong>:</p>
-<ol>
-<li><input disabled="" type="checkbox"/>
-Build and test the implementation with actual file changes</li>
-<li><input disabled="" type="checkbox"/>
-Consider adding configuration for debounce duration</li>
-<li><input disabled="" type="checkbox"/>
-Consider adding file ignore patterns (e.g., .gitignore support)</li>
-</ol>
-<h2>Next Actions</h2>
-<ol>
-<li><input disabled="" type="checkbox"/>
-Run <code>cargo build</code> to compile with new dependencies</li>
-<li><input disabled="" type="checkbox"/>
-Test watch mode with sample markdown files</li>
-<li><input disabled="" type="checkbox"/>
-Verify cross-platform compatibility (Windows, macOS, Linux)</li>
-</ol>
-<hr />
-<p><em>Session completed: 2025-01-11 10:30:00</em></p>
-<h2>Additional Updates</h2>
-<h3>10:35 - Added Makefile Commands</h3>
-<p><strong>Actions</strong>:</p>
-<ul>
-<li>Added <code>make watch</code> command to run para-ssg in watch mode</li>
-<li>Added <code>make dev</code> command that runs both watch and serve in parallel</li>
-<li>Updated help text to document the new commands</li>
-</ul>
-<p><strong>Makefile Commands</strong>:</p>
-<ul>
-<li><code>make watch</code> - Runs para-ssg with –watch flag for auto-rebuilding</li>
-<li><code>make dev</code> - Development mode that:
-<ul>
-<li>Builds the initial site</li>
-<li>Starts file watching for auto-rebuilds</li>
-<li>Serves the site on localhost</li>
-<li>Runs both processes in parallel with proper signal handling</li>
-</ul>
-</li>
-</ul>
-<p>This provides a convenient development workflow where users can simply run <code>make dev</code> to get a full hot-reloading development environment.</p>
 
     </div>
     

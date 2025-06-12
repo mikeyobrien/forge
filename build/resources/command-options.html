@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Do Session: Add hot-reloading to para-ssg | forge</title>
+    <title>Claude Command Options for Enhanced Workflow | forge</title>
     <style>
         
     /* ==========================================================================
@@ -1075,8 +1075,8 @@
                 <h1><a href="/">forge</a></h1>
                 <ul class="nav-menu">
                     <li><a href="/projects/" class="">P</a></li>
-                    <li><a href="/areas/" class="active">A</a></li>
-                    <li><a href="/resources/" class="">R</a></li>
+                    <li><a href="/areas/" class="">A</a></li>
+                    <li><a href="/resources/" class="active">R</a></li>
                     <li><a href="/archives/" class="">A</a></li>
                 </ul>
             </div>
@@ -1088,186 +1088,298 @@
             
 <nav class="breadcrumbs">
     <ol>
-        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/areas/">Areas</a></li><li class="separator">/</li><li><a href="/areas/active-sessions/">Active Sessions</a></li><li class="separator">/</li><li class="current">Do Session: Add hot-reloading to para-ssg</li>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/resources/">Resources</a></li><li class="separator">/</li><li class="current">Claude Command Options for Enhanced Workflow</li>
     </ol>
 </nav>
 
             
 <article class="document">
     <header class="document-header">
-        <h1>Do Session: Add hot-reloading to para-ssg</h1>
+        <h1>Claude Command Options for Enhanced Workflow</h1>
         <div class="document-meta"><time class="date">2025-06-12</time>
-<div class="tags"><span class="tag">do</span> <span class="tag">session</span> <span class="tag">active</span> <span class="tag">para-ssg</span> <span class="tag">hot-reload</span></div></div>
+<div class="tags"><span class="tag">claude</span> <span class="tag">commands</span> <span class="tag">workflow</span> <span class="tag">options</span> <span class="tag">reference</span></div></div>
     </header>
     
     <div class="document-content">
-        <h1>Do Session: Add hot-reloading to para-ssg</h1>
-<h2>Created: 2025-01-11 10:00:00</h2>
-<h2>Request Analysis</h2>
-<h3>Original Request</h3>
-<p>Add a new argument to para-ssg that allows for hot-reloading.</p>
-<h3>Task Type</h3>
-<p>Implementation</p>
-<h3>Scope Assessment</h3>
-<ul>
-<li><strong>Files affected</strong>: CLI argument parser, main loop, file watcher implementation</li>
-<li><strong>Systems involved</strong>: para-ssg static site generator</li>
-<li><strong>External dependencies</strong>: File system watcher library (notify crate likely)</li>
-</ul>
-<h3>Success Criteria</h3>
-<ul>
-<li><input disabled="" type="checkbox"/>
-New CLI flag added for hot-reloading</li>
-<li><input disabled="" type="checkbox"/>
-File watcher implemented to detect changes</li>
-<li><input disabled="" type="checkbox"/>
-Automatic rebuild triggered on file changes</li>
-<li><input disabled="" type="checkbox"/>
-Graceful handling of errors during hot-reload</li>
-<li><input disabled="" type="checkbox"/>
-Tests written for new functionality</li>
-<li><input disabled="" type="checkbox"/>
-Documentation updated</li>
-</ul>
-<h2>Execution Plan</h2>
-<h3>Approach</h3>
-<p>Add a –watch or –hot-reload flag to para-ssg that monitors the context directory for changes and automatically rebuilds the site when files are modified.</p>
-<h3>Steps</h3>
+        <h1>Claude Command Options for Enhanced Workflow</h1>
+<h2>Option 1: Comprehensive Four-Stage Workflow</h2>
+<p><em>Full journey from idea to implementation with PARA integration</em></p>
+<h3>Commands:</h3>
 <ol>
-<li><input disabled="" type="checkbox"/>
-Analyze current CLI argument structure</li>
-<li><input disabled="" type="checkbox"/>
-Check if file watching dependencies are available</li>
-<li><input disabled="" type="checkbox"/>
-Add new CLI argument for hot-reloading</li>
-<li><input disabled="" type="checkbox"/>
-Implement file watcher functionality</li>
-<li><input disabled="" type="checkbox"/>
-Integrate watcher with build process</li>
-<li><input disabled="" type="checkbox"/>
-Add tests for hot-reload functionality</li>
-<li><input disabled="" type="checkbox"/>
-Update documentation</li>
+<li><code>/brainstorm</code> - Interactive idea development with Q&amp;A</li>
+<li><code>/design</code> - Technical architecture and detailed design</li>
+<li><code>/prompt-plan</code> - Create implementation roadmap with specific prompts</li>
+<li><code>/implement</code> - Execute steps with TDD approach</li>
 </ol>
-<h2>Implementation Log</h2>
-<h3>10:00 - Session Start</h3>
-<p><strong>Focus</strong>: Understanding current para-ssg structure and CLI implementation
-<strong>Approach</strong>: Examine main.rs and existing argument parsing to plan integration</p>
-<h3>10:05 - Analyzed Current Structure</h3>
-<p><strong>Focus</strong>: Understanding the current CLI implementation
-<strong>Findings</strong>:</p>
+<h3>Pros:</h3>
 <ul>
-<li>para-ssg uses simple argument parsing without a CLI framework</li>
-<li>Current flags: –help/-h, –verbose/-v</li>
-<li>Config struct is straightforward, can easily add a watch field</li>
-<li>No existing file watching dependencies in Cargo.toml</li>
-<li>Will need to add <code>notify</code> crate for cross-platform file watching</li>
+<li>Clear separation of concerns</li>
+<li>Thorough documentation at each stage</li>
+<li>Natural progression from abstract to concrete</li>
+<li>Excellent for complex projects</li>
 </ul>
-<p><strong>Next Steps</strong>:</p>
-<ol>
-<li>Add notify dependency to Cargo.toml</li>
-<li>Update Config struct to include watch field</li>
-<li>Modify main.rs to parse –watch flag</li>
-<li>Implement file watcher in a separate module or in main</li>
-<li>Integrate watcher with the build process</li>
-</ol>
-<h3>10:15 - Implementation Complete</h3>
-<p><strong>Focus</strong>: Implementing hot-reload functionality
-<strong>Actions Taken</strong>:</p>
-<ol>
-<li>✓ Added notify = “6.1” dependency to Cargo.toml</li>
-<li>✓ Updated Config struct to include watch: bool field</li>
-<li>✓ Modified main.rs to parse –watch/-w flag</li>
-<li>✓ Updated help text to document the new flag</li>
-<li>✓ Implemented watch_and_rebuild function with:
+<h3>Cons:</h3>
 <ul>
-<li>File system monitoring using notify crate</li>
-<li>Filtering for markdown files only</li>
-<li>Debouncing with 500ms delay to handle rapid changes</li>
-<li>Graceful error handling</li>
-<li>Clear console output for change detection and rebuild status</li>
+<li>May be overkill for simple tasks</li>
+<li>Requires multiple command invocations</li>
+<li>More time investment upfront</li>
 </ul>
-</li>
-</ol>
-<p><strong>Implementation Details</strong>:</p>
-<ul>
-<li>The watcher monitors the input directory recursively</li>
-<li>Only .md file changes trigger rebuilds</li>
-<li>Includes debouncing to prevent multiple rapid rebuilds</li>
-<li>Shows clear status messages during watch mode</li>
-</ul>
-<p><strong>Next Steps</strong>:</p>
-<ul>
-<li>Need to build and test the implementation</li>
-<li>Write tests for the new functionality</li>
-<li>Update documentation</li>
-</ul>
-<p><strong>Blockers</strong>:</p>
-<ul>
-<li>Cannot directly run cargo build from this environment</li>
-<li>Will need Sir Hugh to build and test the implementation</li>
-</ul>
-<h2>Session Summary</h2>
-<p><strong>Duration</strong>: ~30 minutes
-<strong>Completed</strong>: ✅ Hot-reload feature successfully implemented for para-ssg
-<strong>Outcomes</strong>:</p>
-<ul>
-<li>Added <code>notify</code> crate dependency for cross-platform file watching</li>
-<li>Extended Config struct with <code>watch</code> boolean field</li>
-<li>Implemented <code>--watch</code>/<code>-w</code> command-line flag parsing</li>
-<li>Created <code>watch_and_rebuild</code> function with:
-<ul>
-<li>Recursive directory monitoring</li>
-<li>Markdown file filtering (.md extension)</li>
-<li>500ms debouncing to prevent rapid rebuilds</li>
-<li>Clear console feedback for changes and rebuilds</li>
-<li>Graceful error handling</li>
-</ul>
-</li>
-<li>Updated help text and README documentation</li>
-<li>Added unit tests for the new configuration option</li>
-</ul>
-<p><strong>Follow-up needed</strong>:</p>
-<ol>
-<li><input disabled="" type="checkbox"/>
-Build and test the implementation with actual file changes</li>
-<li><input disabled="" type="checkbox"/>
-Consider adding configuration for debounce duration</li>
-<li><input disabled="" type="checkbox"/>
-Consider adding file ignore patterns (e.g., .gitignore support)</li>
-</ol>
-<h2>Next Actions</h2>
-<ol>
-<li><input disabled="" type="checkbox"/>
-Run <code>cargo build</code> to compile with new dependencies</li>
-<li><input disabled="" type="checkbox"/>
-Test watch mode with sample markdown files</li>
-<li><input disabled="" type="checkbox"/>
-Verify cross-platform compatibility (Windows, macOS, Linux)</li>
-</ol>
 <hr />
-<p><em>Session completed: 2025-01-11 10:30:00</em></p>
-<h2>Additional Updates</h2>
-<h3>10:35 - Added Makefile Commands</h3>
-<p><strong>Actions</strong>:</p>
+<h2>Option 2: Dual-Mode Workflow</h2>
+<p><em>Two primary workflows based on task complexity</em></p>
+<h3>Commands:</h3>
+<ol>
+<li>
+<p><code>/explore-plan-code</code> - All-in-one for well-defined tasks</p>
 <ul>
-<li>Added <code>make watch</code> command to run para-ssg in watch mode</li>
-<li>Added <code>make dev</code> command that runs both watch and serve in parallel</li>
-<li>Updated help text to document the new commands</li>
-</ul>
-<p><strong>Makefile Commands</strong>:</p>
-<ul>
-<li><code>make watch</code> - Runs para-ssg with –watch flag for auto-rebuilding</li>
-<li><code>make dev</code> - Development mode that:
-<ul>
-<li>Builds the initial site</li>
-<li>Starts file watching for auto-rebuilds</li>
-<li>Serves the site on localhost</li>
-<li>Runs both processes in parallel with proper signal handling</li>
+<li>Explores codebase</li>
+<li>Creates implementation plan</li>
+<li>Executes with TDD</li>
+<li>Commits changes</li>
 </ul>
 </li>
+<li>
+<p><code>/ideate</code> - Comprehensive workflow starter</p>
+<ul>
+<li>Combines brainstorm + design</li>
+<li>Outputs spec.md and prompt_plan.md</li>
+<li>Prepares for implementation</li>
 </ul>
-<p>This provides a convenient development workflow where users can simply run <code>make dev</code> to get a full hot-reloading development environment.</p>
+</li>
+<li>
+<p><code>/execute</code> - Implementation helper</p>
+<ul>
+<li>Reads prompt_plan.md</li>
+<li>Implements with TDD</li>
+<li>Updates progress</li>
+</ul>
+</li>
+</ol>
+<h3>Pros:</h3>
+<ul>
+<li>Flexible for different task sizes</li>
+<li>Fewer commands to remember</li>
+<li>Efficient for common use cases</li>
+</ul>
+<h3>Cons:</h3>
+<ul>
+<li>Less granular control</li>
+<li>May miss nuances of complex projects</li>
+</ul>
+<hr />
+<h2>Option 3: Harper-Inspired with Claude Enhancements</h2>
+<p><em>Direct adaptation of Harper’s workflow with Claude 4 optimizations</em></p>
+<h3>Commands:</h3>
+<ol>
+<li>
+<p><code>/spec</code> - Interactive specification builder</p>
+<ul>
+<li>One question at a time approach</li>
+<li>Builds comprehensive spec</li>
+<li>Saves to context/projects/</li>
+</ul>
+</li>
+<li>
+<p><code>/plan</code> - Strategic planning with multiple outputs</p>
+<ul>
+<li>Generates spec.md</li>
+<li>Creates prompt_plan.md</li>
+<li>Produces todo.md</li>
+<li>Offers TDD or standard approach</li>
+</ul>
+</li>
+<li>
+<p><code>/build</code> - Intelligent implementation</p>
+<ul>
+<li>Reads all planning documents</li>
+<li>Uses parallel tool execution</li>
+<li>Implements incrementally</li>
+<li>Self-documents progress</li>
+</ul>
+</li>
+<li>
+<p><code>/review</code> - Code review and refactoring</p>
+<ul>
+<li>Analyzes recent changes</li>
+<li>Suggests improvements</li>
+<li>Updates documentation</li>
+</ul>
+</li>
+</ol>
+<h3>Pros:</h3>
+<ul>
+<li>Familiar to Harper workflow users</li>
+<li>Clear command purposes</li>
+<li>Comprehensive outputs</li>
+</ul>
+<h3>Cons:</h3>
+<ul>
+<li>Still requires multiple commands</li>
+<li>May have overlap between spec and plan</li>
+</ul>
+<hr />
+<h2>Option 4: Context-Aware Progressive Workflow</h2>
+<p><em>Smart commands that adapt based on project state</em></p>
+<h3>Commands:</h3>
+<ol>
+<li>
+<p><code>/project</code> - Intelligent project assistant</p>
+<ul>
+<li>Detects project stage automatically</li>
+<li>If no context: starts brainstorming</li>
+<li>If spec exists: creates design</li>
+<li>If design exists: generates plan</li>
+<li>If plan exists: begins implementation</li>
+</ul>
+</li>
+<li>
+<p><code>/work</code> - Focused implementation helper</p>
+<ul>
+<li>Reads current project state</li>
+<li>Executes next logical step</li>
+<li>Updates all documentation</li>
+<li>Maintains PARA structure</li>
+</ul>
+</li>
+<li>
+<p><code>/think</code> - Deep analysis mode</p>
+<ul>
+<li>For complex problem solving</li>
+<li>Researches and documents findings</li>
+<li>Creates decision records</li>
+<li>Updates resources/</li>
+</ul>
+</li>
+</ol>
+<h3>Pros:</h3>
+<ul>
+<li>Minimal commands to remember</li>
+<li>Intelligent context awareness</li>
+<li>Adaptive to project needs</li>
+<li>Reduces cognitive load</li>
+</ul>
+<h3>Cons:</h3>
+<ul>
+<li>Less explicit control</li>
+<li>May make assumptions</li>
+<li>Harder to skip stages</li>
+</ul>
+<hr />
+<h2>Option 5: Hybrid Specialist Approach</h2>
+<p><em>Specialized commands for different aspects</em></p>
+<h3>Commands:</h3>
+<ol>
+<li>
+<p><code>/discover</code> - Research and exploration</p>
+<ul>
+<li>Investigates codebase</li>
+<li>Documents findings in PARA</li>
+<li>Creates initial project outline</li>
+</ul>
+</li>
+<li>
+<p><code>/architect</code> - Design and planning</p>
+<ul>
+<li>Creates technical designs</li>
+<li>Generates implementation strategies</li>
+<li>Produces all planning artifacts</li>
+</ul>
+</li>
+<li>
+<p><code>/tdd</code> - Test-driven implementation</p>
+<ul>
+<li>Writes tests first</li>
+<li>Implements to pass tests</li>
+<li>Refactors for quality</li>
+<li>Documents progress</li>
+</ul>
+</li>
+<li>
+<p><code>/iterate</code> - Rapid prototyping</p>
+<ul>
+<li>Quick implementation cycles</li>
+<li>Visual feedback integration</li>
+<li>Fast experimentation</li>
+</ul>
+</li>
+<li>
+<p><code>/ship</code> - Finalization and deployment</p>
+<ul>
+<li>Final testing</li>
+<li>Documentation updates</li>
+<li>Commit preparation</li>
+<li>Archive completed work</li>
+</ul>
+</li>
+</ol>
+<h3>Pros:</h3>
+<ul>
+<li>Specialized tools for each need</li>
+<li>Can mix and match approaches</li>
+<li>Clear command intent</li>
+<li>Supports various workflows</li>
+</ul>
+<h3>Cons:</h3>
+<ul>
+<li>More commands to learn</li>
+<li>Potential overlap in functionality</li>
+</ul>
+<hr />
+<h2>Recommendation Factors to Consider:</h2>
+<ol>
+<li>
+<p><strong>Your typical project complexity</strong></p>
+<ul>
+<li>Simple tasks → Option 2 or 4</li>
+<li>Complex projects → Option 1 or 3</li>
+<li>Mixed workload → Option 5</li>
+</ul>
+</li>
+<li>
+<p><strong>Preference for control vs. automation</strong></p>
+<ul>
+<li>High control → Option 1 or 5</li>
+<li>More automation → Option 4</li>
+<li>Balance → Option 2 or 3</li>
+</ul>
+</li>
+<li>
+<p><strong>Team collaboration needs</strong></p>
+<ul>
+<li>Solo work → Any option</li>
+<li>Team work → Option 1 or 3 (more documentation)</li>
+</ul>
+</li>
+<li>
+<p><strong>Learning curve tolerance</strong></p>
+<ul>
+<li>Low → Option 2 or 4</li>
+<li>High → Option 1 or 5</li>
+</ul>
+</li>
+</ol>
+<h2>Additional Features for All Options:</h2>
+<h3>Common Enhancements:</h3>
+<ul>
+<li><strong>PARA Integration</strong>: All commands maintain context/ structure</li>
+<li><strong>Progress Tracking</strong>: Automatic todo.md updates</li>
+<li><strong>Claude 4 Optimizations</strong>:
+<ul>
+<li>Parallel tool usage</li>
+<li>Deep thinking steps</li>
+<li>Explicit success criteria</li>
+</ul>
+</li>
+<li><strong>Visual Integration</strong>: Screenshot analysis and iteration</li>
+<li><strong>Commit Helpers</strong>: Smart commit message generation</li>
+</ul>
+<h3>Shared Utilities:</h3>
+<ul>
+<li><code>/context</code> - View current project state</li>
+<li><code>/archive</code> - Move completed projects to archives</li>
+<li><code>/resources</code> - Access and update reference materials</li>
+</ul>
+<p>Which option resonates most with your workflow, Sir Hugh? I can also create a custom hybrid based on your specific preferences.</p>
 
     </div>
     
