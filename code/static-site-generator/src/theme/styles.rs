@@ -62,6 +62,7 @@ pub fn get_default_styles() -> String {
         --accent-secondary: #3B82F6;
         --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
         --accent-gradient-hover: linear-gradient(135deg, #0284C7 0%, #2563EB 100%);
+        --gradient-primary: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
         
         /* Semantic colors */
         --success: #10B981;
@@ -888,6 +889,16 @@ pub fn get_default_styles() -> String {
         font-size: 1.5rem;
         margin-bottom: var(--space-3);
         color: var(--text-primary);
+    }
+    
+    /* Add spacing between document entries in subdirectories */
+    .document-entries .document-entry + .document-entry {
+        margin-top: var(--space-3);
+    }
+    
+    /* Also add spacing for regular document lists */
+    .document-entry + .document-entry {
+        margin-top: var(--space-3);
     }
     
     .empty-directory {
