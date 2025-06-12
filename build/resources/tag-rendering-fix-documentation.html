@@ -612,13 +612,6 @@
         color: var(--text-primary);
     }
     
-    .file-tags .tag:before {
-        content: "\\#";
-        color: var(--text-muted);
-        margin-right: 0.2rem;
-        font-weight: 500;
-    }
-    
     .no-tags {
         color: var(--text-muted);
         font-style: italic;
@@ -1128,7 +1121,7 @@
 <h3>Step 1: Add Frontmatter to Files</h3>
 <p>Added complete frontmatter with appropriate tags to files that were missing it:</p>
 <pre><code class="language-yaml">---
-title: "Project: Claude Commands Enhancement"
+title: 'Project: Claude Commands Enhancement'
 category: projects
 tags:
   - claude
@@ -1144,17 +1137,17 @@ tags:
 <p>Removed duplicate CSS rule in <code>/code/static-site-generator/src/theme/styles.rs</code>:</p>
 <pre><code class="language-css">/* REMOVED - This was causing double ## */
 .tag:before {
-    content: "\\#";
+  content: '\\#';
 }
 </code></pre>
 <h3>Step 3: Remove Hashtag Prefix Entirely</h3>
 <p>Removed the CSS rule that was adding <code>#</code> prefix to tags:</p>
 <pre><code class="language-css">/* REMOVED - Tags look cleaner without prefix */
 .file-tags .tag:before {
-    content: "\\#";
-    color: var(--text-muted);
-    margin-right: 0.2rem;
-    font-weight: 500;
+  content: '\\#';
+  color: var(--text-muted);
+  margin-right: 0.2rem;
+  font-weight: 500;
 }
 </code></pre>
 <h3>Step 4: Rebuild Site</h3>
@@ -1175,7 +1168,7 @@ tags:
 <li>
 <p><strong>Frontmatter Template</strong>: Always include frontmatter when creating new markdown files:</p>
 <pre><code class="language-yaml">---
-title: "Document Title"
+title: 'Document Title'
 category: projects|areas|resources|archives
 tags:
   - relevant
@@ -1197,7 +1190,7 @@ tags:
   url?: string;
   permanent?: boolean;
   outputDir?: string;
-  skipServer?: boolean;  // Added this option
+  skipServer?: boolean; // Added this option
 }
 </code></pre>
 <p>This allows screenshotting sites already running on specific ports without the tool trying to start its own server on port 3000.</p>

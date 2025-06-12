@@ -12,7 +12,7 @@ pub use markdown::*;
 pub use wiki_links::*;
 
 use crate::{ParaSsgError, Result};
-use chrono::{DateTime, Utc};
+use chrono::DateTime;
 use std::fs;
 use std::path::Path;
 

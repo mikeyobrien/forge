@@ -243,6 +243,33 @@ impl TemplateEngine {
         Ok(html)
     }
 
+    /// Render a subdirectory index page
+    pub fn render_subdirectory_index(
+        &self,
+        subdirectory_name: &str,
+        documents: &[DocumentSummary],
+    ) -> Result<String> {
+        let mut entries = String::new();
+        for doc in documents {
+            entries.push_str(&self.render_document_entry(doc)?);
+            entries.push('\n');
+        }
+
+        let document_count = documents.len();
+        // Use the same template as category index, but with subdirectory-specific content
+        let html = self
+            .get_template("category_index")
+            .replace("{category_title}", subdirectory_name)
+            .replace(
+                "{category_description}",
+                &format!("Documents in {}", subdirectory_name),
+            )
+            .replace("{document_count}", &document_count.to_string())
+            .replace("{document_entries}", &entries);
+
+        Ok(html)
+    }
+
     /// Render a single document entry for lists
     pub fn render_document_entry(&self, doc: &DocumentSummary) -> Result<String> {
         let mut entry = self
@@ -319,7 +346,7 @@ impl TemplateEngine {
     /// Render home page with recently modified files
     pub fn render_home_page(&self, documents: &[DocumentSummary]) -> Result<String> {
         let mut file_entries = String::new();
-        
+
         for doc in documents {
             let date_str = doc.date.as_deref().unwrap_or("—");
             let category_str = if doc.url.starts_with("/projects/") {
@@ -333,16 +360,17 @@ impl TemplateEngine {
             } else {
                 "other"
             };
-            
+
             let tags_str = if doc.tags.is_empty() {
                 r#"<span class="no-tags">No tags</span>"#.to_string()
             } else {
-                doc.tags.iter()
+                doc.tags
+                    .iter()
                     .map(|tag| format!(r#"<span class="tag">{}</span>"#, html_escape(tag)))
                     .collect::<Vec<_>>()
                     .join(" ")
             };
-            
+
             use std::fmt::Write;
             write!(
                 file_entries,
@@ -364,13 +392,14 @@ impl TemplateEngine {
                 date_str,
                 date_str,
                 tags_str
-            ).unwrap();
+            )
+            .unwrap();
         }
-        
+
         let html = self
             .get_template("home_page")
             .replace("{file_entries}", &file_entries);
-        
+
         Ok(html)
     }
 

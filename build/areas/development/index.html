@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>project-specification | forge</title>
+    <title>Development | forge</title>
     <style>
         
     /* ==========================================================================
@@ -1064,8 +1064,8 @@
                 <h1><a href="/">forge</a></h1>
                 <ul class="nav-menu">
                     <li><a href="/projects/" class="">P</a></li>
-                    <li><a href="/areas/" class="">A</a></li>
-                    <li><a href="/resources/" class="active">R</a></li>
+                    <li><a href="/areas/" class="active">A</a></li>
+                    <li><a href="/resources/" class="">R</a></li>
                     <li><a href="/archives/" class="">A</a></li>
                 </ul>
             </div>
@@ -1077,237 +1077,27 @@
             
 <nav class="breadcrumbs">
     <ol>
-        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/resources/">Resources</a></li><li class="separator">/</li><li class="current">project-specification</li>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/areas/">Areas</a></li><li class="separator">/</li><li class="current">Development</li>
     </ol>
 </nav>
 
             
-<article class="document">
-    <header class="document-header">
-        <h1>project-specification</h1>
-        <div class="document-meta"><time class="date">2025-06-11</time></div>
-    </header>
+<div class="category-index">
+    <h1>Development</h1>
+    <p class="category-description">Documents in Development</p>
+    <p class="document-count">1 documents in this category</p>
     
-    <div class="document-content">
-        <h1>Project Documentation &amp; Journaling System Specification</h1>
-<h2>Overview</h2>
-<p>A comprehensive documentation and journaling system designed to capture all aspects of project development, using markdown files with frontmatter for metadata and wiki-style links to create a knowledge graph.</p>
-<h2>Core Concept</h2>
-<p>The system enables thorough project documentation through structured markdown files organized using the PARA method (Projects, Areas, Resources, Archives), with automatic linking and relationship tracking to build a searchable knowledge base.</p>
-<h2>Technical Architecture</h2>
-<h3>Storage &amp; Organization</h3>
-<ul>
-<li><strong>Format</strong>: Markdown files with YAML frontmatter</li>
-<li><strong>Organization</strong>: PARA methodology using folder structure
-<ul>
-<li><code>/Projects/</code> - Active development features and sprints</li>
-<li><code>/Areas/</code> - Ongoing concerns (security, performance, architecture)</li>
-<li><code>/Resources/</code> - Reference materials, templates, design patterns</li>
-<li><code>/Archives/</code> - Completed features, deprecated decisions, old notes</li>
-</ul>
-</li>
-<li><strong>Linking</strong>: Wiki-style <code>&lt;span class="wiki-link broken" title="Link target not found: double bracket"&gt;double bracket&lt;/span&gt;</code> links for cross-referencing</li>
-<li><strong>Naming Convention</strong>: Descriptive names for topic-based files, ISO dates for journal entries</li>
-</ul>
-<h3>Frontmatter Schema</h3>
-<h4>Required Fields</h4>
-<pre><code class="language-yaml">created_date: 2024-01-15T10:30:00Z # ISO timestamp
-tags: [authentication, security] # Array for topic clustering
-summary: Brief one-line description # For quick context scanning
-</code></pre>
-<h4>Optional Fields</h4>
-<pre><code class="language-yaml">context: Background information about why this document exists
-decisions:
-  - Key architectural choice made
-  - Another important decision
-status: active|resolved|deprecated
-stakeholders: [alice, bob] # People mentioned/involved
-related: ['&lt;span class="wiki-link broken" title="Link target not found: API Design"&gt;API Design&lt;/span&gt;', '&lt;span class="wiki-link broken" title="Link target not found: Auth Flow"&gt;Auth Flow&lt;/span&gt;'] # Explicit connections
-priority: high|medium|low # For attention routing
-next_actions:
-  - Review security implications
-  - Update integration tests
-</code></pre>
-<h3>MCP Server Interface</h3>
-<p>The system will be accessed through an MCP (Model Context Protocol) server built using the official TypeScript SDK (@modelcontextprotocol/sdk) that Claude Code can interact with on behalf of the user. This MCP server will be located at <code>code/mcp/</code> and will contain ALL tools created for this project, serving as the central interface for all capabilities.</p>
-<h4>Core Capabilities (Phase 1 - MVP)</h4>
-<ol>
-<li>
-<p><strong>Create Operations</strong></p>
-<ul>
-<li>New journal entries with validated frontmatter</li>
-<li>Auto-generate daily journal entries</li>
-<li>Create documents from templates</li>
-</ul>
-</li>
-<li>
-<p><strong>Read Operations</strong></p>
-<ul>
-<li>Search by tags and content</li>
-<li>Parse and follow wiki-style links</li>
-<li>Retrieve documents with full context</li>
-</ul>
-</li>
-<li>
-<p><strong>Basic PARA Structure</strong></p>
-<ul>
-<li>Proper folder organization</li>
-<li>Path validation for PARA categories</li>
-</ul>
-</li>
-</ol>
-<h4>Enhanced Capabilities (Phase 2)</h4>
-<ol>
-<li>
-<p><strong>Update Operations</strong></p>
-<ul>
-<li>Modify documents while preserving structure</li>
-<li>Update frontmatter fields</li>
-<li>Maintain link integrity</li>
-</ul>
-</li>
-<li>
-<p><strong>Relationship Management</strong></p>
-<ul>
-<li>Backlink detection and indexing</li>
-<li>Query relationships between documents</li>
-<li>Find all documents linking to a specific topic</li>
-</ul>
-</li>
-</ol>
-<h4>Advanced Capabilities (Phase 3)</h4>
-<ol>
-<li>
-<p><strong>Workflow Automation</strong></p>
-<ul>
-<li>Move items between PARA categories</li>
-<li>Archive completed projects</li>
-<li>Bulk tag management</li>
-</ul>
-</li>
-<li>
-<p><strong>Knowledge Graph Features</strong></p>
-<ul>
-<li>Export graph data (JSON/GraphML format)</li>
-<li>Visualize document relationships</li>
-<li>Generate connection reports</li>
-</ul>
-</li>
-<li>
-<p><strong>Smart Features</strong></p>
-<ul>
-<li>Template system for different document types</li>
-<li>Auto-suggest related documents</li>
-<li>Intelligent search with context awareness</li>
-</ul>
-</li>
-</ol>
-<h2>Implementation Details</h2>
-<h3>Document Types</h3>
-<ul>
-<li><strong>Daily Journals</strong>: Time-based entries for progress tracking</li>
-<li><strong>Decision Records</strong>: Architectural and technical decisions with rationale</li>
-<li><strong>Meeting Notes</strong>: Discussions and outcomes</li>
-<li><strong>Feature Specs</strong>: Detailed feature documentation</li>
-<li><strong>Problem Reports</strong>: Issues encountered and solutions</li>
-<li><strong>Reference Docs</strong>: Reusable patterns and guidelines</li>
-</ul>
-<h3>Search &amp; Discovery</h3>
-<ul>
-<li>Full-text search across all documents</li>
-<li>Tag-based filtering</li>
-<li>Date range queries</li>
-<li>Link traversal for related content</li>
-<li>Status-based filtering (active, deprecated, etc.)</li>
-</ul>
-<h3>Data Model</h3>
-<pre><code class="language-typescript">interface Document {
-  path: string; // File path within PARA structure
-  frontmatter: {
-    created_date: string;
-    tags: string[];
-    summary: string;
-    [key: string]: any; // Optional fields
-  };
-  content: string; // Markdown body
-  links: string[]; // Extracted &lt;span class="wiki-link broken" title="Link target not found: wiki-links"&gt;wiki-links&lt;/span&gt;
-  backlinks: string[]; // Documents linking to this one
-}
-</code></pre>
-<h3>MCP Server Implementation</h3>
-<p>The server will be implemented in TypeScript at <code>code/mcp/</code> using @modelcontextprotocol/sdk with the following tools:</p>
-<h4>MCP Tools</h4>
-<ul>
-<li><code>context_create</code> - Create new documents with validated frontmatter</li>
-<li><code>context_read</code> - Read document content and metadata</li>
-<li><code>context_update</code> - Update documents while preserving structure</li>
-<li><code>context_search</code> - Search by tags, content, or relationships</li>
-<li><code>context_query_links</code> - Get related documents and backlinks</li>
-<li><code>context_move</code> - Move documents between PARA categories</li>
-<li><code>context_graph</code> - Export knowledge graph data</li>
-</ul>
-<p>All future tools for the forge project will be added to this same MCP server, making it the unified interface for all project capabilities.</p>
-<h3>Self-Verification Testing</h3>
-<p>The MCP server will include automated self-verification using Claude Code’s headless mode:</p>
-<h4>Headless Testing Approach</h4>
-<ol>
-<li><strong>Test Scripts</strong>: Each MCP tool will have corresponding test scripts that invoke Claude using <code>claude -p</code> commands</li>
-<li><strong>Verification Flow</strong>:
-<ul>
-<li>Start MCP server in test mode</li>
-<li>Execute headless Claude commands that use the MCP tools</li>
-<li>Verify tool outputs and side effects</li>
-<li>Assert expected behaviors and error handling</li>
-</ul>
-</li>
-</ol>
-<h4>Example Test Pattern</h4>
-<pre><code class="language-bash"># Test context_create tool
-claide -p "Use the context_create MCP tool to create a new document in Projects with title 'Test Doc', tags ['test', 'verification'], and summary 'Self-verification test document'"
+    <div class="document-list">
+        
+<div class="document-entry">
+    <h2><a href="/areas/development/context-update-tool-enhancement-plan.html">Context Update Tool Enhancement Plan</a></h2>
+    <div class="entry-meta"><time>2025-06-12 00:35:35</time> <div class="tags"><span class="tag">mcp</span> <span class="tag">context-manager</span> <span class="tag">enhancement</span> <span class="tag">design</span></div></div>
+    <p class="summary">Context Update Tool Enhancement Plan Problem Statement The current   tool has significant limitations:  blindly appends, causing duplicates  replaces everything, losing granular control No ability to...</p>
+</div>
 
-# Verify document was created
-claide -p "Use the context_read MCP tool to read the document at Projects/test-doc.md and confirm it exists with correct metadata"
-
-# Test error handling
-claide -p "Use the context_create MCP tool with invalid input and verify it returns appropriate error messages"
-</code></pre>
-<h4>Verification Criteria</h4>
-<ul>
-<li>All tools respond correctly to valid inputs</li>
-<li>Error messages are clear and actionable</li>
-<li>Tool permissions are properly enforced</li>
-<li>CONTEXT_ROOT boundaries are maintained</li>
-<li>Performance meets specified thresholds</li>
-</ul>
-<h2>Benefits</h2>
-<ol>
-<li><strong>Comprehensive History</strong>: Every decision, discussion, and development step is captured</li>
-<li><strong>Contextual Intelligence</strong>: LLMs can quickly understand project state and history</li>
-<li><strong>Knowledge Preservation</strong>: Institutional knowledge is maintained even as team members change</li>
-<li><strong>Efficient Onboarding</strong>: New team members can self-serve historical context</li>
-<li><strong>Decision Traceability</strong>: Understand not just what was built, but why</li>
-</ol>
-<h2>Success Metrics</h2>
-<ul>
-<li>All project activities have corresponding documentation</li>
-<li>Average document retrieval time &lt; 100ms</li>
-<li>Cross-reference accuracy &gt; 95%</li>
-<li>LLM context retrieval relevance &gt; 90%</li>
-<li>Zero documentation loss through system operations</li>
-</ul>
-<h2>Future Considerations</h2>
-<ul>
-<li>Integration with version control for automatic commit documentation</li>
-<li>Real-time collaboration features</li>
-<li>Export to other knowledge management systems</li>
-<li>AI-powered summarization and insight generation</li>
-<li>Mobile access for on-the-go documentation</li>
-</ul>
 
     </div>
-    
-    
-</article>
+</div>
 
         </div>
     </main>

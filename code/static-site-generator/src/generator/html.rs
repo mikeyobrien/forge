@@ -110,7 +110,7 @@ impl HtmlGenerator {
                 DocumentSummary {
                     url,
                     title: doc.title().to_string(),
-                    date: doc.date().map(|d| d.format("%Y-%m-%d").to_string()),
+                    date: doc.date().map(|d| d.format("%Y-%m-%d %H:%M:%S").to_string()),
                     tags: doc.metadata.tags.clone(),
                     summary: Some(summary),
                 }
@@ -154,6 +154,107 @@ impl HtmlGenerator {
         )
     }
 
+    /// Generate a subdirectory index page
+    pub fn generate_subdirectory_page(
+        &self,
+        subdir_path: &Path,
+        documents: &[Document],
+    ) -> Result<String> {
+        // Convert documents to summaries
+        let mut summaries: Vec<DocumentSummary> = documents.iter()
+            .filter(|doc| !doc.is_draft()) // Exclude drafts from listings
+            .map(|doc| {
+                let url = format!("/{}", doc.output_path.display());
+                let summary = crate::parser::extract_summary(&doc.raw_content, 200);
+
+                DocumentSummary {
+                    url,
+                    title: doc.title().to_string(),
+                    date: doc.date().map(|d| d.format("%Y-%m-%d %H:%M:%S").to_string()),
+                    tags: doc.metadata.tags.clone(),
+                    summary: Some(summary),
+                }
+            })
+            .collect();
+
+        // Sort by date (newest first) or title if no date
+        summaries.sort_by(|a, b| match (&b.date, &a.date) {
+            (Some(d1), Some(d2)) => d1.cmp(d2),
+            (Some(_), None) => std::cmp::Ordering::Less,
+            (None, Some(_)) => std::cmp::Ordering::Greater,
+            (None, None) => a.title.cmp(&b.title),
+        });
+
+        // Generate breadcrumbs
+        let mut breadcrumbs = vec![BreadcrumbItem {
+            title: "Home".to_string(),
+            url: Some("/".to_string()),
+        }];
+
+        let mut current_path = PathBuf::new();
+        for component in subdir_path.components() {
+            if let std::path::Component::Normal(name) = component {
+                let name_str = name.to_string_lossy();
+                current_path.push(name_str.as_ref());
+
+                // Check if it's a PARA category
+                let title = if matches!(
+                    name_str.as_ref(),
+                    "projects" | "areas" | "resources" | "archives"
+                ) {
+                    category_title(&name_str).to_string()
+                } else {
+                    humanize_filename(&name_str)
+                };
+
+                let url = if current_path == subdir_path {
+                    None // Current directory, no link
+                } else {
+                    Some(format!("/{}/", current_path.display()))
+                };
+
+                breadcrumbs.push(BreadcrumbItem { title, url });
+            }
+        }
+
+        let breadcrumb_html = self.template_engine.render_breadcrumbs(&breadcrumbs)?;
+
+        // Get the category from the first path component
+        let category = subdir_path
+            .components()
+            .next()
+            .and_then(|c| {
+                if let std::path::Component::Normal(name) = c {
+                    Some(name.to_string_lossy().to_string())
+                } else {
+                    None
+                }
+            })
+            .filter(|c| matches!(c.as_str(), "projects" | "areas" | "resources" | "archives"));
+
+        // Get the subdirectory name for the title
+        let subdir_name = subdir_path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .map(humanize_filename)
+            .unwrap_or_else(|| "Subdirectory".to_string());
+
+        // Generate subdirectory page content
+        let content = self
+            .template_engine
+            .render_subdirectory_index(&subdir_name, &summaries)?;
+
+        // Generate full page
+        self.template_engine.render_base(
+            &subdir_name,
+            &content,
+            category.as_deref(),
+            Some(&breadcrumb_html),
+            &self.styles,
+            &self.site_title,
+        )
+    }
+
     /// Generate the home page with recently modified files
     pub fn generate_home_page(&self, documents: &[Document]) -> Result<String> {
         // Convert documents to summaries and sort by modification date
@@ -161,11 +262,11 @@ impl HtmlGenerator {
             .filter(|doc| !doc.is_draft()) // Exclude drafts
             .map(|doc| {
                 let url = format!("/{}", doc.output_path.display());
-                
+
                 DocumentSummary {
                     url,
                     title: doc.title().to_string(),
-                    date: doc.date().map(|d| d.format("%Y-%m-%d").to_string()),
+                    date: doc.date().map(|d| d.format("%Y-%m-%d %H:%M:%S").to_string()),
                     tags: doc.metadata.tags.clone(),
                     summary: None, // Don't need summary for home page
                 }
@@ -185,7 +286,7 @@ impl HtmlGenerator {
 
         // Generate full page
         self.template_engine.render_base(
-            "",  // Empty title for home page
+            "", // Empty title for home page
             &content,
             None,
             None,

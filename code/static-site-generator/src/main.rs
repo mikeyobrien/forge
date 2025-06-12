@@ -38,18 +38,20 @@ fn run() -> Result<(), ParaSsgError> {
         };
 
     // Parse watch flag
-    let (watch, remaining_args) =
-        if remaining_args.contains(&"--watch".to_string()) || remaining_args.contains(&"-w".to_string()) {
-            (
-                true,
-                remaining_args.iter()
-                    .filter(|a| *a != "--watch" && *a != "-w")
-                    .cloned()
-                    .collect::<Vec<_>>(),
-            )
-        } else {
-            (false, remaining_args)
-        };
+    let (watch, remaining_args) = if remaining_args.contains(&"--watch".to_string())
+        || remaining_args.contains(&"-w".to_string())
+    {
+        (
+            true,
+            remaining_args
+                .iter()
+                .filter(|a| *a != "--watch" && *a != "-w")
+                .cloned()
+                .collect::<Vec<_>>(),
+        )
+    } else {
+        (false, remaining_args)
+    };
 
     if remaining_args.len() != 3 {
         print_usage(&remaining_args[0]);

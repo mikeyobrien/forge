@@ -9,6 +9,7 @@ pub mod utils;
 #[cfg(test)]
 mod error_handling_tests;
 
+use crate::parser::Document;
 use rayon::prelude::*;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -360,7 +361,10 @@ pub fn generate_site(config: &Config) -> Result<()> {
 
     // Generate HTML pages
     println!("🔨 Generating HTML pages...");
-    let generator = Arc::new(generator::HtmlGenerator::new(output_path.to_path_buf(), config.site_title.clone()));
+    let generator = Arc::new(generator::HtmlGenerator::new(
+        output_path.to_path_buf(),
+        config.site_title.clone(),
+    ));
 
     // Save document count before moving documents
     let total_document_count = documents.len();
@@ -404,6 +408,32 @@ pub fn generate_site(config: &Config) -> Result<()> {
             let html = generator.generate_category_page(category, docs)?;
             let index_path = Path::new(category).join("index.html");
             generator.write_page(&index_path, &html)?;
+
+            // Generate subdirectory index pages
+            let mut subdirs: std::collections::HashMap<PathBuf, Vec<&Document>> =
+                std::collections::HashMap::new();
+
+            // Group documents by subdirectory
+            for doc in docs {
+                if let Some(parent) = doc.relative_path.parent() {
+                    // Check if this is a subdirectory (not just the category root)
+                    if parent != Path::new(category) && parent.starts_with(category) {
+                        subdirs
+                            .entry(parent.to_path_buf())
+                            .or_insert_with(Vec::new)
+                            .push(doc);
+                    }
+                }
+            }
+
+            // Generate index page for each subdirectory
+            for (subdir_path, subdir_docs) in subdirs {
+                let subdir_docs_owned: Vec<Document> = subdir_docs.into_iter().cloned().collect();
+                let html =
+                    generator.generate_subdirectory_page(&subdir_path, &subdir_docs_owned)?;
+                let index_path = subdir_path.join("index.html");
+                generator.write_page(&index_path, &html)?;
+            }
         }
     }
 
@@ -473,7 +503,7 @@ mod tests {
     fn test_config_with_watch() {
         let mut config = Config::new("/input".to_string(), "/output".to_string());
         config.watch = true;
-        
+
         assert!(config.watch);
     }
 

@@ -5,7 +5,7 @@
 use crate::utils::minify_js;
 
 /// Generates the JavaScript code for client-side search functionality
-/// 
+///
 /// ## Features:
 /// - **Keyboard Shortcuts**: Ctrl+K, /, and Escape for navigation
 /// - **Fuzzy Search**: Searches titles, tags, and content

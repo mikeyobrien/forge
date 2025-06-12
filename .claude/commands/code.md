@@ -64,6 +64,17 @@ I'll prepare professional commits:
 - Reference any related issues
 - Prepare for clean Git history
 
+### 6. Document
+
+I'll create a document summarizing what I did for each step:
+
+- A brief recap of key actions
+- Efficiency insights
+- Possible process improvements
+- The total number of conversation turns
+- Any other interesting observations or highlights
+- Stored in context
+
 ## Task Execution
 
 To use this command effectively, please provide:

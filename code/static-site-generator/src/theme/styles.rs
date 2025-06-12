@@ -5,7 +5,7 @@
 use crate::utils::minify_css;
 
 /// Get default CSS styles with modern dark theme
-/// 
+///
 /// ## Design System Features:
 /// - **Color System**: Extended palette with gradients and semantic colors
 /// - **Typography**: Fluid scaling with clamp() for responsive text
