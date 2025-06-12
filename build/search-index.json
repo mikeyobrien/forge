@@ -218,10 +218,10 @@
   "stats": {
     "total_documents": 25,
     "documents_by_category": {
-      "projects": 13,
-      "areas": 6,
       "archives": 1,
-      "resources": 5
+      "resources": 5,
+      "areas": 6,
+      "projects": 13
     },
     "total_content_size": 82423,
     "avg_excerpt_length": 174

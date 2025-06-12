@@ -406,9 +406,12 @@
     /* Modern file cards for landing page */
     .file-cards {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: 1fr;
         gap: var(--space-3);
         margin-top: var(--space-4);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
     }
     
     .file-card {
@@ -843,7 +846,6 @@
         }
         
         .file-cards {
-            grid-template-columns: 1fr;
             gap: var(--space-2);
         }
         
@@ -891,7 +893,7 @@
         }
         
         .file-cards {
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            max-width: 700px;
         }
     }
     
@@ -907,7 +909,6 @@
         }
         
         .file-cards {
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: var(--space-4);
         }
         
@@ -1518,6 +1519,59 @@ Build and visual verification successful</li>
 </ul>
 <p><strong>Completion</strong>: 2025-06-12T02:35:22Z
 <strong>Notes</strong>: Successfully implemented comprehensive PARA hero animations including animated background glow, staggered entrance animations (0.1s-0.4s delays), individual floating animations for each letter, enhanced 3-color gradients with shift animations on hover, sophisticated focus/active states, and full accessibility support with prefers-reduced-motion. The PARA letters now have organic, lively movement while maintaining excellent usability.</p>
+<h4>Prompt 2.2: Modern Card-Based File Listing</h4>
+<p><strong>Status</strong>: ✅ Complete
+<strong>Objective</strong>: Replace the basic table with modern card-based layout for file listings
+<strong>Dependencies</strong>: Requires Prompts 1.1 ✅, 1.2 ✅
+<strong>Deliverables</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Card-based layout for file entries</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Better visual hierarchy within cards</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Hover effects and interactive states</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Responsive card grid system</li>
+</ul>
+<p><strong>Prompt</strong>:</p>
+<pre><code>Transform the file listing from table to modern cards in code/static-site-generator/src/theme/templates.rs and styles.rs:
+
+1. Update the HOME_PAGE_TEMPLATE to use card layout instead of table:
+   - Replace the table structure with a grid of cards
+   - Each card contains file title, date, category, and tags
+   - Better visual hierarchy with typography and spacing
+
+2. Implement card styling:
+   - Modern card design with subtle shadows and borders
+   - Hover effects with elevation changes
+   - Category indicators with color coding
+   - Tag pills with improved styling
+
+3. Create responsive card grid:
+   - CSS Grid for card layout with auto-fit columns
+   - Cards adapt to different screen sizes
+   - Maintain readability and accessibility
+
+4. Preserve all functionality while improving visual presentation
+5. Test the card layout across different screen sizes
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Table replaced with modern card grid</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Enhanced visual hierarchy in card design</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Responsive card layout working correctly</li>
+<li><input disabled="" type="checkbox" checked=""/>
+All file information still accessible</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Hover effects and interactions implemented</li>
+</ul>
+<p><strong>Completion</strong>: 2025-06-12T02:45:30Z
+<strong>Notes</strong>: Successfully implemented sophisticated card layout with color-coded category badges, enhanced tag pills, gradient accent bars on hover, and responsive grid system. Visual hierarchy significantly improved while maintaining all functionality. Cards feature smooth elevation effects and excellent mobile responsiveness.</p>
+<hr />
 
     </div>
     

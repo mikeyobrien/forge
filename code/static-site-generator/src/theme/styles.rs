@@ -407,9 +407,12 @@ pub fn get_default_styles() -> String {
     /* Modern file cards for landing page */
     .file-cards {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: 1fr;
         gap: var(--space-3);
         margin-top: var(--space-4);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
     }
     
     .file-card {
@@ -844,7 +847,6 @@ pub fn get_default_styles() -> String {
         }
         
         .file-cards {
-            grid-template-columns: 1fr;
             gap: var(--space-2);
         }
         
@@ -892,7 +894,7 @@ pub fn get_default_styles() -> String {
         }
         
         .file-cards {
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            max-width: 700px;
         }
     }
     
@@ -908,7 +910,6 @@ pub fn get_default_styles() -> String {
         }
         
         .file-cards {
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: var(--space-4);
         }
         
