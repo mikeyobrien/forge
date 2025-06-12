@@ -1,0 +1,76 @@
+# ABOUTME: GitHub Actions workflow for automatic deployment to GitHub Pages
+# ABOUTME: Builds the static site and deploys to gh-pages branch on every push to main
+
+name: Deploy to GitHub Pages
+
+# This workflow is disabled by default. To use this instead of the gh-pages branch approach:
+# 1. Delete or rename this comment
+# 2. Disable the deploy-gh-pages.yml workflow
+# 3. Enable GitHub Pages in repo settings with "GitHub Actions" as source
+on:
+  # push:
+  #   branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Build static site generator
+        run: |
+          cd code/static-site-generator
+          cargo build --release
+
+      - name: Generate static site
+        run: |
+          cd code/static-site-generator
+          cargo run --release -- ../../context ../../build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
