@@ -158,6 +158,20 @@ Remember: This project is about demonstrating what's possible when LLMs are give
 - Use `npm run lint -- --fix` to fix typescript format issues
 - To use claude headless: `claude -p <prompt>`
 
+## Build Commands
+
+- **Build the static site**: `make build` or `./build.sh`
+- **Serve locally**: `make serve` or `./serve.sh`
+- **Clean and rebuild**: `make rebuild`
+- **Development with file watching**: `cd code/static-site-generator && make dev`
+- **Run all checks**: `cd code/static-site-generator && make check`
+
+For the static site generator specifically:
+
+- Build: `cd code/static-site-generator && cargo build`
+- Release build: `cd code/static-site-generator && cargo build --release`
+- Run generator: `cd code/static-site-generator && cargo run -- ../../context ../../build`
+
 - Never commit with `--no-verify`
 
 - Anytime the code/mcp-server is modified, a successful response must be returned by:

@@ -13,26 +13,82 @@
         box-sizing: border-box;
     }
     
-    /* Minimal Dark Theme */
+    /* Modern Dark Theme with Enhanced Color System */
     :root {
-        --bg-primary: #1a1a1a;
-        --bg-secondary: #2a2a2a;
-        --text-primary: #e0e0e0;
-        --text-secondary: #a0a0a0;
-        --text-muted: #666;
-        --border-color: #333;
-        --accent: #007acc;
-        --accent-hover: #0099ff;
-        --link-color: #4a9eff;
-        --link-hover: #66b3ff;
+        /* Base colors */
+        --bg-primary: #0f0f0f;
+        --bg-secondary: #1a1a1a;
+        --bg-tertiary: #2a2a2a;
+        --bg-elevated: #333333;
+        
+        /* Text hierarchy */
+        --text-primary: #f0f0f0;
+        --text-secondary: #b4b4b4;
+        --text-muted: #737373;
+        --text-subtle: #525252;
+        
+        /* Border system */
+        --border-primary: #333333;
+        --border-secondary: #404040;
+        --border-subtle: #262626;
+        
+        /* Brand gradient system */
+        --accent-primary: #0EA5E9;
+        --accent-secondary: #3B82F6;
+        --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+        --accent-gradient-hover: linear-gradient(135deg, #0284C7 0%, #2563EB 100%);
+        
+        /* Semantic colors */
+        --success: #10B981;
+        --success-bg: rgba(16, 185, 129, 0.1);
+        --warning: #F59E0B;
+        --warning-bg: rgba(245, 158, 11, 0.1);
+        --error: #EF4444;
+        --error-bg: rgba(239, 68, 68, 0.1);
+        --info: #06B6D4;
+        --info-bg: rgba(6, 182, 212, 0.1);
+        
+        /* Link colors with better contrast */
+        --link-primary: #60A5FA;
+        --link-hover: #93C5FD;
+        --link-visited: #A78BFA;
+        
+        /* Surface elevations */
+        --surface-base: var(--bg-primary);
+        --surface-raised: var(--bg-secondary);
+        --surface-overlay: var(--bg-tertiary);
+        --surface-elevated: var(--bg-elevated);
+        
+        /* Interactive states */
+        --interactive-hover: rgba(255, 255, 255, 0.05);
+        --interactive-active: rgba(255, 255, 255, 0.1);
+        --interactive-disabled: rgba(255, 255, 255, 0.02);
+        
+        /* Shadow system */
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+        --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+        
+        /* Legacy support - map old variables to new system */
+        --accent: var(--accent-primary);
+        --accent-hover: var(--accent-secondary);
+        --link-color: var(--link-primary);
+        --link-hover: var(--link-hover);
+        --border-color: var(--border-primary);
     }
     
     body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', 'Helvetica Neue', sans-serif;
         line-height: 1.6;
         color: var(--text-primary);
         background-color: var(--bg-primary);
         min-height: 100vh;
+        font-feature-settings: 'cv11', 'ss01';
+        font-variant-numeric: tabular-nums;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
     
     /* Container */
@@ -44,8 +100,8 @@
     
     /* Header - minimal navigation */
     header {
-        background-color: var(--bg-secondary);
-        border-bottom: 1px solid var(--border-color);
+        background-color: var(--surface-raised);
+        border-bottom: 1px solid var(--border-primary);
         padding: 1rem 0;
     }
     
@@ -59,9 +115,10 @@
     }
     
     header h1 {
-        font-size: 1.5rem;
+        font-size: clamp(1.25rem, 2.5vw, 1.5rem);
         font-weight: 600;
         margin: 0;
+        letter-spacing: -0.025em;
     }
     
     header h1 a {
@@ -126,26 +183,36 @@
     }
     
     .para-letter {
-        font-size: 4rem;
+        font-size: clamp(2.5rem, 8vw, 4rem);
         font-weight: 700;
-        color: var(--accent);
-        text-shadow: 0 2px 4px rgba(0, 122, 204, 0.3);
-        transition: all 0.3s ease;
+        background: var(--accent-gradient);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 4px rgba(14, 165, 233, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         display: inline-block;
+        letter-spacing: -0.02em;
     }
     
     .para-letter:hover {
-        color: var(--accent-hover);
-        transform: translateY(-2px);
+        background: var(--accent-gradient-hover);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transform: translateY(-2px) scale(1.05);
         text-decoration: none;
+        text-shadow: 0 4px 8px rgba(14, 165, 233, 0.4);
     }
     
     .para-subtitle {
-        font-size: 1.2rem;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
         color: var(--text-secondary);
         margin: 0;
-        font-weight: 300;
+        font-weight: 400;
+        letter-spacing: 0.025em;
+        line-height: 1.5;
     }
     
     /* File list table for landing page */
@@ -156,23 +223,23 @@
     }
     
     .file-list th {
-        background-color: var(--bg-secondary);
+        background-color: var(--surface-raised);
         color: var(--text-primary);
         padding: 0.75rem 1rem;
         text-align: left;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-primary);
         font-weight: 500;
         font-size: 0.9rem;
     }
     
     .file-list td {
         padding: 0.75rem 1rem;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-primary);
         vertical-align: top;
     }
     
     .file-list tr:hover {
-        background-color: var(--bg-secondary);
+        background-color: var(--interactive-hover);
     }
     
     .file-list .date {
@@ -182,7 +249,7 @@
     }
     
     .file-list .title a {
-        color: var(--link-color);
+        color: var(--link-primary);
         text-decoration: none;
     }
     
@@ -220,16 +287,18 @@
     
     /* Document pages */
     .document h1 {
-        font-size: 2rem;
+        font-size: clamp(1.75rem, 4vw, 2rem);
         margin-bottom: 1rem;
         color: var(--text-primary);
         font-weight: 600;
+        letter-spacing: -0.025em;
+        line-height: 1.2;
     }
     
     .document-header {
         margin-bottom: 2rem;
         padding-bottom: 1rem;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-primary);
     }
     
     .document-meta {
@@ -245,12 +314,34 @@
         line-height: 1.7;
     }
     
-    .document-content h2,
-    .document-content h3,
-    .document-content h4 {
+    .document-content h2 {
+        font-size: clamp(1.5rem, 3.5vw, 1.75rem);
         margin-top: 2rem;
         margin-bottom: 0.75rem;
         color: var(--text-primary);
+        font-weight: 600;
+        letter-spacing: -0.025em;
+        line-height: 1.3;
+    }
+    
+    .document-content h3 {
+        font-size: clamp(1.25rem, 3vw, 1.5rem);
+        margin-top: 1.75rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.3;
+    }
+    
+    .document-content h4 {
+        font-size: clamp(1.125rem, 2.5vw, 1.25rem);
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        line-height: 1.4;
     }
     
     .document-content p {
@@ -264,7 +355,7 @@
     }
     
     .document-content blockquote {
-        border-left: 3px solid var(--accent);
+        border-left: 3px solid var(--accent-primary);
         padding-left: 1rem;
         margin: 1.5rem 0;
         color: var(--text-secondary);
@@ -272,7 +363,7 @@
     }
     
     .document-content code {
-        background-color: var(--bg-secondary);
+        background-color: var(--surface-raised);
         color: var(--text-primary);
         padding: 0.2rem 0.4rem;
         border-radius: 3px;
@@ -281,8 +372,8 @@
     }
     
     .document-content pre {
-        background-color: var(--bg-secondary);
-        border: 1px solid var(--border-color);
+        background-color: var(--surface-raised);
+        border: 1px solid var(--border-primary);
         padding: 1rem;
         border-radius: 5px;
         overflow-x: auto;
@@ -296,9 +387,12 @@
     
     /* Category pages - minimal list */
     .category-index h1 {
-        font-size: 2rem;
+        font-size: clamp(1.75rem, 4vw, 2rem);
         margin-bottom: 0.5rem;
         color: var(--text-primary);
+        font-weight: 600;
+        letter-spacing: -0.025em;
+        line-height: 1.2;
     }
     
     .category-description {
@@ -321,9 +415,9 @@
     
     .document-entry {
         padding: 1rem;
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--border-primary);
         border-radius: 5px;
-        background-color: var(--bg-secondary);
+        background-color: var(--surface-raised);
     }
     
     .document-entry h2 {
@@ -332,7 +426,7 @@
     }
     
     .document-entry h2 a {
-        color: var(--link-color);
+        color: var(--link-primary);
         text-decoration: none;
     }
     
@@ -355,8 +449,9 @@
     
     /* Links */
     a {
-        color: var(--link-color);
+        color: var(--link-primary);
         text-decoration: none;
+        transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     a:hover {
@@ -398,7 +493,7 @@
     }
     
     .breadcrumbs a:hover {
-        color: var(--accent);
+        color: var(--accent-primary);
     }
     
     .breadcrumbs .separator {
@@ -412,8 +507,8 @@
     
     /* Footer - minimal */
     footer {
-        background-color: var(--bg-secondary);
-        border-top: 1px solid var(--border-color);
+        background-color: var(--surface-raised);
+        border-top: 1px solid var(--border-primary);
         padding: 1.5rem 0;
         margin-top: 3rem;
         text-align: center;
@@ -490,7 +585,7 @@
     
     <div class="document-content">
         <h1>Prompt Execution Session: Static Website Generator</h1>
-<h2>Session: 2025-01-06 15:35:00</h2>
+<h2>Session: 2025-06-11 15:35:00</h2>
 <h2>Prompt Plan Status</h2>
 <p><strong>Plan</strong>: projects/static-website-generator-prompt-plan
 <strong>Total Prompts</strong>: 16
@@ -592,7 +687,7 @@ Changes committed to git (commit: 9595df7)</li>
 <strong>Ready</strong>: Yes - all dependencies from Prompt 1.1 are complete
 <strong>Dependencies</strong>: None (Prompt 1.1 completed successfully)</p>
 <hr />
-<p><em>Prompt 1.1 completed: 2025-01-06 16:10:00</em></p>
+<p><em>Prompt 1.1 completed: 2025-06-11 16:10:00</em></p>
 <h2>Current Prompt - Session 2</h2>
 <p><strong>Phase</strong>: Phase 1: Foundation &amp; Core Infrastructure
 <strong>Prompt</strong>: 1.2: Document Discovery &amp; PARA Structure Detection
