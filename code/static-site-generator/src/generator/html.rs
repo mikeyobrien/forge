@@ -51,7 +51,7 @@ impl HtmlGenerator {
         let backlinks_html = if !doc.backlinks.is_empty() {
             let mut backlinks_list = String::from("<ul class=\"backlinks-list\">");
             for bl in &doc.backlinks {
-                let url = format!("/{}", bl.source_path.with_extension("html").display());
+                let url = format!("{}{}", self.base_url, bl.source_path.with_extension("html").display());
                 backlinks_list.push_str(&format!(
                     r#"<li><a href="{}">{}</a></li>"#,
                     url,
@@ -107,7 +107,7 @@ impl HtmlGenerator {
         let mut summaries: Vec<DocumentSummary> = documents.iter()
             .filter(|doc| !doc.is_draft()) // Exclude drafts from listings
             .map(|doc| {
-                let url = format!("/{}", doc.output_path.display());
+                let url = format!("{}{}", self.base_url, doc.output_path.display());
                 let summary = crate::parser::extract_summary(&doc.raw_content, 200);
 
                 DocumentSummary {
@@ -137,7 +137,7 @@ impl HtmlGenerator {
         let breadcrumbs = vec![
             BreadcrumbItem {
                 title: "Home".to_string(),
-                url: Some("/".to_string()),
+                url: Some(self.base_url.clone()),
             },
             BreadcrumbItem {
                 title: category_title(category).to_string(),
@@ -168,7 +168,7 @@ impl HtmlGenerator {
         let mut summaries: Vec<DocumentSummary> = documents.iter()
             .filter(|doc| !doc.is_draft()) // Exclude drafts from listings
             .map(|doc| {
-                let url = format!("/{}", doc.output_path.display());
+                let url = format!("{}{}", self.base_url, doc.output_path.display());
                 let summary = crate::parser::extract_summary(&doc.raw_content, 200);
 
                 DocumentSummary {
@@ -214,7 +214,7 @@ impl HtmlGenerator {
                 let url = if current_path == subdir_path {
                     None // Current directory, no link
                 } else {
-                    Some(format!("/{}/", current_path.display()))
+                    Some(format!("{}{}/", self.base_url, current_path.display()))
                 };
 
                 breadcrumbs.push(BreadcrumbItem { title, url });
@@ -271,7 +271,7 @@ impl HtmlGenerator {
         let mut summaries: Vec<DocumentSummary> = documents.iter()
             .filter(|doc| !doc.is_draft()) // Exclude drafts from listings
             .map(|doc| {
-                let url = format!("/{}", doc.output_path.display());
+                let url = format!("{}{}", self.base_url, doc.output_path.display());
                 let summary = crate::parser::extract_summary(&doc.raw_content, 200);
 
                 DocumentSummary {
@@ -317,7 +317,7 @@ impl HtmlGenerator {
                 let url = if current_path == subdir_path {
                     None // Current directory, no link
                 } else {
-                    Some(format!("/{}/", current_path.display()))
+                    Some(format!("{}{}/", self.base_url, current_path.display()))
                 };
 
                 breadcrumbs.push(BreadcrumbItem { title, url });
@@ -371,7 +371,7 @@ impl HtmlGenerator {
         let mut summaries: Vec<DocumentSummary> = documents.iter()
             .filter(|doc| !doc.is_draft()) // Exclude drafts
             .map(|doc| {
-                let url = format!("/{}", doc.output_path.display());
+                let url = format!("{}{}", self.base_url, doc.output_path.display());
 
                 DocumentSummary {
                     url,
@@ -456,7 +456,7 @@ impl HtmlGenerator {
                     });
                 } else {
                     // For directories, add with link
-                    let url = format!("/{}/", current_path.display());
+                    let url = format!("{}{}/", self.base_url, current_path.display());
                     // Check if it's a PARA category, otherwise humanize the directory name
                     let title = if matches!(
                         name_str.as_ref(),
