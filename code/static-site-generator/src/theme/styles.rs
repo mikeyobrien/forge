@@ -621,13 +621,6 @@ pub fn get_default_styles() -> String {
         color: var(--text-primary);
     }
     
-    .file-tags .tag:before {
-        content: "\\#";
-        color: var(--text-muted);
-        margin-right: 0.2rem;
-        font-weight: 500;
-    }
-    
     .no-tags {
         color: var(--text-muted);
         font-style: italic;
@@ -832,10 +825,6 @@ pub fn get_default_styles() -> String {
         color: var(--text-muted);
         font-size: 0.85rem;
         margin-right: 0.5rem;
-    }
-    
-    .tag:before {
-        content: "\\#";
     }
     
     /* Breadcrumbs - minimal */

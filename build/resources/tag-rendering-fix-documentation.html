@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>verify-search | forge</title>
+    <title>Tag Rendering Fix Documentation | forge</title>
     <style>
         
     /* ==========================================================================
@@ -1070,9 +1070,9 @@
             <div class="nav-container">
                 <h1><a href="/">forge</a></h1>
                 <ul class="nav-menu">
-                    <li><a href="/projects/" class="active">P</a></li>
+                    <li><a href="/projects/" class="">P</a></li>
                     <li><a href="/areas/" class="">A</a></li>
-                    <li><a href="/resources/" class="">R</a></li>
+                    <li><a href="/resources/" class="active">R</a></li>
                     <li><a href="/archives/" class="">A</a></li>
                 </ul>
             </div>
@@ -1084,67 +1084,154 @@
             
 <nav class="breadcrumbs">
     <ol>
-        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/projects/">Projects</a></li><li class="separator">/</li><li><a href="/projects/mcp-server-implementation/">Mcp Server Implementation</a></li><li class="separator">/</li><li class="current">verify-search</li>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/resources/">Resources</a></li><li class="separator">/</li><li class="current">Tag Rendering Fix Documentation</li>
     </ol>
 </nav>
 
             
 <article class="document">
     <header class="document-header">
-        <h1>verify-search</h1>
-        <div class="document-meta"><time class="date">2025-06-11</time></div>
+        <h1>Tag Rendering Fix Documentation</h1>
+        <div class="document-meta"><time class="date">2025-06-12</time>
+<div class="tags"><span class="tag">documentation</span> <span class="tag">troubleshooting</span> <span class="tag">tags</span> <span class="tag">css</span> <span class="tag">static-site-generator</span> <span class="tag">bug-fix</span></div></div>
     </header>
     
     <div class="document-content">
-        <h1>Search Tool Verification</h1>
-<p>The context_search MCP tool has been successfully implemented and tested:</p>
-<h2>Implementation Complete ✓</h2>
+        <h1>Tag Rendering Fix Documentation</h1>
+<h2>Issue Summary</h2>
+<p>The static site generator had issues with tag rendering in the file cards on the homepage and category pages:</p>
+<ol>
+<li>Several documents were showing “No tags” despite being important project files</li>
+<li>Tags were displaying with a <code>#</code> prefix (hashtag symbol)</li>
+<li>Initially, tags were showing double hashtags <code>##</code> due to duplicate CSS rules</li>
+</ol>
+<h2>Root Causes</h2>
+<h3>1. Missing Frontmatter</h3>
+<p>Several markdown files lacked frontmatter entirely, causing them to display “No tags”:</p>
 <ul>
-<li>SearchEngine with document indexing</li>
-<li>Relevance scoring algorithm</li>
-<li>Full MCP tool integration</li>
-<li>Comprehensive test coverage (460+ tests passing)</li>
+<li><code>projects/claude-commands-enhancement.md</code></li>
+<li><code>projects/mcp-server-implementation/*.md</code> (multiple files)</li>
+<li><code>resources/command-options.md</code></li>
 </ul>
-<h2>Features Working ✓</h2>
+<h3>2. Missing Tags in Frontmatter</h3>
+<p>One file had frontmatter but was missing the tags field:</p>
 <ul>
-<li>Content search with snippets</li>
-<li>Tag matching (exact and prefix)</li>
-<li>Title search</li>
-<li>PARA category filtering</li>
-<li>Date range filtering</li>
-<li>Pagination support</li>
+<li><code>resources/test-links.md</code></li>
 </ul>
-<h2>Direct MCP Protocol Test ✓</h2>
-<p>When tested directly via MCP protocol, the server responded correctly:</p>
-<pre><code class="language-json">{
-  "success": true,
-  "results": [
-    {
-      "path": "projects/search-implementation.md",
-      "title": "Search Implementation Project",
-      "score": 21,
-      "snippet": "...for the **MCP** server...",
-      "tags": ["search", "implementation", "mcp"]
-    },
-    {
-      "path": "resources/mcp-documentation.md",
-      "title": "MCP Server Documentation",
-      "score": 21,
-      "snippet": "# **MCP** Server Documentation...",
-      "tags": ["documentation", "mcp", "reference"]
-    }
-  ],
-  "totalCount": 2,
-  "executionTime": 1
+<h3>3. CSS Styling Issues</h3>
+<p>The CSS had two problems:</p>
+<ul>
+<li>Duplicate <code>.tag:before</code> rules causing double <code>##</code> display</li>
+<li>The <code>.file-tags .tag:before</code> rule adding unwanted <code>#</code> prefix to tags</li>
+</ul>
+<h2>Solutions Applied</h2>
+<h3>Step 1: Add Frontmatter to Files</h3>
+<p>Added complete frontmatter with appropriate tags to files that were missing it:</p>
+<pre><code class="language-yaml">---
+title: "Project: Claude Commands Enhancement"
+category: projects
+tags:
+  - claude
+  - commands
+  - workflow
+  - development
+  - prompt-engineering
+  - claude-4
+  - para
+---
+</code></pre>
+<h3>Step 2: Fix Double Hashtag Issue</h3>
+<p>Removed duplicate CSS rule in <code>/code/static-site-generator/src/theme/styles.rs</code>:</p>
+<pre><code class="language-css">/* REMOVED - This was causing double ## */
+.tag:before {
+    content: "\\#";
 }
 </code></pre>
-<h2>Claude CLI Integration</h2>
-<p>The MCP server is configured and the search tool is available. While there are some timeout issues with the Claude CLI in the current environment, the underlying functionality is working correctly as demonstrated by:</p>
+<h3>Step 3: Remove Hashtag Prefix Entirely</h3>
+<p>Removed the CSS rule that was adding <code>#</code> prefix to tags:</p>
+<pre><code class="language-css">/* REMOVED - Tags look cleaner without prefix */
+.file-tags .tag:before {
+    content: "\\#";
+    color: var(--text-muted);
+    margin-right: 0.2rem;
+    font-weight: 500;
+}
+</code></pre>
+<h3>Step 4: Rebuild Site</h3>
+<p>After each fix, rebuilt the site using:</p>
+<pre><code class="language-bash">make build
+</code></pre>
+<h2>Final Result</h2>
+<p>Tags now display as clean, styled labels:</p>
 <ul>
-<li>Unit tests passing</li>
-<li>Direct MCP protocol test successful</li>
-<li>Server starting and indexing documents correctly</li>
+<li>✅ No hashtag prefix</li>
+<li>✅ Proper spacing and styling</li>
+<li>✅ All important files have appropriate tags</li>
+<li>✅ Files without tags clearly show “No tags”</li>
 </ul>
+<h2>Prevention</h2>
+<p>To prevent similar issues in the future:</p>
+<ol>
+<li>
+<p><strong>Frontmatter Template</strong>: Always include frontmatter when creating new markdown files:</p>
+<pre><code class="language-yaml">---
+title: "Document Title"
+category: projects|areas|resources|archives
+tags:
+  - relevant
+  - tags
+  - here
+---
+</code></pre>
+</li>
+<li>
+<p><strong>CSS Organization</strong>: Keep tag styling in one place to avoid duplicate rules</p>
+</li>
+<li>
+<p><strong>Testing</strong>: After adding new documents, verify they appear correctly in the built site</p>
+</li>
+</ol>
+<h2>Additional Fix: MCP Screenshot Tool</h2>
+<p>While debugging this issue, we also fixed the MCP screenshot tool by adding a <code>skipServer</code> option to prevent port conflicts when screenshotting existing servers:</p>
+<pre><code class="language-typescript">interface ScreenshotOptions {
+  url?: string;
+  permanent?: boolean;
+  outputDir?: string;
+  skipServer?: boolean;  // Added this option
+}
+</code></pre>
+<p>This allows screenshotting sites already running on specific ports without the tool trying to start its own server on port 3000.</p>
+<h2>Files Modified</h2>
+<ol>
+<li>
+<p><strong>Markdown files with added/updated frontmatter:</strong></p>
+<ul>
+<li><code>/context/projects/claude-commands-enhancement.md</code></li>
+<li><code>/context/resources/command-options.md</code></li>
+<li><code>/context/resources/test-links.md</code></li>
+</ul>
+</li>
+<li>
+<p><strong>CSS fixes:</strong></p>
+<ul>
+<li><code>/code/static-site-generator/src/theme/styles.rs</code></li>
+</ul>
+</li>
+<li>
+<p><strong>MCP tool enhancement:</strong></p>
+<ul>
+<li><code>/code/mcp-server/src/tools/screenshot/index.ts</code></li>
+</ul>
+</li>
+</ol>
+<h2>Verification</h2>
+<p>The fix was verified by:</p>
+<ol>
+<li>Running <code>make build</code> to rebuild the site</li>
+<li>Checking the HTML output to confirm tags render correctly</li>
+<li>Taking screenshots to visually confirm the fix</li>
+<li>Verifying both files with tags and without tags display appropriately</li>
+</ol>
 
     </div>
     
