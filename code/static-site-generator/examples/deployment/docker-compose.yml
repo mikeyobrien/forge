@@ -1,0 +1,32 @@
+# Docker Compose for self-hosted deployment
+version: '3.8'
+
+services:
+  para-ssg-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile.builder
+    volumes:
+      - ./content:/content:ro
+      - ./output:/output
+    command: para-ssg /content /output
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./output:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - para-ssg-builder
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./ssl:/etc/letsencrypt
+      - ./output:/var/www/html
+    command: certonly --webroot --webroot-path=/var/www/html --email your-email@domain.com --agree-tos --no-eff-email -d your-domain.com
