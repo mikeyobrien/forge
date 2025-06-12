@@ -39,12 +39,12 @@ jobs:
       - name: Build static site generator
         run: |
           cd code/static-site-generator
-          cargo build --release
+          RUSTFLAGS="" cargo build --release
 
       - name: Generate static site
         run: |
           cd code/static-site-generator
-          cargo run --release -- ../../context ../../build
+          RUSTFLAGS="" cargo run --release -- ../../context ../../build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
