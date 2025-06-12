@@ -7,6 +7,9 @@ pub mod theme;
 pub mod utils;
 
 use std::path::{Path, PathBuf};
+use rayon::prelude::*;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
 
 /// Error types for para-ssg operations
 #[derive(Debug, thiserror::Error)]
@@ -46,6 +49,7 @@ pub struct Config {
     pub output_dir: String,
     pub base_url: String,
     pub site_title: String,
+    pub verbose: bool,
 }
 
 impl Config {
@@ -56,6 +60,7 @@ impl Config {
             output_dir,
             base_url: "/".to_string(),
             site_title: "Knowledge Base".to_string(),
+            verbose: false,
         }
     }
 
@@ -78,6 +83,7 @@ impl Config {
 
 /// Generate static site from configuration
 pub fn generate_site(config: &Config) -> Result<()> {
+    let start_time = std::time::Instant::now();
     config.validate()?;
 
     // Discover all markdown documents
@@ -114,20 +120,42 @@ pub fn generate_site(config: &Config) -> Result<()> {
     utils::create_output_directory(output_path)?;
     println!("✅ Created output directory: {}", config.output_dir);
 
-    // Parse all documents (first pass - basic parsing)
+    // Parse all documents in parallel (first pass - basic parsing)
     println!("📝 Parsing documents...");
+    let total_docs = document_infos.len();
+    let processed = Arc::new(AtomicUsize::new(0));
+    let processed_clone = processed.clone();
+    
+    let parse_results: Vec<_> = document_infos
+        .par_iter()
+        .map(|doc_info| {
+            let result = parser::parse_document(
+                &doc_info.path,
+                &doc_info.relative_path,
+                doc_info.category.clone(),
+            );
+            
+            let count = processed_clone.fetch_add(1, Ordering::SeqCst) + 1;
+            if count % 10 == 0 || count == total_docs {
+                print!("\r   Progress: {}/{} documents", count, total_docs);
+                use std::io::Write;
+                std::io::stdout().flush().ok();
+            }
+            
+            result
+        })
+        .collect();
+    
+    println!(); // New line after progress
+    
     let mut documents = Vec::new();
     let mut parse_errors = 0;
-
-    for doc_info in &document_infos {
-        match parser::parse_document(
-            &doc_info.path,
-            &doc_info.relative_path,
-            doc_info.category.clone(),
-        ) {
+    
+    for (i, result) in parse_results.into_iter().enumerate() {
+        match result {
             Ok(doc) => documents.push(doc),
             Err(e) => {
-                eprintln!("⚠️  Failed to parse '{}': {}", doc_info.path.display(), e);
+                eprintln!("⚠️  Failed to parse '{}': {}", document_infos[i].path.display(), e);
                 parse_errors += 1;
             }
         }
@@ -146,29 +174,47 @@ pub fn generate_site(config: &Config) -> Result<()> {
         .collect();
     let lookup_map = parser::build_document_lookup(&document_lookup);
 
-    // Process wiki links in each document (second pass)
-    let mut broken_links_total = 0;
-    for doc in &mut documents {
-        let (html_with_links, resolved_links) = parser::markdown_to_html_with_wiki_links(
-            &doc.raw_content,
-            &doc.output_path,
-            &lookup_map,
-        )?;
+    // Process wiki links in parallel (second pass)
+    println!("🔗 Processing wiki links...");
+    let processed = Arc::new(AtomicUsize::new(0));
+    let processed_clone = processed.clone();
+    let total_docs = documents.len();
+    
+    let broken_links_total = Arc::new(AtomicUsize::new(0));
+    let broken_links_clone = broken_links_total.clone();
+    
+    documents = documents
+        .into_par_iter()
+        .map(|mut doc| {
+            let (html_with_links, resolved_links) = parser::markdown_to_html_with_wiki_links(
+                &doc.raw_content,
+                &doc.output_path,
+                &lookup_map,
+            ).expect("Wiki link processing failed");
 
-        doc.html_content = html_with_links;
-        doc.wiki_links = resolved_links;
+            doc.html_content = html_with_links;
+            doc.wiki_links = resolved_links;
 
-        // Count broken links
-        let broken_count = parser::get_broken_links(&doc.wiki_links).len();
-        if broken_count > 0 {
-            println!(
-                "⚠️  {} has {} broken wiki link(s)",
-                doc.relative_path.display(),
-                broken_count
-            );
-            broken_links_total += broken_count;
-        }
-    }
+            // Count broken links
+            let broken_count = parser::get_broken_links(&doc.wiki_links).len();
+            if broken_count > 0 {
+                broken_links_clone.fetch_add(broken_count, Ordering::SeqCst);
+            }
+            
+            let count = processed_clone.fetch_add(1, Ordering::SeqCst) + 1;
+            if count % 10 == 0 || count == total_docs {
+                print!("\r   Progress: {}/{} documents", count, total_docs);
+                use std::io::Write;
+                std::io::stdout().flush().ok();
+            }
+            
+            doc
+        })
+        .collect();
+    
+    println!(); // New line after progress
+    
+    let broken_links_total = broken_links_total.load(Ordering::SeqCst);
 
     if broken_links_total > 0 {
         println!("⚠️  Total broken wiki links: {}", broken_links_total);
@@ -204,7 +250,7 @@ pub fn generate_site(config: &Config) -> Result<()> {
 
     // Generate HTML pages
     println!("🔨 Generating HTML pages...");
-    let generator = generator::HtmlGenerator::new(output_path.to_path_buf());
+    let generator = Arc::new(generator::HtmlGenerator::new(output_path.to_path_buf()));
 
     // Group documents by category
     let mut categories: std::collections::HashMap<String, Vec<parser::Document>> =
@@ -216,15 +262,30 @@ pub fn generate_site(config: &Config) -> Result<()> {
             .push(doc);
     }
 
-    // Generate individual document pages
-    let mut generated_count = 0;
-    for (_category, docs) in &categories {
-        for doc in docs {
+    // Generate individual document pages in parallel
+    let processed = Arc::new(AtomicUsize::new(0));
+    let processed_clone = processed.clone();
+    let all_docs: Vec<_> = categories.values().flatten().collect();
+    let total_pages = all_docs.len();
+    
+    all_docs
+        .par_iter()
+        .try_for_each(|doc| -> Result<()> {
             let html = generator.generate_document_page(doc)?;
             generator.write_page(&doc.output_path, &html)?;
-            generated_count += 1;
-        }
-    }
+            
+            let count = processed_clone.fetch_add(1, Ordering::SeqCst) + 1;
+            if count % 10 == 0 || count == total_pages {
+                print!("\r   Progress: {}/{} pages", count, total_pages);
+                use std::io::Write;
+                std::io::stdout().flush().ok();
+            }
+            
+            Ok(())
+        })?;
+    
+    println!(); // New line after progress
+    let generated_count = total_pages;
 
     // Generate category index pages
     for category in &["projects", "areas", "resources", "archives"] {
@@ -246,7 +307,13 @@ pub fn generate_site(config: &Config) -> Result<()> {
     generator.write_page(Path::new("index.html"), &home_html)?;
 
     println!("✅ Generated {} HTML pages", generated_count);
-    println!("🎉 Site generation complete! Output: {}", config.output_dir);
+    
+    let elapsed = start_time.elapsed();
+    println!(
+        "🎉 Site generation complete in {:.2}s! Output: {}",
+        elapsed.as_secs_f32(),
+        config.output_dir
+    );
 
     Ok(())
 }

@@ -147,7 +147,7 @@ impl TemplateEngine {
             .replace("{title}", &html_escape(title))
             .replace("{content}", content)
             .replace("{styles}", styles)
-            .replace("{search_script}", generate_search_script());
+            .replace("{search_script}", &generate_search_script());
 
         // Set active navigation state
         let categories = ["projects", "areas", "resources", "archives"];

@@ -1,8 +1,12 @@
 //! ABOUTME: CSS generation and 70s earthy theme implementation
 //! ABOUTME: Creates stylesheets with retro color palette and responsive design
 
+#[cfg(not(debug_assertions))]
+use crate::utils::minify_css;
+
 /// Get default CSS styles with complete 70s earthy theme
 pub fn get_default_styles() -> String {
+    let css =
     r#"
     /* Reset and base styles */
     * {
@@ -1074,5 +1078,15 @@ pub fn get_default_styles() -> String {
             text-decoration: underline;
         }
     }
-    "#.to_string()
+    "#;
+    
+    // Minify CSS in release mode
+    #[cfg(debug_assertions)]
+    {
+        css.to_string()
+    }
+    #[cfg(not(debug_assertions))]
+    {
+        minify_css(css)
+    }
 }

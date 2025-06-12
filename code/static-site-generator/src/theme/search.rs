@@ -1,8 +1,12 @@
 //! ABOUTME: Client-side search JavaScript generation for static site
 //! ABOUTME: Provides fast in-browser search with fuzzy matching and highlighting
 
+#[cfg(not(debug_assertions))]
+use crate::utils::minify_js;
+
 /// Generates the JavaScript code for client-side search functionality
-pub fn generate_search_script() -> &'static str {
+pub fn generate_search_script() -> String {
+    let js =
     r#"
 // Search functionality for para-ssg
 (function() {
@@ -333,7 +337,17 @@ pub fn generate_search_script() -> &'static str {
         });
     });
 })();
-"#
+"#;
+    
+    // Minify JavaScript in release mode
+    #[cfg(debug_assertions)]
+    {
+        js.to_string()
+    }
+    #[cfg(not(debug_assertions))]
+    {
+        minify_js(js)
+    }
 }
 
 #[cfg(test)]

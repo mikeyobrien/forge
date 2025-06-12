@@ -893,3 +893,44 @@ Implement client-side search in src/theme/. Create JavaScript search engine that
 - **Completed**: 9 ✅
 - **In Progress**: 0 🔄
 - **Not Started**: 7 ⏳
+
+#### Prompt 3.3: 70s Earthy Theme Implementation
+
+**Status**: ✅ Complete
+**Objective**: Apply complete 70s earthy design theme with responsive layout
+**Dependencies**: [Requires Prompt 3.2]
+**Deliverables**:
+
+- [x] 70s earthy color palette CSS
+- [x] Typography and layout styling
+- [x] Mobile-responsive design
+- [x] CSS embedded in HTML templates
+
+**Prompt**:
+
+```
+Implement complete 70s earthy theme in src/theme/styles.rs. Create CSS with the defined color palette (Saddle Brown, Peru, Goldenrod, Beige, etc.), implement typography using system fonts, and ensure fully responsive design that works on mobile and desktop. Embed CSS directly in HTML templates to avoid external dependencies. Add subtle design elements that evoke the 70s era while maintaining modern usability.
+```
+
+**Success Criteria**:
+
+- [x] 70s earthy color palette fully implemented
+- [x] Typography clear and readable on all devices
+- [x] Responsive design works on mobile and desktop
+- [x] CSS embedded in HTML templates
+- [x] Design evokes 70s era while remaining modern
+- [x] Visual testing confirms theme quality
+- [x] Generated site looks professional and cohesive
+- [x] Changes committed to git
+
+**Completion**: 2025-06-11 23:30:00
+**Notes**: Successfully implemented complete 70s earthy theme with CSS variables for color palette (Saddle Brown, Peru, Goldenrod, Beige, etc.), Georgia serif typography, gradient backgrounds, texture overlays, and comprehensive styling for all UI elements. Theme includes header with stripe patterns, rounded navigation pills, document cards with hover effects, styled search overlay, and retro form elements. Fully responsive with mobile hamburger menu. All 74 tests passing. Commit: 0ca8695
+
+---
+
+### Overall Progress
+
+- **Total Prompts**: 16
+- **Completed**: 10 ✅
+- **In Progress**: 0 🔄
+- **Not Started**: 6 ⏳

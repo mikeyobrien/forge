@@ -3,6 +3,8 @@
 
 pub mod fs;
 pub mod para;
+pub mod minify;
 
 pub use fs::*;
 pub use para::*;
+pub use minify::*;
