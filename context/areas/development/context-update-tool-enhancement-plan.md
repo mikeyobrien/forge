@@ -322,3 +322,125 @@ The existing API remains unchanged:
 3. Build prototype for pattern matching
 4. Gather feedback from early users
 5. Implement in phases with continuous testing
+
+# Context Update Tool Enhancement Plan
+
+## Recent Updates (2025-06-12)
+
+### Completed: Subdirectory Index Generation Fix
+
+- Fixed issue where nested directories under PARA categories were not accessible via web URLs
+- Implemented automatic index.html generation for all subdirectories containing documents
+- See detailed documentation: [[subdirectory-index-generation-fix]]
+
+## Project Vision
+
+Enhance the MCP context manager tool to provide comprehensive project memory and documentation capabilities that integrate seamlessly with Claude Code's workflow.
+
+## Core Features
+
+### 1. Context Document Management
+
+- [x] Create/read/update PARA-organized documents
+- [x] YAML frontmatter support
+- [x] Wiki-link functionality
+- [x] Move documents with link updates
+- [ ] Document templates
+- [ ] Batch operations
+
+### 2. Search and Discovery
+
+- [x] Full-text search with highlights
+- [x] Fuzzy matching
+- [x] Tag-based filtering
+- [x] Date range queries
+- [x] Advanced query syntax
+- [ ] Search history
+- [ ] Saved searches
+
+### 3. Relationship Mapping
+
+- [x] Backlink tracking
+- [x] Forward link queries
+- [x] Orphaned document detection
+- [x] Link statistics
+- [ ] Visual graph representation
+- [ ] Relationship strength metrics
+
+### 4. Integration Features
+
+- [x] Static site generation
+- [x] Search index generation
+- [ ] Git integration for version tracking
+- [ ] Export to various formats
+- [ ] Import from external sources
+
+## Technical Architecture
+
+### Current Stack
+
+- Rust-based MCP server
+- TypeScript SDK integration
+- Static site generator (para-ssg)
+- File-based storage with YAML frontmatter
+
+### Planned Enhancements
+
+- SQLite for metadata caching
+- WebAssembly for browser compatibility
+- GraphQL API for advanced queries
+- Plugin system for extensibility
+
+## Development Phases
+
+### Phase 1: Foundation (Completed)
+
+- ✅ Basic CRUD operations
+- ✅ PARA methodology support
+- ✅ Wiki-link parsing
+- ✅ Search implementation
+
+### Phase 2: Enhanced Discovery (In Progress)
+
+- ✅ Advanced search features
+- ✅ Link relationship queries
+- ✅ Static site generation
+- ✅ Subdirectory index generation
+- [ ] Smart suggestions
+- [ ] Context-aware recommendations
+
+### Phase 3: Workflow Integration
+
+- [ ] Template system
+- [ ] Automated documentation generation
+- [ ] Git commit integration
+- [ ] Project scaffolding
+
+### Phase 4: Advanced Features
+
+- [ ] AI-powered summarization
+- [ ] Duplicate detection
+- [ ] Content clustering
+- [ ] Knowledge graph visualization
+
+## Success Metrics
+
+- Query response time < 100ms
+- Zero data loss during operations
+- Intuitive command interface
+- Comprehensive test coverage
+- Clear documentation
+
+## Next Steps
+
+1. Implement template system for common document types
+2. Add git integration for automatic context updates
+3. Create visual documentation browser
+4. Develop context-aware suggestions
+
+## Related Resources
+
+- [[mcp-documentation]] - Technical reference
+- [[project-specification]] - Original spec
+- [[claude-commands-reference]] - Integration guide
+- [[subdirectory-index-generation-fix]] - Recent bug fix

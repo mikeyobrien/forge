@@ -97,3 +97,12 @@ para-ssg follows [Semantic Versioning](https://semver.org/):
 - **PATCH** version for backwards-compatible bug fixes
 
 Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
+
+## Changelog
+
+### 2025-06-12 - Subdirectory Index Generation
+
+- Fixed issue where nested directories under PARA categories were not generating index.html files
+- Added automatic index page generation for all subdirectories containing markdown documents
+- Improved navigation experience for hierarchical content structures
+- See PR #[pending] for implementation details

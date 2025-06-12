@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP Server Documentation | forge</title>
+    <title>Subdirectory Index Generation Fix for Static Site Generator | forge</title>
     <style>
         
     /* ==========================================================================
@@ -1077,36 +1077,131 @@
             
 <nav class="breadcrumbs">
     <ol>
-        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/resources/">Resources</a></li><li class="separator">/</li><li class="current">MCP Server Documentation</li>
+        <li><a href="/">Home</a></li><li class="separator">/</li><li><a href="/resources/">Resources</a></li><li class="separator">/</li><li class="current">Subdirectory Index Generation Fix for Static Site Generator</li>
     </ol>
 </nav>
 
             
 <article class="document">
     <header class="document-header">
-        <h1>MCP Server Documentation</h1>
-        <div class="document-meta"><time class="date">2025-06-11</time>
-<div class="tags"><span class="tag">documentation</span> <span class="tag">mcp</span> <span class="tag">reference</span></div></div>
+        <h1>Subdirectory Index Generation Fix for Static Site Generator</h1>
+        <div class="document-meta"><time class="date">2025-06-12</time>
+<div class="tags"><span class="tag">static-site-generator</span> <span class="tag">bug-fix</span> <span class="tag">navigation</span> <span class="tag">para-ssg</span></div></div>
     </header>
     
     <div class="document-content">
-        <h1>MCP Server Documentation</h1>
-<p>This document provides reference material for the Model Context Protocol server implementation.</p>
-<h2>Overview</h2>
-<p>The MCP server provides tools for managing context and searching documents.</p>
-<h2>Key Features</h2>
+        <h1>Subdirectory Index Generation Fix for Static Site Generator</h1>
+<h2>Problem Statement</h2>
+<p>The static site generator was not creating index.html files for subdirectories within PARA categories (projects, areas, resources, archives). This caused 404 errors when navigating to URLs like:</p>
 <ul>
-<li>Document indexing</li>
-<li>Full-text search</li>
-<li>Tag-based filtering</li>
-<li>PARA methodology support</li>
+<li>http://localhost:8080/areas/journal/</li>
+<li>http://localhost:8080/areas/active-sessions/</li>
+<li>http://localhost:8080/projects/mcp-server-implementation/</li>
+</ul>
+<h2>Root Cause</h2>
+<p>The generator only created index pages for the four top-level PARA categories but did not recursively generate index pages for subdirectories containing markdown documents.</p>
+<h2>Solution Overview</h2>
+<p>Implemented automatic index page generation for all subdirectories within PARA categories that contain markdown documents.</p>
+<h2>Technical Implementation</h2>
+<h3>1. Subdirectory Detection (lib.rs)</h3>
+<p>Added logic to detect and group documents by their parent directories:</p>
+<pre><code class="language-rust">// Generate subdirectory index pages
+let mut subdirs: std::collections::HashMap&lt;PathBuf, Vec&lt;&amp;Document&gt;&gt; = 
+    std::collections::HashMap::new();
+
+// Group documents by subdirectory
+for doc in docs {
+    if let Some(parent) = doc.relative_path.parent() {
+        // Check if this is a subdirectory (not just the category root)
+        if parent != Path::new(category) &amp;&amp; parent.starts_with(category) {
+            subdirs.entry(parent.to_path_buf())
+                .or_insert_with(Vec::new)
+                .push(doc);
+        }
+    }
+}
+
+// Generate index page for each subdirectory
+for (subdir_path, subdir_docs) in subdirs {
+    let subdir_docs_owned: Vec&lt;Document&gt; = subdir_docs.into_iter().cloned().collect();
+    let html = generator.generate_subdirectory_page(&amp;subdir_path, &amp;subdir_docs_owned)?;
+    let index_path = subdir_path.join("index.html");
+    generator.write_page(&amp;index_path, &amp;html)?;
+}
+</code></pre>
+<h3>2. Subdirectory Page Generation (generator/html.rs)</h3>
+<p>Created a new method <code>generate_subdirectory_page</code> that:</p>
+<ul>
+<li>Converts documents to summaries with excerpts</li>
+<li>Sorts documents by date (newest first)</li>
+<li>Generates proper breadcrumb navigation</li>
+<li>Maintains the active PARA category context</li>
+<li>Uses humanized directory names for titles</li>
+</ul>
+<h3>3. Template Rendering (theme/templates.rs)</h3>
+<p>Added <code>render_subdirectory_index</code> method that:</p>
+<ul>
+<li>Reuses the category index template for consistency</li>
+<li>Displays subdirectory name as the title</li>
+<li>Shows document count and list</li>
+</ul>
+<h2>File Structure</h2>
+<p>Before fix:</p>
+<pre><code>build/
+├── areas/
+│   ├── index.html (lists ALL documents in areas/)
+│   ├── journal/
+│   │   └── document.html (no index.html here - causes 404)
+│   └── active-sessions/
+│       └── document.html (no index.html here - causes 404)
+</code></pre>
+<p>After fix:</p>
+<pre><code>build/
+├── areas/
+│   ├── index.html (lists ALL documents in areas/)
+│   ├── journal/
+│   │   ├── index.html (lists documents in journal/)
+│   │   └── document.html
+│   └── active-sessions/
+│       ├── index.html (lists documents in active-sessions/)
+│       └── document.html
+</code></pre>
+<h2>Benefits</h2>
+<ol>
+<li><strong>Full Navigation</strong>: All directory URLs are now navigable</li>
+<li><strong>Better UX</strong>: Users can browse subdirectory contents</li>
+<li><strong>SEO Friendly</strong>: Search engines can crawl all content</li>
+<li><strong>Standard Compliance</strong>: Works with any static web server</li>
+<li><strong>Consistent Design</strong>: Subdirectory pages match the site theme</li>
+</ol>
+<h2>Testing</h2>
+<p>Verified functionality by:</p>
+<ol>
+<li>Building the site with nested directories</li>
+<li>Checking for index.html files in subdirectories</li>
+<li>Testing URLs with curl to confirm 200 OK responses</li>
+<li>Visual inspection of rendered pages</li>
+</ol>
+<h2>Files Modified</h2>
+<ul>
+<li><code>code/static-site-generator/src/lib.rs</code> - Added subdirectory detection and generation logic</li>
+<li><code>code/static-site-generator/src/generator/html.rs</code> - Added generate_subdirectory_page method</li>
+<li><code>code/static-site-generator/src/theme/templates.rs</code> - Added render_subdirectory_index method</li>
+<li><code>code/static-site-generator/src/parser/mod.rs</code> - Fixed unused import warning</li>
+</ul>
+<h2>Future Considerations</h2>
+<ul>
+<li>Could add subdirectory listing to parent category pages</li>
+<li>Could implement breadcrumb-based navigation sidebar</li>
+<li>Could add directory tree visualization</li>
+<li>Could cache subdirectory structure for performance</li>
 </ul>
 
     </div>
     
     <section class="backlinks">
                 <h2>Backlinks</h2>
-                <ul class="backlinks-list"><li><a href="/areas/development/context-update-tool-enhancement-plan.html">Context Update Tool Enhancement Plan</a></li></ul>
+                <ul class="backlinks-list"><li><a href="/areas/development/context-update-tool-enhancement-plan.html">Context Update Tool Enhancement Plan</a></li><li><a href="/areas/development/context-update-tool-enhancement-plan.html">Context Update Tool Enhancement Plan</a></li></ul>
             </section>
 </article>
 

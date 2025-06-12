@@ -223,6 +223,14 @@
       "content": "claude commands quick reference command overview command purpose when to use /spec build specifications interactively starting new projects or features /plan create implementation roadmaps after specification, before coding /build execute prompt plans with tdd when you have an existing plan /code all-in-one task completion bug fixes, small features /review code review and refactoring after implementation, before merge /validate-mcp test mcp server tools after mcp changes or setup quick command syntax # start a new project /spec # follow interactive prompts to define requirements # plan implementation /plan # creates spec.md, prompt_plan.md, and todo.md # execute the plan /build # implements with tdd following prompt_plan.md # quick task execution /code \"fix authentication timeout bug\" # explores, plans, codes, tests, and commits # review recent changes /review # analyzes code quality and suggests improvements # validate mcp tools /validate-mcp # runs all mcp tool validation tests workflow patterns new project /spec → /plan → /build → /review bug fix /code → (optional) /review feature addition /spec → /plan → /build → /review or for small features: /code → /review refactoring /review → /code key benefits efficiency : commands handle multiple steps automatically quality : built-in tdd and review processes organization : automatic para integration documentation : progress tracked in context/ best practices : claude 4 optimizations built-in tips use /spec when requirements are unclear use /code for well-defined, small tasks always /review before important merges run /validate-mcp after context system changes commands update para structure automatically"
     },
     {
+      "title": "Subdirectory Index Generation Fix for Static Site Generator",
+      "path": "resources/subdirectory-index-generation-fix.html",
+      "category": "resources",
+      "tags": ["static-site-generator", "bug-fix", "navigation", "para-ssg"],
+      "excerpt": "Subdirectory Index Generation Fix for Static Site Generator Problem Statement The static site generator was not creating index.html files for subdirectories within PARA categories (projects, areas,...",
+      "content": "subdirectory index generation fix for static site generator problem statement the static site generator was not creating index.html files for subdirectories within para categories (projects, areas, resources, archives). this caused 404 errors when navigating to urls like: http://localhost:8080/areas/journal/ http://localhost:8080/areas/active-sessions/ http://localhost:8080/projects/mcp-server-implementation/ root cause the generator only created index pages for the four top-level para categories but did not recursively generate index pages for subdirectories containing markdown documents. solution overview implemented automatic index page generation for all subdirectories within para categories that contain markdown documents. technical implementation 1. subdirectory detection (lib.rs) added logic to detect and group documents by their parent directories: // generate subdirectory index pages let mut subdirs: std::collections::hashmap<pathbuf, vec<&document>> = std::collections::hashmap::new(); // group documents by subdirectory for doc in docs { if let some(parent) = doc.relative_path.parent() { // check if this is a subdirectory (not just the category root) if parent != path::new(category) && parent.starts_with(category) { subdirs.entry(parent.to_path_buf()) .or_insert_with(vec::new) .push(doc); } } } // generate index page for each subdirectory for (subdir_path, subdir_docs) in subdirs { let subdir_docs_owned: vec<document> = subdir_docs.into_iter().cloned().collect(); let html = generator.generate_subdirectory_page(&subdir_path, &subdir_docs_owned)?; let index_path = subdir_path.join(\"index.html\"); generator.write_page(&index_path, &html)?; } 2. subdirectory page generation (generator/html.rs) created a new method generate_subdirectory_page that: converts documents to summaries with excerpts sorts documents by date (newest first) generates proper breadcrumb navigation maintains the active para category context uses humanized directory names for titles 3. template rendering (theme/templates.rs) added render_subdirectory_index method that: reuses the category index template for consistency displays subdirectory name as the title shows document count and list file structure before fix: build/ ├── areas/ │ ├── index.html (lists all documents in areas/) │ ├── journal/ │ │ └── document.html (no index.html here - causes 404) │ └── active-sessions/ │ └── document.html (no index.html here - causes 404) after fix: build/ ├── areas/ │ ├── index.html (lists all documents in areas/) │ ├── journal/ │ │ ├── index.html (lists documents in journal/) │ │ └── document.html │ └── active-sessions/ │ ├── index.html (lists documents in active-sessions/) │ └── document.html benefits full navigation : all directory urls are now navigable better ux : users can browse subdirectory contents seo friendly : search engines can crawl all content standard compliance : works with any static web server consistent design : subdirectory pages match the site theme testing verified functionality by: building the site with nested directories checking for index.html files in subdirectories testing urls with curl to confirm 200 ok responses visual inspection of rendered pages files modified code/static-site-generator/src/lib.rs - added subdirectory detection and generation logic code/static-site-generator/src/generator/html.rs - added generate_subdirectory_page method code/static-site-generator/src/theme/templates.rs - added render_subdirectory_index method code/static-site-generator/src/parser/mod.rs - fixed unused import warning future considerations could add subdirectory listing to parent category pages could implement breadcrumb-based navigation sidebar could add directory tree visualization could cache subdirectory structure for performance"
+    },
+    {
       "title": "Claude Command Options for Enhanced Workflow",
       "path": "resources/command-options.html",
       "category": "resources",
@@ -279,14 +287,14 @@
     }
   ],
   "stats": {
-    "total_documents": 31,
+    "total_documents": 32,
     "documents_by_category": {
       "projects": 14,
-      "archives": 1,
-      "resources": 9,
-      "areas": 7
+      "resources": 10,
+      "areas": 7,
+      "archives": 1
     },
-    "total_content_size": 103071,
-    "avg_excerpt_length": 178
+    "total_content_size": 106963,
+    "avg_excerpt_length": 179
   }
 }

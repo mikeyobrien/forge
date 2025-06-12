@@ -1375,6 +1375,155 @@ context_update({
 <li>Gather feedback from early users</li>
 <li>Implement in phases with continuous testing</li>
 </ol>
+<h1>Context Update Tool Enhancement Plan</h1>
+<h2>Recent Updates (2025-06-12)</h2>
+<h3>Completed: Subdirectory Index Generation Fix</h3>
+<ul>
+<li>Fixed issue where nested directories under PARA categories were not accessible via web URLs</li>
+<li>Implemented automatic index.html generation for all subdirectories containing documents</li>
+<li>See detailed documentation: <a href="../../resources/subdirectory-index-generation-fix.html" class="wiki-link">subdirectory-index-generation-fix</a></li>
+</ul>
+<h2>Project Vision</h2>
+<p>Enhance the MCP context manager tool to provide comprehensive project memory and documentation capabilities that integrate seamlessly with Claude Code’s workflow.</p>
+<h2>Core Features</h2>
+<h3>1. Context Document Management</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Create/read/update PARA-organized documents</li>
+<li><input disabled="" type="checkbox" checked=""/>
+YAML frontmatter support</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Wiki-link functionality</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Move documents with link updates</li>
+<li><input disabled="" type="checkbox"/>
+Document templates</li>
+<li><input disabled="" type="checkbox"/>
+Batch operations</li>
+</ul>
+<h3>2. Search and Discovery</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Full-text search with highlights</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Fuzzy matching</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Tag-based filtering</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Date range queries</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Advanced query syntax</li>
+<li><input disabled="" type="checkbox"/>
+Search history</li>
+<li><input disabled="" type="checkbox"/>
+Saved searches</li>
+</ul>
+<h3>3. Relationship Mapping</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Backlink tracking</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Forward link queries</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Orphaned document detection</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Link statistics</li>
+<li><input disabled="" type="checkbox"/>
+Visual graph representation</li>
+<li><input disabled="" type="checkbox"/>
+Relationship strength metrics</li>
+</ul>
+<h3>4. Integration Features</h3>
+<ul>
+<li><input disabled="" type="checkbox" checked=""/>
+Static site generation</li>
+<li><input disabled="" type="checkbox" checked=""/>
+Search index generation</li>
+<li><input disabled="" type="checkbox"/>
+Git integration for version tracking</li>
+<li><input disabled="" type="checkbox"/>
+Export to various formats</li>
+<li><input disabled="" type="checkbox"/>
+Import from external sources</li>
+</ul>
+<h2>Technical Architecture</h2>
+<h3>Current Stack</h3>
+<ul>
+<li>Rust-based MCP server</li>
+<li>TypeScript SDK integration</li>
+<li>Static site generator (para-ssg)</li>
+<li>File-based storage with YAML frontmatter</li>
+</ul>
+<h3>Planned Enhancements</h3>
+<ul>
+<li>SQLite for metadata caching</li>
+<li>WebAssembly for browser compatibility</li>
+<li>GraphQL API for advanced queries</li>
+<li>Plugin system for extensibility</li>
+</ul>
+<h2>Development Phases</h2>
+<h3>Phase 1: Foundation (Completed)</h3>
+<ul>
+<li>✅ Basic CRUD operations</li>
+<li>✅ PARA methodology support</li>
+<li>✅ Wiki-link parsing</li>
+<li>✅ Search implementation</li>
+</ul>
+<h3>Phase 2: Enhanced Discovery (In Progress)</h3>
+<ul>
+<li>✅ Advanced search features</li>
+<li>✅ Link relationship queries</li>
+<li>✅ Static site generation</li>
+<li>✅ Subdirectory index generation</li>
+<li><input disabled="" type="checkbox"/>
+Smart suggestions</li>
+<li><input disabled="" type="checkbox"/>
+Context-aware recommendations</li>
+</ul>
+<h3>Phase 3: Workflow Integration</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Template system</li>
+<li><input disabled="" type="checkbox"/>
+Automated documentation generation</li>
+<li><input disabled="" type="checkbox"/>
+Git commit integration</li>
+<li><input disabled="" type="checkbox"/>
+Project scaffolding</li>
+</ul>
+<h3>Phase 4: Advanced Features</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+AI-powered summarization</li>
+<li><input disabled="" type="checkbox"/>
+Duplicate detection</li>
+<li><input disabled="" type="checkbox"/>
+Content clustering</li>
+<li><input disabled="" type="checkbox"/>
+Knowledge graph visualization</li>
+</ul>
+<h2>Success Metrics</h2>
+<ul>
+<li>Query response time &lt; 100ms</li>
+<li>Zero data loss during operations</li>
+<li>Intuitive command interface</li>
+<li>Comprehensive test coverage</li>
+<li>Clear documentation</li>
+</ul>
+<h2>Next Steps</h2>
+<ol>
+<li>Implement template system for common document types</li>
+<li>Add git integration for automatic context updates</li>
+<li>Create visual documentation browser</li>
+<li>Develop context-aware suggestions</li>
+</ol>
+<h2>Related Resources</h2>
+<ul>
+<li><a href="../../resources/mcp-documentation.html" class="wiki-link">mcp-documentation</a> - Technical reference</li>
+<li><a href="../../resources/project-specification.html" class="wiki-link">project-specification</a> - Original spec</li>
+<li><a href="../../resources/claude-commands-reference.html" class="wiki-link">claude-commands-reference</a> - Integration guide</li>
+<li><a href="../../resources/subdirectory-index-generation-fix.html" class="wiki-link">subdirectory-index-generation-fix</a> - Recent bug fix</li>
+</ul>
 
     </div>
     
