@@ -57,49 +57,111 @@ pub fn generate_search_script() -> String {
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         `;
 
         // Create search container
         const searchContainer = document.createElement('div');
+        searchContainer.id = 'search-container';
         searchContainer.style.cssText = `
             position: absolute;
             top: 10%;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) scale(0.95);
             width: 90%;
-            max-width: 600px;
-            background: #2a2a2a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            background: var(--surface-2, #2a2a2a);
+            border: 1px solid var(--surface-3, #333);
+            border-radius: 16px;
+            box-shadow: 
+                0 24px 48px rgba(0, 0, 0, 0.4),
+                0 12px 24px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
             max-height: 80vh;
             display: flex;
             flex-direction: column;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         `;
 
         // Create search input
         searchInput = document.createElement('input');
         searchInput.type = 'text';
-        searchInput.placeholder = 'Search documents...';
+        searchInput.placeholder = 'Search documents... (Press "/" or Ctrl+K)';
         searchInput.style.cssText = `
-            padding: 20px;
+            padding: 24px 28px;
             font-size: 18px;
+            font-weight: 400;
             border: none;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--surface-3, #333);
             background: transparent;
             outline: none;
-            color: #e0e0e0;
+            color: var(--text-primary, #e0e0e0);
+            transition: border-color 0.2s ease;
         `;
+        searchInput.setAttribute('autocomplete', 'off');
+        searchInput.setAttribute('spellcheck', 'false');
 
         // Create results container
         searchResults = document.createElement('div');
+        searchResults.id = 'search-results';
         searchResults.style.cssText = `
-            padding: 20px;
+            padding: 0 12px 12px;
             overflow-y: auto;
-            max-height: calc(80vh - 80px);
+            max-height: calc(80vh - 90px);
+            scrollbar-width: thin;
+            scrollbar-color: var(--surface-4, #444) transparent;
         `;
+        
+        // Add custom scrollbar styles
+        const scrollbarStyles = document.createElement('style');
+        scrollbarStyles.textContent = `
+            #search-results::-webkit-scrollbar {
+                width: 8px;
+            }
+            #search-results::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            #search-results::-webkit-scrollbar-thumb {
+                background: var(--surface-4, #444);
+                border-radius: 4px;
+            }
+            #search-results::-webkit-scrollbar-thumb:hover {
+                background: var(--surface-5, #555);
+            }
+            #search-container.search-active {
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+            }
+            #search-overlay.search-active {
+                opacity: 1;
+            }
+            @keyframes resultFadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .search-result {
+                animation: resultFadeIn 0.3s ease forwards;
+            }
+            .search-result:nth-child(1) { animation-delay: 0s; }
+            .search-result:nth-child(2) { animation-delay: 0.05s; }
+            .search-result:nth-child(3) { animation-delay: 0.1s; }
+            .search-result:nth-child(4) { animation-delay: 0.15s; }
+            .search-result:nth-child(5) { animation-delay: 0.2s; }
+            .search-result:nth-child(n+6) { animation-delay: 0.25s; }
+        `;
+        document.head.appendChild(scrollbarStyles);
 
         // Assemble components
         searchContainer.appendChild(searchInput);
@@ -133,16 +195,30 @@ pub fn generate_search_script() -> String {
         if (!searchOverlay) return;
         searchOverlay.style.display = 'block';
         searchInput.value = '';
-        searchInput.focus();
         searchResults.innerHTML = '';
         currentFocus = -1;
+        
+        // Trigger animations
+        requestAnimationFrame(() => {
+            searchOverlay.classList.add('search-active');
+            document.getElementById('search-container').classList.add('search-active');
+            searchInput.focus();
+        });
     }
 
     function closeSearch() {
         if (!searchOverlay) return;
-        searchOverlay.style.display = 'none';
-        searchInput.value = '';
-        searchResults.innerHTML = '';
+        
+        // Remove animations
+        searchOverlay.classList.remove('search-active');
+        document.getElementById('search-container').classList.remove('search-active');
+        
+        // Wait for animation to complete
+        setTimeout(() => {
+            searchOverlay.style.display = 'none';
+            searchInput.value = '';
+            searchResults.innerHTML = '';
+        }, 300);
     }
 
     function performSearch() {
@@ -223,30 +299,89 @@ pub fn generate_search_script() -> String {
             const highlightedTitle = highlightText(entry.title, query);
             const highlightedExcerpt = highlightText(entry.excerpt, query);
             
+            const categoryColors = {
+                'projects': 'var(--accent-gradient-1, linear-gradient(135deg, #007acc, #0099ff))',
+                'areas': 'var(--accent-gradient-2, linear-gradient(135deg, #00cc88, #00ffaa))',
+                'resources': 'var(--accent-gradient-3, linear-gradient(135deg, #cc7700, #ff9900))',
+                'archives': 'var(--accent-gradient-4, linear-gradient(135deg, #cc0077, #ff0099))'
+            };
+            
+            const categoryGradient = categoryColors[entry.category] || categoryColors['resources'];
+            
             return `
                 <div class="search-result" data-index="${index}" style="
-                    padding: 15px;
-                    margin-bottom: 10px;
-                    background: #1a1a1a;
-                    border: 1px solid #333;
-                    border-radius: 4px;
+                    position: relative;
+                    padding: 20px;
+                    margin: 0 16px 16px;
+                    background: var(--surface-1, #1a1a1a);
+                    border: 1px solid var(--surface-3, #333);
+                    border-radius: 12px;
                     cursor: pointer;
-                    transition: background 0.2s;
-                " onmouseover="this.style.background='#333'" onmouseout="this.style.background='#1a1a1a'">
-                    <h3 style="margin: 0 0 5px 0; color: #4a9eff;">
-                        <a href="${entry.path}" style="text-decoration: none; color: inherit;">
+                    transition: all 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                ">
+                    <div style="
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        width: 4px;
+                        background: ${categoryGradient};
+                        border-radius: 12px 0 0 12px;
+                        transition: width 0.3s ease;
+                    "></div>
+                    <h3 style="
+                        margin: 0 0 8px 0;
+                        padding-left: 8px;
+                        font-size: 18px;
+                        font-weight: 600;
+                        line-height: 1.4;
+                    ">
+                        <a href="${entry.path}" style="
+                            text-decoration: none;
+                            color: var(--text-primary, #e0e0e0);
+                            transition: color 0.2s ease;
+                        " onmouseover="this.style.color='var(--link-hover, #4a9eff)'" onmouseout="this.style.color='var(--text-primary, #e0e0e0)'">
                             ${highlightedTitle}
                         </a>
                     </h3>
-                    <p style="margin: 0 0 5px 0; color: #a0a0a0; font-size: 14px;">
+                    <p style="
+                        margin: 0 0 12px 0;
+                        padding-left: 8px;
+                        color: var(--text-secondary, #a0a0a0);
+                        font-size: 14px;
+                        line-height: 1.6;
+                    ">
                         ${highlightedExcerpt}
                     </p>
-                    <div style="font-size: 12px; color: #666;">
-                        <span style="background: #333; color: #a0a0a0; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
+                    <div style="
+                        padding-left: 8px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                        align-items: center;
+                    ">
+                        <span style="
+                            background: ${categoryGradient};
+                            color: white;
+                            padding: 4px 12px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 500;
+                            text-transform: capitalize;
+                        ">
                             ${entry.category}
                         </span>
                         ${entry.tags.slice(0, 3).map(tag => 
-                            `<span style="background: #2a2a2a; color: #a0a0a0; padding: 2px 6px; border-radius: 3px; margin-right: 5px;">
+                            `<span style="
+                                background: var(--surface-3, #333);
+                                color: var(--text-secondary, #a0a0a0);
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 12px;
+                                transition: all 0.2s ease;
+                            " onmouseover="this.style.background='var(--surface-4, #444)'" onmouseout="this.style.background='var(--surface-3, #333)'">
                                 ${tag}
                             </span>`
                         ).join('')}
@@ -257,9 +392,27 @@ pub fn generate_search_script() -> String {
 
         searchResults.innerHTML = html;
         
-        // Add click handlers
+        // Add click handlers and hover effects
         const resultElements = searchResults.querySelectorAll('.search-result');
         resultElements.forEach(el => {
+            // Add hover effects
+            el.addEventListener('mouseenter', function() {
+                this.style.background = 'var(--surface-2, #2a2a2a)';
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.2)';
+                const accentBar = this.querySelector('div');
+                if (accentBar) accentBar.style.width = '6px';
+            });
+            
+            el.addEventListener('mouseleave', function() {
+                this.style.background = 'var(--surface-1, #1a1a1a)';
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+                const accentBar = this.querySelector('div');
+                if (accentBar) accentBar.style.width = '4px';
+            });
+            
+            // Click handler
             el.addEventListener('click', function(e) {
                 if (!e.target.closest('a')) {
                     const link = this.querySelector('a');
@@ -277,7 +430,7 @@ pub fn generate_search_script() -> String {
         
         for (const word of words) {
             const regex = new RegExp(`(${escapeRegex(word)})`, 'gi');
-            highlighted = highlighted.replace(regex, '<mark style="background: #007acc; color: #e0e0e0; padding: 0 2px;">$1</mark>');
+            highlighted = highlighted.replace(regex, '<mark style="background: var(--link-color, #007acc); color: white; padding: 1px 4px; border-radius: 3px; font-weight: 500;">$1</mark>');
         }
         
         return highlighted;
@@ -306,10 +459,18 @@ pub fn generate_search_script() -> String {
     function setFocus(results) {
         results.forEach((el, index) => {
             if (index === currentFocus) {
-                el.style.background = '#007acc';
-                el.scrollIntoView({ block: 'nearest' });
+                el.style.background = 'var(--link-color, #007acc)';
+                el.style.transform = 'translateY(-2px)';
+                el.style.boxShadow = '0 0 0 2px var(--link-color, #007acc)';
+                el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                const accentBar = el.querySelector('div');
+                if (accentBar) accentBar.style.width = '8px';
             } else {
-                el.style.background = '#1a1a1a';
+                el.style.background = 'var(--surface-1, #1a1a1a)';
+                el.style.transform = 'translateY(0)';
+                el.style.boxShadow = 'none';
+                const accentBar = el.querySelector('div');
+                if (accentBar) accentBar.style.width = '4px';
             }
         });
     }
