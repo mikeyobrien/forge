@@ -5,11 +5,11 @@ module.exports = {
   'code/mcp-server/src/**/*.{ts,tsx}': [
     'eslint --fix',
     'prettier --write',
-    () => './code/mcp-server/tests/integration/validate-mcp-tools.sh'
+    () => './code/mcp-server/tests/integration/validate-mcp-tools.sh',
   ],
   'code/static-site-generator/**/*.rs': [
-    () => 'cd code/static-site-generator && source ~/.cargo/env && cargo fmt',
-    () => 'cd code/static-site-generator && source ~/.cargo/env && cargo clippy -- -D warnings',
-    () => 'cd code/static-site-generator && source ~/.cargo/env && cargo test'
+    () => 'cargo fmt --manifest-path code/static-site-generator/Cargo.toml',
+    () => 'cargo clippy --manifest-path code/static-site-generator/Cargo.toml -- -D warnings',
+    () => 'cargo test --manifest-path code/static-site-generator/Cargo.toml',
   ],
 };

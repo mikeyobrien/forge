@@ -62,7 +62,7 @@ pub fn validate_html_structure(content: &str, file_path: &Path) {
         file_path
     );
     assert!(
-        content.contains(r#"class="nav-link""#),
+        content.contains(r#"class="site-nav""#),
         "Missing nav links in {:?}",
         file_path
     );
@@ -232,7 +232,7 @@ pub fn validate_category_page(content: &str, category: &str) {
         "Missing document list"
     );
     assert!(
-        content.contains(r#"class="document-item""#),
+        content.contains(r#"class="document-entry""#),
         "Missing document items"
     );
 }

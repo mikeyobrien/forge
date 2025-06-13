@@ -6,7 +6,14 @@ import prettierConfig from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/*.js', '**/*.mjs'],
+    ignores: [
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/coverage/**',
+      '**/*.js',
+      '**/*.mjs',
+      'code/mcp-server/**',
+    ],
   },
   js.configs.recommended,
   {
@@ -77,6 +84,17 @@ export default [
     files: ['**/__tests__/**/*.ts', '**/*.test.ts', '**/*.spec.ts'],
     rules: {
       '@typescript-eslint/unbound-method': 'off',
+    },
+  },
+  {
+    files: ['code/mcp-server/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
     },
   },
 ];

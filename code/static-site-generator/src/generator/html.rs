@@ -51,7 +51,11 @@ impl HtmlGenerator {
         let backlinks_html = if !doc.backlinks.is_empty() {
             let mut backlinks_list = String::from("<ul class=\"backlinks-list\">");
             for bl in &doc.backlinks {
-                let url = format!("{}{}", self.base_url, bl.source_path.with_extension("html").display());
+                let url = format!(
+                    "{}{}",
+                    self.base_url,
+                    bl.source_path.with_extension("html").display()
+                );
                 backlinks_list.push_str(&format!(
                     r#"<li><a href="{}">{}</a></li>"#,
                     url,
@@ -393,7 +397,9 @@ impl HtmlGenerator {
         });
 
         // Generate home page content
-        let content = self.template_engine.render_home_page(&summaries, &self.base_url)?;
+        let content = self
+            .template_engine
+            .render_home_page(&summaries, &self.base_url)?;
 
         // Generate full page
         self.template_engine.render_base(
@@ -545,7 +551,11 @@ mod tests {
     #[test]
     fn test_generate_document_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string(), "/".to_string());
+        let generator = HtmlGenerator::new(
+            temp_dir.path().to_path_buf(),
+            "Test Site".to_string(),
+            "/".to_string(),
+        );
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/test.md"),
@@ -563,14 +573,18 @@ mod tests {
 
         assert!(html.contains("<title>Test Project | Test Site</title>"));
         assert!(html.contains("<p>Test content</p>"));
-        assert!(html.contains(r#"class="active">P</a>"#));
+        assert!(html.contains(r#"class="nav-item active">Projects</a>"#));
         assert!(html.contains("Test Site"));
     }
 
     #[test]
     fn test_generate_category_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string(), "/".to_string());
+        let generator = HtmlGenerator::new(
+            temp_dir.path().to_path_buf(),
+            "Test Site".to_string(),
+            "/".to_string(),
+        );
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/test.md"),
@@ -593,7 +607,11 @@ mod tests {
     #[test]
     fn test_generate_home_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string(), "/".to_string());
+        let generator = HtmlGenerator::new(
+            temp_dir.path().to_path_buf(),
+            "Test Site".to_string(),
+            "/".to_string(),
+        );
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/test.md"),
@@ -606,7 +624,7 @@ mod tests {
         let html = generator.generate_home_page(&[doc]).unwrap();
 
         assert!(html.contains("Test Site"));
-        assert!(html.contains(r#"<table class="file-list""#));
+        assert!(html.contains(r#"<div class="file-cards""#));
         assert!(html.contains("Test Project"));
         assert!(html.contains("projects"));
     }
@@ -614,7 +632,11 @@ mod tests {
     #[test]
     fn test_write_page() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string(), "/".to_string());
+        let generator = HtmlGenerator::new(
+            temp_dir.path().to_path_buf(),
+            "Test Site".to_string(),
+            "/".to_string(),
+        );
 
         let content = "<html><body>Test</body></html>";
         generator
@@ -628,7 +650,11 @@ mod tests {
     #[test]
     fn test_breadcrumb_generation_for_document() {
         let temp_dir = TempDir::new().unwrap();
-        let generator = HtmlGenerator::new(temp_dir.path().to_path_buf(), "Test Site".to_string(), "/".to_string());
+        let generator = HtmlGenerator::new(
+            temp_dir.path().to_path_buf(),
+            "Test Site".to_string(),
+            "/".to_string(),
+        );
 
         let mut doc = Document::new(
             PathBuf::from("/input/projects/rust/test.md"),

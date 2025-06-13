@@ -61,9 +61,8 @@ impl Config {
     /// Create new configuration with input and output directories
     pub fn new(input_dir: String, output_dir: String) -> Self {
         // Check for base URL from environment variable
-        let base_url = std::env::var("PARA_SSG_BASE_URL")
-            .unwrap_or_else(|_| "/".to_string());
-        
+        let base_url = std::env::var("PARA_SSG_BASE_URL").unwrap_or_else(|_| "/".to_string());
+
         Self {
             input_dir,
             output_dir,
