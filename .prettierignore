@@ -5,3 +5,7 @@ coverage
 *.d.ts
 package-lock.json
 tsconfig.json
+code/static-site-generator/dist-optimized
+code/static-site-generator/test-output
+code/static-site-generator/target
+build
