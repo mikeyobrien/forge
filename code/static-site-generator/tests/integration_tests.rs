@@ -255,7 +255,7 @@ fn test_navigation_and_breadcrumbs() {
     assert!(nested_doc.contains("subproject"));
 
     // Check navigation highlighting
-    assert!(nested_doc.contains(r#"class="active""#));
+    assert!(nested_doc.contains(r#"class="nav-item active""#));
 }
 
 #[test]

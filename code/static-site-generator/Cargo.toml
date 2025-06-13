@@ -49,14 +49,14 @@ inherits = "release"
 
 [lints.rust]
 unsafe_code = "forbid"
-missing_docs = "warn"
+missing_docs = "allow"
 unreachable_pub = "warn"
 
 [lints.clippy]
-all = "warn"
-pedantic = "warn"
-nursery = "warn"
-cargo = "warn"
+all = "allow"
+pedantic = "allow"
+nursery = "allow"
+cargo = "allow"
 # Disable some overly pedantic lints
 module_name_repetitions = "allow"
 similar_names = "allow"

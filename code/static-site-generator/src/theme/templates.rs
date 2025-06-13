@@ -1,7 +1,7 @@
 //! ABOUTME: HTML template system for generating static site pages
 //! ABOUTME: Provides string-based templates for documents and navigation
 
-use crate::theme::search::generate_search_script;
+use crate::theme::{header::generate_header_script, search::generate_search_script};
 use crate::Result;
 use std::collections::HashMap;
 
@@ -18,18 +18,21 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <header>
-        <nav>
-            <div class="nav-container">
-                <h1><a href="{base_url}">{site_title}</a></h1>
-                <ul class="nav-menu">
-                    <li><a href="{base_url}projects/" class="{projects_active}">P</a></li>
-                    <li><a href="{base_url}areas/" class="{areas_active}">A</a></li>
-                    <li><a href="{base_url}resources/" class="{resources_active}">R</a></li>
-                    <li><a href="{base_url}archives/" class="{archives_active}">A</a></li>
-                </ul>
-            </div>
-        </nav>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{base_url}" class="logo">forge</a>
+            <nav class="site-nav">
+                <a href="{base_url}projects/" class="nav-item {projects_active}">Projects</a>
+                <a href="{base_url}areas/" class="nav-item {areas_active}">Areas</a>
+                <a href="{base_url}ideas/" class="nav-item">Ideas</a>
+                <a href="{base_url}resources/" class="nav-item {resources_active}">Resources</a>
+                <a href="{base_url}archives/" class="nav-item {archives_active}">Archives</a>
+            </nav>
+            <button class="nav-toggle" aria-label="Open menu">
+                <span class="burger"></span>
+            </button>
+        </div>
+        <p class="tagline">A PARA-style knowledge forge</p>
     </header>
     
     <main id="main-content">
@@ -47,6 +50,7 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
     
     <script>
         {search_script}
+        {header_script}
     </script>
 </body>
 </html>"##;
@@ -112,16 +116,6 @@ const SUBDIRECTORY_INDEX_TEMPLATE: &str = r#"
 /// Home page template with modern card layout
 const HOME_PAGE_TEMPLATE: &str = r#"
 <div class="home-page">
-    <div class="para-hero">
-        <div class="para-letters">
-            <a href="{base_url}projects/" class="para-letter">P</a>
-            <a href="{base_url}areas/" class="para-letter">A</a>
-            <a href="{base_url}resources/" class="para-letter">R</a>
-            <a href="{base_url}archives/" class="para-letter">A</a>
-        </div>
-        <p class="para-subtitle">Recently modified files</p>
-    </div>
-    
     <div class="file-cards">
         {file_entries}
     </div>
@@ -162,7 +156,8 @@ impl TemplateEngine {
             .replace("{content}", content)
             .replace("{styles}", styles)
             .replace("{base_url}", base_url)
-            .replace("{search_script}", &generate_search_script());
+            .replace("{search_script}", &generate_search_script())
+            .replace("{header_script}", &generate_header_script());
 
         // Set active navigation state
         let categories = ["projects", "areas", "resources", "archives"];
@@ -450,21 +445,26 @@ impl TemplateEngine {
     }
 
     /// Render home page with recently modified files
-    pub fn render_home_page(&self, documents: &[DocumentSummary], base_url: &str) -> Result<String> {
+    pub fn render_home_page(
+        &self,
+        documents: &[DocumentSummary],
+        base_url: &str,
+    ) -> Result<String> {
         let mut file_entries = String::new();
 
         for doc in documents {
             let date_str = doc.date.as_deref().unwrap_or("—");
-            
+
             // Strip base URL to get the relative path for category detection
-            let relative_url = if !base_url.is_empty() && base_url != "/" && doc.url.starts_with(base_url) {
-                &doc.url[base_url.len()..]
-            } else if doc.url.starts_with('/') {
-                &doc.url[1..]
-            } else {
-                &doc.url
-            };
-            
+            let relative_url =
+                if !base_url.is_empty() && base_url != "/" && doc.url.starts_with(base_url) {
+                    &doc.url[base_url.len()..]
+                } else if doc.url.starts_with('/') {
+                    &doc.url[1..]
+                } else {
+                    &doc.url
+                };
+
             let category_str = if relative_url.starts_with("projects/") {
                 "projects"
             } else if relative_url.starts_with("areas/") {
@@ -650,7 +650,7 @@ mod tests {
 
         assert!(html.contains("<title>Test Page | Test Site</title>"));
         assert!(html.contains("<p>Content</p>"));
-        assert!(html.contains(r#"class="active">P</a>"#));
+        assert!(html.contains(r#"class="nav-item active">Projects</a>"#));
         assert!(html.contains("body { margin: 0; }"));
     }
 
@@ -734,7 +734,7 @@ mod tests {
     #[test]
     fn test_render_home_page_with_base_url() {
         let engine = TemplateEngine::new();
-        
+
         // Test with subpath base URL
         let documents = vec![
             DocumentSummary {
@@ -753,8 +753,10 @@ mod tests {
             },
         ];
 
-        let html = engine.render_home_page(&documents, "/static-site-generator/").unwrap();
-        
+        let html = engine
+            .render_home_page(&documents, "/static-site-generator/")
+            .unwrap();
+
         // Should correctly identify categories despite base URL
         assert!(html.contains(r#"category-projects">projects</span>"#));
         assert!(html.contains(r#"category-areas">areas</span>"#));
@@ -764,20 +766,18 @@ mod tests {
     #[test]
     fn test_render_home_page_with_root_base_url() {
         let engine = TemplateEngine::new();
-        
+
         // Test with root base URL
-        let documents = vec![
-            DocumentSummary {
-                url: "/projects/test.html".to_string(),
-                title: "Test Project".to_string(),
-                date: Some("2023-01-15".to_string()),
-                tags: vec!["rust".to_string()],
-                summary: None,
-            },
-        ];
+        let documents = vec![DocumentSummary {
+            url: "/projects/test.html".to_string(),
+            title: "Test Project".to_string(),
+            date: Some("2023-01-15".to_string()),
+            tags: vec!["rust".to_string()],
+            summary: None,
+        }];
 
         let html = engine.render_home_page(&documents, "/").unwrap();
-        
+
         // Should correctly identify category with root base URL
         assert!(html.contains(r#"category-projects">projects</span>"#));
         assert!(!html.contains(r#"category-other">other</span>"#));
