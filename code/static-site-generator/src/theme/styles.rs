@@ -166,70 +166,103 @@ pub fn get_default_styles() -> String {
        Header & Navigation
        ========================================================================== */
     
-    header {
+    .site-header {
         grid-area: header;
-        background-color: var(--surface-raised);
-        border-bottom: 1px solid var(--border-primary);
-        padding: var(--space-2) 0;
+        background: linear-gradient(135deg, #181818 0%, #0E0E0E 60%);
+        color: var(--text-primary);
+        height: var(--header-height, 140px);
+        transition: height 0.25s ease, box-shadow 0.25s;
         position: sticky;
         top: 0;
         z-index: 100;
-    }
-    
-    .nav-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 0 var(--space-4);
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: center;
-        gap: var(--space-4);
-    }
-    
-    header h1 {
-        font-size: clamp(1.25rem, 2.5vw, 1.5rem);
-        font-weight: 600;
-        margin: 0;
-        letter-spacing: -0.025em;
-    }
-    
-    header h1 a {
-        color: var(--text-primary);
-        text-decoration: none;
-    }
-    
-    header h1 a:hover {
-        color: var(--accent-hover);
-    }
-    
-    /* Navigation - simple P | A | R | A style */
-    .nav-menu {
-        list-style: none;
         display: flex;
-        gap: 0;
-        margin: 0;
+        flex-direction: column;
+        align-items: center;
     }
-    
-    .nav-menu li:not(:last-child)::after {
-        content: " | ";
-        color: var(--text-muted);
-        margin: 0 0.75rem;
+
+    .header-inner {
+        width: min(90%, 1200px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: var(--space-3);
     }
-    
-    .nav-menu a {
-        color: var(--text-secondary);
+
+    .logo {
+        font-size: 2rem;
+        color: #fff;
+        font-weight: 700;
         text-decoration: none;
-        font-size: 0.9rem;
-        transition: color 0.2s ease;
     }
-    
-    .nav-menu a:hover,
-    .nav-menu a.active {
-        color: var(--accent);
+
+    .tagline {
+        margin: 0.5rem 0 1rem;
+        opacity: 0.8;
     }
-    
-    /* Hide nav toggle and search in minimal theme */
-    .nav-toggle,
+
+    .site-nav {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .nav-item {
+        color: var(--text-secondary);
+        font-weight: 500;
+        position: relative;
+        text-decoration: none;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+        color: #fff;
+    }
+
+    .nav-item.active::after,
+    .nav-item:hover::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -6px;
+        height: 2px;
+        background: var(--accent-primary);
+    }
+
+    .nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+    }
+
+    .burger {
+        width: 24px;
+        height: 2px;
+        background: #fff;
+        position: relative;
+    }
+
+    .burger::before,
+    .burger::after {
+        content: "";
+        position: absolute;
+        width: 24px;
+        height: 2px;
+        background: #fff;
+    }
+
+    .burger::before { top: -6px; }
+    .burger::after { top: 6px; }
+
+    body.scrolled .site-header {
+        height: 72px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    body.scrolled .tagline {
+        display: none;
+    }
+
+    /* Hide search in minimal theme */
     .nav-search {
         display: none;
     }
@@ -242,213 +275,6 @@ pub fn get_default_styles() -> String {
         grid-area: main;
         padding: var(--space-4) 0;
         min-height: 0; /* Allow grid to control height */
-    }
-    
-    /* ==========================================================================
-       PARA Hero Section
-       ========================================================================== */
-    
-    .para-hero {
-        text-align: center;
-        margin-bottom: var(--space-6);
-        padding: var(--space-4) 0;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    /* Animated background glow effect - GPU accelerated */
-    .para-hero::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 150%;
-        height: 150%;
-        background: radial-gradient(circle, rgba(14, 165, 233, 0.03) 0%, transparent 70%);
-        transform: translate(-50%, -50%);
-        animation: gentle-pulse 4s ease-in-out infinite;
-        pointer-events: none;
-        z-index: 0;
-    }
-    
-    @keyframes gentle-pulse {
-        0%, 100% { 
-            transform: translate(-50%, -50%) scale(1) translateZ(0);
-            opacity: 0.3;
-            will-change: transform, opacity;
-        }
-        50% { 
-            transform: translate(-50%, -50%) scale(1.1) translateZ(0);
-            opacity: 0.6;
-        }
-    }
-    
-    .para-letters {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        justify-items: center;
-        gap: var(--space-4);
-        margin-bottom: var(--space-2);
-        max-width: 400px;
-        margin-left: auto;
-        margin-right: auto;
-        position: relative;
-        z-index: 1;
-    }
-    
-    /* Staggered entrance animations and subtle variations for PARA letters */
-    .para-letter:nth-child(1) { 
-        animation: letter-entrance 0.8s ease-out 0.1s both, subtle-float 6s ease-in-out infinite;
-        animation-delay: 0.1s, 1s;
-    }
-    .para-letter:nth-child(2) { 
-        animation: letter-entrance 0.8s ease-out 0.2s both, subtle-float 6s ease-in-out 1.5s infinite reverse;
-        animation-delay: 0.2s, 1.5s;
-    }
-    .para-letter:nth-child(3) { 
-        animation: letter-entrance 0.8s ease-out 0.3s both, subtle-float 6s ease-in-out 2s infinite;
-        animation-delay: 0.3s, 2s;
-    }
-    .para-letter:nth-child(4) { 
-        animation: letter-entrance 0.8s ease-out 0.4s both, subtle-float 6s ease-in-out 2.5s infinite reverse;
-        animation-delay: 0.4s, 2.5s;
-    }
-    
-    @keyframes letter-entrance {
-        0% {
-            opacity: 0;
-            transform: translateY(20px) scale(0.8);
-            filter: blur(4px) drop-shadow(0 2px 4px rgba(14, 165, 233, 0.3));
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            filter: blur(0) drop-shadow(0 2px 4px rgba(14, 165, 233, 0.3));
-        }
-    }
-    
-    .para-letter {
-        font-size: clamp(2.5rem, 8vw, 4rem);
-        font-weight: 700;
-        background: linear-gradient(135deg, #0EA5E9 0%, #3B82F6 50%, #6366F1 100%);
-        background-size: 200% 200%;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        color: #0EA5E9; /* fallback for unsupported browsers */
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                    background-position 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                    filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        text-decoration: none;
-        display: inline-block;
-        letter-spacing: -0.02em;
-        filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.3));
-        position: relative;
-        cursor: pointer;
-    }
-    
-    @keyframes subtle-float {
-        0%, 100% { 
-            transform: translateY(0px);
-        }
-        50% { 
-            transform: translateY(-2px);
-        }
-    }
-    
-    .para-letter:hover {
-        background: linear-gradient(135deg, #0284C7 0%, #2563EB 50%, #7C3AED 100%);
-        background-size: 300% 300%;
-        background-position: 100% 0;
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        transform: translateY(-4px) scale(1.08) translateZ(0);
-        text-decoration: none;
-        filter: drop-shadow(0 8px 16px rgba(14, 165, 233, 0.5));
-        animation: gradient-shift 2s ease-in-out infinite, subtle-float 6s ease-in-out infinite;
-    }
-    
-    @keyframes gradient-shift {
-        0%, 100% {
-            background-position: 0% 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-    }
-    
-    /* Enhanced focus states for accessibility */
-    .para-letter:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.4);
-        border-radius: 4px;
-        transform: translateY(-2px) scale(1.05) translateZ(0);
-        filter: drop-shadow(0 4px 8px rgba(14, 165, 233, 0.4));
-    }
-    
-    /* Active state for better feedback */
-    .para-letter:active {
-        transform: translateY(0) scale(1.02) translateZ(0);
-        filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.6));
-        transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .para-subtitle {
-        font-size: clamp(1rem, 2.5vw, 1.2rem);
-        color: var(--text-secondary);
-        margin: 0;
-        font-weight: 400;
-        letter-spacing: 0.025em;
-        line-height: 1.5;
-        position: relative;
-        z-index: 1;
-        animation: subtitle-entrance 1s ease-out 0.6s both;
-    }
-    
-    @keyframes subtitle-entrance {
-        0% {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    /* Accessibility: Respect prefers-reduced-motion */
-    @media (prefers-reduced-motion: reduce) {
-        .para-hero::before,
-        .para-letter,
-        .para-subtitle {
-            animation: none !important;
-        }
-        
-        .para-letter:hover {
-            animation: none !important;
-            background-position: 0% 50% !important;
-        }
-        
-        .para-letter {
-            animation: none !important;
-        }
-        
-        /* Maintain functionality but reduce motion */
-        .para-letter:hover {
-            transform: scale(1.05);
-            transition: all 0.2s ease;
-        }
-        
-        .para-letter:focus {
-            transform: scale(1.05);
-            transition: all 0.2s ease;
-        }
-        
-        .para-letter:active {
-            transform: scale(1.02);
-            transition: all 0.1s ease;
-        }
     }
     
     /* ==========================================================================
@@ -1026,7 +852,6 @@ pub fn get_default_styles() -> String {
             justify-content: center;
         }
         
-        .para-letters {
             grid-template-columns: repeat(2, 1fr);
             gap: var(--space-2);
             max-width: 200px;
@@ -1057,7 +882,6 @@ pub fn get_default_styles() -> String {
         }
         
         /* Stack content more compactly on mobile */
-        .para-hero {
             padding: var(--space-2) 0;
             margin-bottom: var(--space-4);
         }
@@ -1074,7 +898,6 @@ pub fn get_default_styles() -> String {
             gap: var(--space-3);
         }
         
-        .para-letters {
             gap: var(--space-3);
             max-width: 300px;
         }
@@ -1134,7 +957,6 @@ pub fn get_default_styles() -> String {
     }
     
     /* Ensure all transforms use GPU acceleration */
-    .para-letter,
     .file-card,
     .document-entry,
     .search-result {
@@ -1177,7 +999,7 @@ pub fn get_default_styles() -> String {
     
     /* Print styles */
     @media print {
-        header, footer, .para-hero, .search-box {
+        header, footer, .search-box {
             display: none;
         }
         
