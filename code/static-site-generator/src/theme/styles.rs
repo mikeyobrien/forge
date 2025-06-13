@@ -170,7 +170,7 @@ pub fn get_default_styles() -> String {
         grid-area: header;
         background: linear-gradient(135deg, #181818 0%, #0E0E0E 60%);
         color: var(--text-primary);
-        height: var(--header-height, 140px);
+        height: var(--header-height, 80px);
         transition: height 0.25s ease, box-shadow 0.25s;
         position: sticky;
         top: 0;
@@ -185,7 +185,7 @@ pub fn get_default_styles() -> String {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-top: var(--space-3);
+        padding-top: var(--space-2);
     }
 
     .logo {
@@ -206,11 +206,16 @@ pub fn get_default_styles() -> String {
         font-weight: 500;
         position: relative;
         text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    
+    .nav-item:hover {
+        color: var(--text-primary);
+        text-decoration: none;
     }
 
-    .nav-item:hover,
     .nav-item.active {
-        color: #fff;
+        color: var(--accent-primary);
     }
 
     .nav-item.active::after,
@@ -250,7 +255,7 @@ pub fn get_default_styles() -> String {
     .burger::after { top: 6px; }
 
     body.scrolled .site-header {
-        height: 72px;
+        height: 60px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     }
 
@@ -279,7 +284,7 @@ pub fn get_default_styles() -> String {
         grid-template-columns: 1fr;
         gap: var(--space-3);
         margin-top: var(--space-4);
-        max-width: 800px;
+        max-width: 1200px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -645,7 +650,7 @@ pub fn get_default_styles() -> String {
     .directory-grid {
         display: grid;
         gap: var(--space-3);
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     }
     
     .directory-card {
