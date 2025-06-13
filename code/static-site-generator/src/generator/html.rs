@@ -192,7 +192,7 @@ impl HtmlGenerator {
         // Generate breadcrumbs
         let mut breadcrumbs = vec![BreadcrumbItem {
             title: "Home".to_string(),
-            url: Some("/".to_string()),
+            url: Some(self.base_url.clone()),
         }];
 
         let mut current_path = PathBuf::new();
@@ -295,7 +295,7 @@ impl HtmlGenerator {
         // Generate breadcrumbs
         let mut breadcrumbs = vec![BreadcrumbItem {
             title: "Home".to_string(),
-            url: Some("/".to_string()),
+            url: Some(self.base_url.clone()),
         }];
 
         let mut current_path = PathBuf::new();
@@ -351,6 +351,7 @@ impl HtmlGenerator {
             &subdir_name,
             &summaries,
             subdirectories,
+            &self.base_url,
         )?;
 
         // Generate full page
@@ -434,7 +435,7 @@ impl HtmlGenerator {
     pub fn generate_breadcrumbs_for_document(&self, doc: &Document) -> Vec<BreadcrumbItem> {
         let mut breadcrumbs = vec![BreadcrumbItem {
             title: "Home".to_string(),
-            url: Some("/".to_string()),
+            url: Some(self.base_url.clone()),
         }];
 
         let mut current_path = PathBuf::new();

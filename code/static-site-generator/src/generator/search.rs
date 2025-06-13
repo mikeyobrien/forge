@@ -177,8 +177,17 @@ fn generate_excerpt(content: &str, max_length: usize) -> String {
         return content.to_string();
     }
 
+    // Find a safe UTF-8 boundary by iterating through char indices
+    let mut boundary = max_length;
+    if !content.is_char_boundary(boundary) {
+        // Find the nearest char boundary before max_length
+        while boundary > 0 && !content.is_char_boundary(boundary) {
+            boundary -= 1;
+        }
+    }
+
     // Try to break at a word boundary
-    let mut excerpt = &content[..max_length];
+    let mut excerpt = &content[..boundary];
     if let Some(last_space) = excerpt.rfind(' ') {
         excerpt = &excerpt[..last_space];
     }

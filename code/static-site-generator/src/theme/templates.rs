@@ -289,6 +289,7 @@ impl TemplateEngine {
         subdirectory_name: &str,
         documents: &[DocumentSummary],
         subdirectories: &[&crate::utils::DirectoryInfo],
+        base_url: &str,
     ) -> Result<String> {
         let mut content = String::new();
 
@@ -306,7 +307,7 @@ impl TemplateEngine {
                     .unwrap_or("Unknown");
 
                 let dir_title = crate::generator::html::humanize_filename(dir_name);
-                let dir_url = format!("/{}/", dir.relative_path.display());
+                let dir_url = format!("{}{}/", base_url, dir.relative_path.display());
 
                 content.push_str(&format!(
                     r#"<div class="directory-card">

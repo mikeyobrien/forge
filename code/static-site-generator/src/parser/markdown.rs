@@ -152,7 +152,16 @@ pub fn extract_summary(content: &str, max_length: usize) -> String {
     // Trim and truncate
     let summary = summary.trim();
     if summary.len() > max_length {
-        let mut truncated = summary[..max_length].to_string();
+        // Find a safe UTF-8 boundary
+        let mut boundary = max_length;
+        if !summary.is_char_boundary(boundary) {
+            // Find the nearest char boundary before max_length
+            while boundary > 0 && !summary.is_char_boundary(boundary) {
+                boundary -= 1;
+            }
+        }
+        
+        let mut truncated = summary[..boundary].to_string();
         // Try to break at word boundary
         if let Some(last_space) = truncated.rfind(' ') {
             truncated.truncate(last_space);
