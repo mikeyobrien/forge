@@ -497,6 +497,7 @@ git push
 ##### Automated Deployment with GitHub Actions
 
 See `.github/workflows/deploy-gh-pages.yml` for a complete example that:
+
 - Builds the Rust binary
 - Generates the site with correct base URL
 - Deploys to gh-pages branch automatically

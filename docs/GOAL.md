@@ -1,4 +1,5 @@
 # Goal
+
 The goal of this project is to push the limits of Claude Code. I am taking a deliberate choice
 in minimizing the usage of external libraries and frameworks, letting Claude build
 what it uses. I am curious to see how capable it is in creating what I ask with minimal

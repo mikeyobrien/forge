@@ -9,30 +9,35 @@ This directory contains comprehensive integration tests for the MCP Context Mana
 These tests validate the integration of features implemented in Phase 3 of the project:
 
 1. **document-lifecycle.test.ts** - Complete document workflow testing
+
    - Document creation, reading, updating, and deletion
    - Link preservation during updates
    - Search index consistency
    - Backlink tracking
 
 2. **link-graph-integrity.test.ts** - Link relationship validation
+
    - Complex link networks
    - Circular reference handling
    - Broken link detection
    - Link updates during document moves
 
 3. **search-relationships.test.ts** - Search and link integration
+
    - Combined search and link queries
    - Faceted search capabilities
    - Similar document detection
    - Complex query performance
 
 4. **concurrent-operations.test.ts** - Concurrent operation safety
+
    - Parallel document updates
    - Atomic operations
    - Race condition prevention
    - Index consistency
 
 5. **error-recovery.test.ts** - Error handling and recovery
+
    - Corrupted document handling
    - Missing file recovery
    - Circular reference safety
@@ -73,36 +78,42 @@ npm test -- --testTimeout=120000 performance-scale.test.ts
 Each test file contains multiple scenarios testing different aspects:
 
 ### Document Lifecycle
+
 - Complete workflow with link preservation
 - Document deletion and broken link handling
 - Concurrent update consistency
 - Large network performance
 
 ### Link Graph
+
 - Hub-and-spoke networks
 - Circular references
 - Broken link detection
 - Document movement
 
 ### Search Integration
+
 - Link-aware searching
 - Faceted results
 - Similar documents
 - Complex queries
 
 ### Concurrent Operations
+
 - Parallel updates
 - Atomic operations
 - Search index updates
 - Race condition prevention
 
 ### Error Recovery
+
 - Corrupted frontmatter
 - Missing documents
 - File system errors
 - Large documents
 
 ### Performance
+
 - 1000+ documents
 - Deep hierarchies
 - Burst updates
@@ -148,21 +159,21 @@ Example:
 ```typescript
 const result = await harness.executeScenario({
   name: 'Test Scenario Name',
-  
+
   setup: async () => {
     // Create test documents
     return generator.generateDocumentNetwork(10, 0.3);
   },
-  
+
   execute: async (context) => {
     // Perform operations
     await context.searchEngine.search({ content: 'test' });
   },
-  
+
   verify: async (context) => {
     // Assert results
     expect(context.documents.size).toBe(10);
-  }
+  },
 });
 ```
 
