@@ -12,7 +12,7 @@ import { GeneratedDocument, TestDataGenerator } from './TestDataGenerator';
 import { Document } from '../../../models/types';
 import { createDocument } from '../../../models/factories';
 import { serializeDocument } from '../../../parsers/serializer';
-import { parseWikiLinks } from '../../../parser/wiki-link';
+import { parseWikiLinks, WikiLink } from '../../../parser/wiki-link';
 import { BacklinkTestHelper } from './BacklinkTestHelper';
 
 export interface TestScenario {
@@ -32,7 +32,7 @@ export interface TestContext {
   documentUpdater: DocumentUpdater;
   testRoot: string;
   documents: Map<string, Document>;
-  linkIndex: Map<string, any[]>; // For tracking links per document
+  linkIndex: Map<string, WikiLink[]>; // For tracking links per document
 }
 
 export interface TestResult {
@@ -95,7 +95,7 @@ export class IntegrationTestHarness {
   /**
    * Tear down the test environment
    */
-  async teardown(): Promise<void> {
+  teardown(): void {
     if (existsSync(this.testRoot)) {
       rmSync(this.testRoot, { recursive: true, force: true });
     }
@@ -163,7 +163,7 @@ export class IntegrationTestHarness {
         content: doc.content,
         tags: doc.metadata.tags || [],
         category: doc.metadata.category,
-        frontmatter: doc.metadata as any,
+        frontmatter: doc.metadata,
       });
 
       // Write to filesystem

@@ -10,7 +10,7 @@ import { join } from 'path';
 
 // Mock the config module
 jest.mock('../../../config/index', () => ({
-  getConfig: () => ({ contextRoot: '/test/context' }),
+  getConfig: (): { contextRoot: string } => ({ contextRoot: '/test/context' }),
 }));
 
 describe('context_move tool', () => {

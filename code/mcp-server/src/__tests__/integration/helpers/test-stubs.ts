@@ -21,8 +21,10 @@ declare module '../../../backlinks/BacklinkManager' {
 }
 
 // Add test methods to BacklinkManager prototype
-BacklinkManager.prototype.getForwardLinks = async function (documentPath: string) {
-  const fs = (this as any).fileSystem as IFileSystem;
+BacklinkManager.prototype.getForwardLinks = async function (
+  documentPath: string,
+): Promise<Array<{ target: string; displayText?: string | undefined }>> {
+  const fs = (this as BacklinkManager & { fileSystem: IFileSystem }).fileSystem;
   try {
     const content = await fs.readFile(documentPath);
     const links = parseWikiLinks(content);
@@ -35,26 +37,28 @@ BacklinkManager.prototype.getForwardLinks = async function (documentPath: string
   }
 };
 
-BacklinkManager.prototype.getBrokenLinks = async function () {
+BacklinkManager.prototype.getBrokenLinks = function (): Promise<
+  Array<{ source: string; target: string; line: number; column: number }>
+> {
   const brokenLinks: Array<{ source: string; target: string; line: number; column: number }> = [];
   // Simplified implementation
-  return brokenLinks;
+  return Promise.resolve(brokenLinks);
 };
 
-BacklinkManager.prototype.getOrphanedDocuments = async function () {
+BacklinkManager.prototype.getOrphanedDocuments = function (): Promise<string[]> {
   const orphans: string[] = [];
   // Simplified implementation - would need to check all documents
-  return orphans;
+  return Promise.resolve(orphans);
 };
 
-BacklinkManager.prototype.getAllBacklinks = async function () {
+BacklinkManager.prototype.getAllBacklinks = function (): Promise<Map<string, BacklinkEntry[]>> {
   const allBacklinks = new Map<string, BacklinkEntry[]>();
   // Return current index as a Map
-  const index = (this as any).index;
+  const index = (this as BacklinkManager & { index: Record<string, BacklinkEntry[]> }).index;
   for (const [key, value] of Object.entries(index)) {
     allBacklinks.set(key, value as BacklinkEntry[]);
   }
-  return allBacklinks;
+  return Promise.resolve(allBacklinks);
 };
 
 // Helper to check stats has the expected properties

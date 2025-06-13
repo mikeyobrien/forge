@@ -15,7 +15,8 @@ export class GraphAlgorithms {
     const stack = [start];
 
     while (stack.length > 0) {
-      const current = stack.pop()!;
+      const current = stack.pop();
+      if (!current) continue;
 
       if (visited.has(current)) {
         continue;
@@ -45,7 +46,8 @@ export class GraphAlgorithms {
     const queue = [start];
 
     while (queue.length > 0) {
-      const current = queue.shift()!;
+      const current = queue.shift();
+      if (!current) continue;
 
       if (visited.has(current)) {
         continue;

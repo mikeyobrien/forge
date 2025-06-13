@@ -6,11 +6,12 @@ import { WikiLink } from '../../../parser/wiki-link';
 import { SearchResponse } from '../../../search/types';
 import { BacklinkEntry } from '../../../backlinks/types';
 
-export class IntegrationAssertions {
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace IntegrationAssertions {
   /**
    * Assert that all links in documents are consistent
    */
-  static assertLinkConsistency(
+  export function assertLinkConsistency(
     _documents: Map<string, Document>,
     linkIndex: Map<string, WikiLink[]>,
     backlinkIndex: Map<string, BacklinkEntry[]>,
@@ -57,7 +58,7 @@ export class IntegrationAssertions {
   /**
    * Assert that search results match expected documents
    */
-  static assertSearchResults(
+  export function assertSearchResults(
     actual: SearchResponse,
     expectedPaths: string[],
     options: {
@@ -126,7 +127,7 @@ export class IntegrationAssertions {
   /**
    * Assert backlinks for a document
    */
-  static assertBacklinks(
+  export function assertBacklinks(
     docPath: string,
     actualBacklinks: BacklinkEntry[],
     expectedSources: string[],
@@ -166,7 +167,7 @@ export class IntegrationAssertions {
   /**
    * Assert forward links for a document
    */
-  static assertForwardLinks(
+  export function assertForwardLinks(
     docPath: string,
     actualLinks: WikiLink[],
     expectedTargets: string[],
@@ -202,7 +203,10 @@ export class IntegrationAssertions {
   /**
    * Assert document metadata
    */
-  static assertDocumentMetadata(document: Document, expected: Record<string, unknown>): void {
+  export function assertDocumentMetadata(
+    document: Document,
+    expected: Record<string, unknown>,
+  ): void {
     for (const [key, value] of Object.entries(expected)) {
       const actual = document.frontmatter[key];
 
@@ -218,7 +222,7 @@ export class IntegrationAssertions {
         }
       } else if (actual !== value) {
         throw new Error(
-          `Document "${document.path}" metadata.${key} expected "${value}", got "${actual}"`,
+          `Document "${document.path}" metadata.${key} expected "${String(value)}", got "${String(actual)}"`,
         );
       }
     }
@@ -227,7 +231,7 @@ export class IntegrationAssertions {
   /**
    * Assert link query results
    */
-  static assertLinkQueryResults(
+  export function assertLinkQueryResults(
     results: Array<{ path: string; exists?: boolean }>,
     expectedPaths: string[],
     options: {
@@ -272,7 +276,7 @@ export class IntegrationAssertions {
   /**
    * Assert document content contains expected text
    */
-  static assertContentContains(
+  export function assertContentContains(
     document: Document,
     expectedText: string,
     options: { caseSensitive?: boolean } = {},
@@ -291,7 +295,7 @@ export class IntegrationAssertions {
   /**
    * Assert operation completes within time limit
    */
-  static async assertOperationTime<T>(
+  export async function assertOperationTime<T>(
     operation: () => Promise<T>,
     maxDuration: number,
     operationName: string,
@@ -312,7 +316,7 @@ export class IntegrationAssertions {
   /**
    * Assert no orphaned documents (documents with no backlinks)
    */
-  static assertNoOrphanedDocuments(
+  export function assertNoOrphanedDocuments(
     documents: Map<string, Document>,
     backlinkIndex: Map<string, BacklinkEntry[]>,
     allowedOrphans: string[] = [],
@@ -334,7 +338,7 @@ export class IntegrationAssertions {
   /**
    * Assert search facets contain expected values
    */
-  static assertSearchFacets(
+  export function assertSearchFacets(
     facets: Record<string, Array<{ value: string; count: number }>>,
     expectedFacets: Record<string, string[]>,
   ): void {

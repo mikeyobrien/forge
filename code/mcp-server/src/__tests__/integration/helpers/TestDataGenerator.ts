@@ -118,7 +118,7 @@ export class TestDataGenerator {
     // Add project-specific metadata
     if (category === PARACategory.Projects) {
       const statuses = ['active', 'completed', 'on-hold', 'cancelled'];
-      metadata.status = this.randomChoice(statuses) as any;
+      metadata.status = this.randomChoice(statuses);
       if (metadata.status === 'active') {
         metadata.due_date = this.randomDate(1, 90).toISOString();
       }
@@ -323,7 +323,7 @@ class Implementation implements Example {
     if (array.length === 0) {
       throw new Error('Cannot choose from empty array');
     }
-    return array[Math.floor(Math.random() * array.length)]!;
+    return array[Math.floor(Math.random() * array.length)];
   }
 
   private randomSubset<T>(array: T[], min: number, max: number): T[] {
