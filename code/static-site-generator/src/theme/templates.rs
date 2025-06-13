@@ -24,7 +24,6 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
             <nav class="site-nav">
                 <a href="{base_url}projects/" class="nav-item {projects_active}">Projects</a>
                 <a href="{base_url}areas/" class="nav-item {areas_active}">Areas</a>
-                <a href="{base_url}ideas/" class="nav-item">Ideas</a>
                 <a href="{base_url}resources/" class="nav-item {resources_active}">Resources</a>
                 <a href="{base_url}archives/" class="nav-item {archives_active}">Archives</a>
             </nav>
@@ -32,7 +31,6 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
                 <span class="burger"></span>
             </button>
         </div>
-        <p class="tagline">A PARA-style knowledge forge</p>
     </header>
     
     <main id="main-content">
