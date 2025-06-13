@@ -195,10 +195,6 @@ pub fn get_default_styles() -> String {
         text-decoration: none;
     }
 
-    .tagline {
-        margin: 0.5rem 0 1rem;
-        opacity: 0.8;
-    }
 
     .site-nav {
         display: flex;
@@ -258,9 +254,6 @@ pub fn get_default_styles() -> String {
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     }
 
-    body.scrolled .tagline {
-        display: none;
-    }
 
     /* Hide search in minimal theme */
     .nav-search {
