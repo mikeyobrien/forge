@@ -605,7 +605,7 @@ mod tests {
         let html = generator.generate_home_page(&[doc]).unwrap();
 
         assert!(html.contains("Test Site"));
-        assert!(html.contains(r#"<table class="file-list""#));
+        assert!(html.contains(r#"<div class="file-cards""#));
         assert!(html.contains("Test Project"));
         assert!(html.contains("projects"));
     }
