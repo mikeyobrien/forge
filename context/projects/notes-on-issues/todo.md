@@ -14,14 +14,14 @@ tags:
 
 ## Epics & Tasks
 
-- [ ] **T1** Create `pnpm-workspace.yaml`
-- [ ] **T2** Initialise root `package.json` with workspaces
-- [ ] **T3** Add baseline `README.md`
-- [ ] **T4** Add TypeScript + `tsconfig.base.json`
-- [ ] **T5** Add ESLint & Prettier configs
-- [ ] **T6** Add Husky + lint-staged pre-commit
-- [ ] **T7** GitHub Action: install, lint, test on push
-- [ ] **T8** Add build-status badge to README
+- [x] **T1** Create `pnpm-workspace.yaml`
+- [x] **T2** Initialise root `package.json` with workspaces
+- [x] **T3** Add baseline `README.md`
+- [x] **T4** Add TypeScript + `tsconfig.base.json`
+- [x] **T5** Add ESLint & Prettier configs
+- [x] **T6** Add Husky + lint-staged pre-commit
+- [x] **T7** GitHub Action: install, lint, test on push
+- [x] **T8** Add build-status badge to README
 - [ ] **T9** Bootstrap `web` PWA (Vite + React)
 - [ ] **T10** Add sample Vitest + RTL test
 - [ ] **T11** Install `@octokit/oauth-app`

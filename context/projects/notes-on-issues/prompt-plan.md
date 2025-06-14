@@ -94,6 +94,10 @@ Add badge markdown in `README.md` referencing workflow status (use fake link; CI
 Deliverable: patch.
 ```
 
+**Status**: ✅ Complete
+**Completion**: 2025-06-14
+**Notes**: GitHub Actions CI added and README updated with badge.
+
 ```
 Prompt P-03 — Hello-World PWA Shell
 
