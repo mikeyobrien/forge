@@ -11,22 +11,22 @@ COMMIT_HASH=$(git rev-parse --short HEAD)
 # Build the image
 echo "Building MCP server Docker image..."
 npm run build
-docker build -t mcp-server:$COMMIT_HASH .
+docker build -t forge-mcp:$COMMIT_HASH .
 
 # Tag as latest
-docker tag mcp-server:$COMMIT_HASH mcp-server:latest
+docker tag forge-mcp:$COMMIT_HASH forge-mcp:latest
 
 # If custom tag provided, also tag with that
 if [ ! -z "$1" ]; then
-    docker tag mcp-server:$COMMIT_HASH mcp-server:$1
-    echo "Tagged as: mcp-server:$1"
+    docker tag forge-mcp:$COMMIT_HASH forge-mcp:$1
+    echo "Tagged as: forge-mcp:$1"
 fi
 
 echo "Built and tagged as:"
-echo "  mcp-server:$COMMIT_HASH"
-echo "  mcp-server:latest"
+echo "  forge-mcp:$COMMIT_HASH"
+echo "  forge-mcp:latest"
 
 # Show current images
 echo ""
 echo "Available MCP server images:"
-docker images mcp-server
+docker images forge-mcp

@@ -38,7 +38,7 @@ info "Installing root npm packages..."
 npm install
 
 info "Installing MCP server dependencies..."
-pushd code/mcp-server >/dev/null
+pushd code/forge-mcp >/dev/null
 npm install
 popd >/dev/null
 

@@ -7,7 +7,7 @@ set -e
 
 # Use latest tagged image or specific commit hash if provided
 IMAGE_TAG=${1:-latest}
-CONTAINER_NAME="mcp-server-$(date +%s)"
+CONTAINER_NAME="forge-mcp-$(date +%s)"
 
 # Function to cleanup container on exit
 cleanup() {
@@ -28,5 +28,5 @@ docker run \
     -e LOG_LEVEL=info \
     --entrypoint=node \
     -i \
-    "mcp-server:$IMAGE_TAG" \
+    "forge-mcp:$IMAGE_TAG" \
     dist/index.js

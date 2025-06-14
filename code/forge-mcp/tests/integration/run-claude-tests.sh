@@ -26,8 +26,8 @@ if ! command -v claude &> /dev/null; then
 fi
 
 # Check if MCP server is configured
-if ! claude mcp list | grep -q "context-mcp-server"; then
-    echo -e "${YELLOW}Warning: MCP server 'context-mcp-server' not found in Claude configuration${NC}"
+if ! claude mcp list | grep -q "context-forge-mcp"; then
+    echo -e "${YELLOW}Warning: MCP server 'context-forge-mcp' not found in Claude configuration${NC}"
     echo "You may need to add it using:"
     echo "  claude mcp add context-mcp-server \"node $(pwd)/../../dist/index.js\""
     echo

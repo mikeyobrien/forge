@@ -3,7 +3,7 @@
     "context-manager": {
       "command": "./start-mcp-docker.sh",
       "args": ["latest"],
-      "cwd": "/Users/mobrienv/Code/why/code/mcp-server",
+      "cwd": "/Users/mobrienv/Code/why/code/forge-mcp",
       "env": {
         "DOCKER_DEFAULT_PLATFORM": "linux/amd64"
       }

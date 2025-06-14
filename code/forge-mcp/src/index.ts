@@ -22,7 +22,7 @@ import { configuration, ConfigurationError } from './config/index';
 // Create server instance
 const server = new Server(
   {
-    name: 'context-mcp-server',
+    name: 'context-forge-mcp',
     version: '0.1.0',
   },
   {

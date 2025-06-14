@@ -3,7 +3,7 @@
     "context-manager": {
       "command": "node",
       "args": ["-r", "dotenv/config", "dist/index.js"],
-      "cwd": "/Users/mobrienv/Code/why/code/mcp-server",
+      "cwd": "/Users/mobrienv/Code/why/code/forge-mcp",
       "env": {
         "CONTEXT_ROOT": "/Users/mobrienv/Code/why/context",
         "LOG_LEVEL": "debug"

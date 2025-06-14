@@ -164,7 +164,7 @@ export class DocumentMigrator {
         // Update backlinks if path changed
         let linksUpdated = 0;
         if (newPath !== relativePath) {
-          linksUpdated = await this.updateIncomingLinks(relativePath, newPath);
+          linksUpdated = this.updateIncomingLinks(relativePath, newPath);
 
           // Delete old file - using writeFile with empty content as workaround
           // TODO: Add deleteFile to IFileSystem interface
@@ -262,7 +262,7 @@ export class DocumentMigrator {
     }
     pathComponents.push(newFilename);
 
-    return path.join(...pathComponents);
+    return Promise.resolve(path.join(...pathComponents));
   }
 
   /**
@@ -359,7 +359,7 @@ export class DocumentMigrator {
   /**
    * Updates incoming links to point to new location
    */
-  private async updateIncomingLinks(_oldPath: string, _newPath: string): Promise<number> {
+  private updateIncomingLinks(_oldPath: string, _newPath: string): number {
     if (!this.backlinkManager) {
       return 0;
     }

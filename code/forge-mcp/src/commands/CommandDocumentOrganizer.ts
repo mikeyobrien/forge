@@ -76,16 +76,16 @@ export class CommandDocumentOrganizer {
       if (params.project) {
         result.projectPath = params.project;
       }
-      return result;
+      return Promise.resolve(result);
     }
 
     // Infer category based on document type and project
     if (params.project) {
       // Most project documents go in projects category
-      return {
+      return Promise.resolve({
         category: PARACategory.Projects,
         projectPath: params.project,
-      };
+      });
     }
 
     // Default categorization by document type
@@ -108,7 +108,7 @@ export class CommandDocumentOrganizer {
         category = PARACategory.Resources;
         break;
     }
-    return { category };
+    return Promise.resolve({ category });
   }
 
   /**
@@ -238,12 +238,12 @@ export class CommandDocumentOrganizer {
     for (const strategy of strategies) {
       const specificName = strategy();
       if (specificName) {
-        return `${specificName}.md`;
+        return Promise.resolve(`${specificName}.md`);
       }
     }
 
     // Fallback (should never reach here)
-    return `${baseName}-variant.md`;
+    return Promise.resolve(`${baseName}-variant.md`);
   }
 
   /**
