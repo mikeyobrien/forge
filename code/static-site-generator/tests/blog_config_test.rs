@@ -4,12 +4,17 @@
 use para_ssg::{generate_site, Config};
 use std::env;
 use std::fs;
+use std::sync::Mutex;
 use tempfile::TempDir;
 
-// Note: These tests modify environment variables and should be run with --test-threads=1
+// Mutex to ensure environment variable tests don't run in parallel
+static ENV_MUTEX: Mutex<()> = Mutex::new(());
 
 #[test]
 fn test_blog_config_from_env() {
+    // Lock mutex to ensure exclusive access to environment variables
+    let _guard = ENV_MUTEX.lock().unwrap();
+
     // Create temporary directories
     let input_dir = TempDir::new().unwrap();
     let output_dir = TempDir::new().unwrap();
@@ -71,6 +76,9 @@ This is a test blog post with comments enabled."#;
 
 #[test]
 fn test_blog_config_disabled() {
+    // Lock mutex to ensure exclusive access to environment variables
+    let _guard = ENV_MUTEX.lock().unwrap();
+
     // Create temporary directories
     let input_dir = TempDir::new().unwrap();
     let output_dir = TempDir::new().unwrap();
@@ -126,6 +134,9 @@ This is a test blog post with comments disabled."#;
 
 #[test]
 fn test_blog_config_missing_github_config() {
+    // Lock mutex to ensure exclusive access to environment variables
+    let _guard = ENV_MUTEX.lock().unwrap();
+
     // Create temporary directories
     let input_dir = TempDir::new().unwrap();
     let output_dir = TempDir::new().unwrap();

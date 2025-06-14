@@ -4,7 +4,6 @@
 use std::fs;
 use std::path::Path;
 use tempfile::TempDir;
-use walkdir::WalkDir;
 
 mod test_documents;
 mod validation;
