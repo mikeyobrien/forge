@@ -27,5 +27,5 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint --silent
-      - run: pnpm test --silent
+      - run: pnpm --silent lint
+      - run: pnpm --silent test
