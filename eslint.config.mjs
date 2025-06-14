@@ -23,7 +23,12 @@ export default [
       parserOptions: {
         ecmaVersion: 2022,
         sourceType: 'module',
-        project: ['./tsconfig.json', './code/*/tsconfig.json', './code/*/tsconfig.test.json'],
+        project: [
+          './tsconfig.json',
+          './tsconfig.vitest.json',
+          './code/*/tsconfig.json',
+          './code/*/tsconfig.test.json',
+        ],
       },
       globals: {
         console: 'readonly',
@@ -82,6 +87,11 @@ export default [
   },
   {
     files: ['**/__tests__/**/*.ts', '**/*.test.ts', '**/*.spec.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.vitest.json',
+      },
+    },
     rules: {
       '@typescript-eslint/unbound-method': 'off',
     },
