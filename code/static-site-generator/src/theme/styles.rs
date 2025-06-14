@@ -229,6 +229,15 @@ pub fn get_default_styles() -> String {
         background: var(--accent-primary);
     }
 
+    .nav-divider {
+        width: 1px;
+        height: 20px;
+        background-color: var(--text-secondary);
+        opacity: 0.3;
+        margin: 0 0.5rem;
+        align-self: center;
+    }
+
     .nav-toggle {
         display: none;
         background: none;
@@ -838,6 +847,11 @@ pub fn get_default_styles() -> String {
         .container {
             padding: 0 var(--space-2);
         }
+
+        /* Hide nav divider on mobile */
+        .nav-divider {
+            display: none;
+        }
         
         .nav-container {
             grid-template-columns: 1fr;
@@ -1009,6 +1023,148 @@ pub fn get_default_styles() -> String {
         a {
             color: black;
             text-decoration: underline;
+        }
+    }
+    
+    /* ==========================================================================
+       Comments Section
+       ========================================================================== */
+    
+    .comments-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-primary);
+    }
+    
+    .comments-section h2 {
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+    }
+    
+    #comments-list {
+        margin-bottom: 2rem;
+    }
+    
+    .loading {
+        color: var(--text-muted);
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .error-message {
+        color: var(--error);
+        background: var(--error-bg);
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        text-align: center;
+        margin: 1rem 0;
+    }
+    
+    .comment {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--card-bg);
+        border-radius: 8px;
+        border: 1px solid var(--border-primary);
+    }
+    
+    .comment-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 2px solid var(--border-primary);
+    }
+    
+    .comment-header .author {
+        font-weight: 500;
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+    
+    .comment-header .author:hover {
+        color: var(--accent-primary);
+    }
+    
+    .comment-header .date {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-left: auto;
+    }
+    
+    .comment-body {
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+    
+    .comment-body p {
+        margin: 0.5rem 0;
+    }
+    
+    .comment-body p:first-child {
+        margin-top: 0;
+    }
+    
+    .comment-body p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .comment-body code {
+        background: var(--bg-secondary);
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-size: 0.9em;
+    }
+    
+    .comment-body pre {
+        background: var(--bg-secondary);
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+    
+    .comment-body blockquote {
+        border-left: 3px solid var(--accent-primary);
+        padding-left: 1rem;
+        margin: 1rem 0;
+        color: var(--text-muted);
+    }
+    
+    #add-comment-btn {
+        display: inline-block;
+        background: var(--accent-primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
+    }
+    
+    #add-comment-btn:hover {
+        background: var(--accent-hover);
+    }
+    
+    @media (max-width: 640px) {
+        .comment {
+            padding: 0.75rem;
+        }
+        
+        .comment-header {
+            flex-wrap: wrap;
+        }
+        
+        .comment-header .date {
+            width: 100%;
+            margin-left: 0;
+            margin-top: 0.5rem;
         }
     }
     "#;

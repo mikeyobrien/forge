@@ -26,6 +26,8 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
                 <a href="{base_url}areas/" class="nav-item {areas_active}">Areas</a>
                 <a href="{base_url}resources/" class="nav-item {resources_active}">Resources</a>
                 <a href="{base_url}archives/" class="nav-item {archives_active}">Archives</a>
+                <span class="nav-divider"></span>
+                <a href="{base_url}blog/" class="nav-item {blog_active}">Blog</a>
             </nav>
             <button class="nav-toggle" aria-label="Open menu">
                 <span class="burger"></span>
@@ -46,6 +48,7 @@ const BASE_TEMPLATE: &str = r##"<!DOCTYPE html>
         </div>
     </footer>
     
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.0.0/marked.min.js"></script>
     <script>
         {search_script}
         {header_script}
@@ -158,7 +161,7 @@ impl TemplateEngine {
             .replace("{header_script}", &generate_header_script());
 
         // Set active navigation state
-        let categories = ["projects", "areas", "resources", "archives"];
+        let categories = ["projects", "areas", "resources", "archives", "blog"];
         for category in &categories {
             let placeholder = format!("{{{}_active}}", category);
             let class = if Some(*category) == active_category {
