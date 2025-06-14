@@ -4,3 +4,4 @@
 
 set -euo pipefail
 pnpm -v
+pnpm vitest run --config code/notes-on-issues/vitest.config.ts --silent

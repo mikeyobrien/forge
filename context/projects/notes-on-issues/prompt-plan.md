@@ -64,11 +64,15 @@ Context: Repo contains the skeleton from P-00.
    - `lint`, `test` (jest placeholder), `prepare` (`husky install`).
 
 **Tests**
-- Write a minimal Vitest config (`vitest.config.ts`) and one passing test `tools/health.spec.ts` asserting `true === true`.
-- Add CI step in `tools/self-check.sh` to run `pnpm vitest run --silent`.
+- Write a minimal Vitest config (`code/notes-on-issues/vitest.config.ts`) and one passing test `code/notes-on-issues/tests/health.spec.ts` asserting `true === true`.
+- Add CI step in `tools/self-check.sh` to run `pnpm vitest run --config code/notes-on-issues/vitest.config.ts --silent`.
 
 Return patch only.
 ```
+
+**Status**: ✅ Complete
+**Completion**: 2025-06-14
+**Notes**: Tooling configured with TypeScript, ESLint, Prettier, Husky, lint-staged, and Vitest under `code/notes-on-issues`.
 
 ```
 Prompt P-02 — Bootstrap GitHub Action CI
