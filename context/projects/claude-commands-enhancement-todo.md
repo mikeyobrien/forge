@@ -1,8 +1,8 @@
 ---
 title: Claude Commands Enhancement Todo List
 category: projects
-created: 2025-01-15T00:00:00.000Z
-modified: 2025-01-15T00:00:00.000Z
+created: 2025-06-12T00:00:00.000Z
+modified: 2025-06-12T00:00:00.000Z
 tags:
   - todo
   - claude-commands
@@ -35,6 +35,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 ## Phase 2: Command Integration 🔄
 
 ### /plan Command
+
 - [ ] Import CommandDocumentOrganizer
 - [ ] Update spec generation to use organizer
 - [ ] Update prompt plan generation
@@ -43,6 +44,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 - [ ] Test with sample project
 
 ### /build Command
+
 - [ ] Import CommandDocumentOrganizer
 - [ ] Update todo tracking to use organizer
 - [ ] Link todos to implementing specs
@@ -51,6 +53,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 - [ ] Test build workflow
 
 ### /spec Command
+
 - [ ] Import CommandDocumentOrganizer
 - [ ] Update spec saving to use organizer
 - [ ] Handle spec versioning
@@ -58,6 +61,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 - [ ] Test spec creation
 
 ### /code Command
+
 - [ ] Import CommandDocumentOrganizer
 - [ ] Update design document creation
 - [ ] Update report generation
@@ -65,6 +69,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 - [ ] Test code workflow
 
 ### /review Command
+
 - [ ] Import CommandDocumentOrganizer
 - [ ] Update review report generation
 - [ ] Link to reviewed documents
@@ -74,6 +79,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 ## Phase 3: Migration Execution 📋
 
 ### Preparation
+
 - [ ] Create full backup of context directory
 - [ ] Run analysis on existing documents
 - [ ] Review migration plan output
@@ -81,6 +87,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 - [ ] Prepare rollback procedure
 
 ### Execution
+
 - [ ] Run dry-run migration
 - [ ] Review dry-run results
 - [ ] Execute actual migration
@@ -89,6 +96,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 - [ ] Tag pre/post migration
 
 ### Validation
+
 - [ ] Verify all documents accessible
 - [ ] Test each command type
 - [ ] Check broken links
@@ -99,6 +107,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 ## Phase 4: Advanced Features 🚀
 
 ### Project Indexing
+
 - [ ] Design index page format
 - [ ] Implement index generator
 - [ ] Add to organizer workflow
@@ -106,6 +115,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 - [ ] Test with multiple projects
 
 ### Document Search
+
 - [ ] Implement search interface
 - [ ] Add metadata filtering
 - [ ] Create search CLI command
@@ -113,6 +123,7 @@ implements: /Users/mobrienv/Code/why/spec.md
 - [ ] Test search accuracy
 
 ### Lifecycle Automation
+
 - [ ] Define lifecycle rules
 - [ ] Implement status tracking
 - [ ] Create archive automation

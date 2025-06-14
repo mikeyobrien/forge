@@ -174,8 +174,8 @@ For the static site generator specifically:
 
 - Never commit with `--no-verify`
 
-- Anytime the code/mcp-server is modified, a successful response must be returned by:
-  `npx -y @modelcontextprotocol/inspector --cli ./code/mcp-server/start-mcp.sh --method tools/list`
+- Anytime the code/forge-mcp is modified, a successful response must be returned by:
+  `npx -y @modelcontextprotocol/inspector --cli ./code/forge-mcp/start-mcp.sh --method tools/list`
 
 ## MCP Server Docker Usage
 
@@ -185,7 +185,7 @@ To ensure stability and prevent breaking changes when using the MCP server with 
 
 ```bash
 # Build and tag with git commit hash
-cd code/mcp-server
+cd code/forge-mcp
 ./build-docker.sh
 
 # Build with custom tag for stable release
@@ -196,14 +196,14 @@ cd code/mcp-server
 
 ```bash
 # Pin to specific commit for stability
-docker run -v $(pwd)/context:/context mcp-server:abc1234
+docker run -v $(pwd)/context:/context forge-mcp:abc1234
 
 # Use docker-compose for development
-cd code/mcp-server
+cd code/forge-mcp
 docker-compose up
 
 # List available versions
-docker images mcp-server
+docker images forge-mcp
 ```
 
 This allows Claude Code users to pin to known working versions while development continues.

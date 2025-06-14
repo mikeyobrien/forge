@@ -1,8 +1,8 @@
 ---
 title: Claude Commands Enhancement Implementation Plan
 category: projects
-created: 2025-01-15T00:00:00.000Z
-modified: 2025-01-15T00:00:00.000Z
+created: 2025-06-12T00:00:00.000Z
+modified: 2025-06-12T00:00:00.000Z
 tags:
   - prompt-plan
   - claude-commands
@@ -20,31 +20,39 @@ Step-by-step implementation plan for enhancing Claude command output organizatio
 ## Phase 1: Core Infrastructure (Completed ✅)
 
 ### Prompt 1.1: Type System and Interfaces ✅
+
 **Objective**: Define TypeScript types for command documents and metadata
 **Deliverables**:
+
 - CommandDocument interface with all metadata fields
 - CommandDocumentType enum (design, todo, report, spec, review)
 - Metadata types for relationships and tracking
 
 ### Prompt 1.2: Command Document Organizer ✅
+
 **Objective**: Implement intelligent document placement and naming
 **Deliverables**:
+
 - CommandDocumentOrganizer class
 - Conflict resolution with specific naming
 - Project-based path generation
 - Metadata enrichment
 
 ### Prompt 1.3: Document Migration Tool ✅
+
 **Objective**: Create tool to reorganize existing documents
 **Deliverables**:
+
 - DocumentMigrator class
 - Git history preservation
 - Dry-run capability
 - Progress reporting
 
 ### Prompt 1.4: Test Coverage ✅
+
 **Objective**: Comprehensive testing for all components
 **Deliverables**:
+
 - Unit tests for organizer
 - Integration tests for migrator
 - Mock file system testing
@@ -53,8 +61,10 @@ Step-by-step implementation plan for enhancing Claude command output organizatio
 ## Phase 2: Command Integration
 
 ### Prompt 2.1: Update /plan Command
+
 **Objective**: Integrate organizer into plan command
 **Approach**:
+
 ```typescript
 // When /plan creates documents:
 const organizer = createCommandOrganizer(fs, para, contextRoot);
@@ -64,34 +74,42 @@ await createCommandDocument(
   'project-name',
   'Project Specification',
   content,
-  { generatedBy: '/plan', project: 'project-name' }
+  { generatedBy: '/plan', project: 'project-name' },
 );
 ```
 
 ### Prompt 2.2: Update /build Command
+
 **Objective**: Enhance build command output organization
 **Focus**:
+
 - Todo documents in project folders
 - Link to implementing specs
 - Progress tracking metadata
 
 ### Prompt 2.3: Update /spec Command
+
 **Objective**: Organize specification documents
 **Focus**:
+
 - Clear spec naming
 - Version superseding
 - Relationship tracking
 
 ### Prompt 2.4: Update /code Command
+
 **Objective**: Integrate code command outputs
 **Focus**:
+
 - Design documents
 - Implementation reports
 - Related document linking
 
 ### Prompt 2.5: Update /review Command
+
 **Objective**: Organize review outputs
 **Focus**:
+
 - Review reports in project context
 - Link to reviewed code/specs
 - Status tracking
@@ -99,24 +117,30 @@ await createCommandDocument(
 ## Phase 3: Migration Execution
 
 ### Prompt 3.1: Migration Preparation
+
 **Objective**: Prepare for actual migration
 **Tasks**:
+
 - Backup current context directory
 - Analyze existing documents
 - Create migration plan
 - Test on sample data
 
 ### Prompt 3.2: Execute Migration
+
 **Objective**: Run migration on real data
 **Tasks**:
+
 - Run dry-run first
 - Execute migration
 - Verify results
 - Update git
 
 ### Prompt 3.3: Post-Migration Validation
+
 **Objective**: Ensure everything works correctly
 **Tasks**:
+
 - Verify all documents accessible
 - Check command functionality
 - Update documentation
@@ -125,24 +149,30 @@ await createCommandDocument(
 ## Phase 4: Advanced Features
 
 ### Prompt 4.1: Project Indexing
+
 **Objective**: Auto-generate project index pages
 **Features**:
+
 - List all project documents
 - Show relationships
 - Track progress
 - Update automatically
 
 ### Prompt 4.2: Document Search
+
 **Objective**: Search across command outputs
 **Features**:
+
 - Full-text search
 - Metadata filtering
 - Project scoping
 - Related document discovery
 
 ### Prompt 4.3: Lifecycle Automation
+
 **Objective**: Automate document lifecycle
 **Features**:
+
 - Auto-archive completed projects
 - Status updates
 - Stale document detection
@@ -151,18 +181,21 @@ await createCommandDocument(
 ## Testing Strategy
 
 ### Unit Tests
+
 - Type validation
 - Path generation
 - Conflict resolution
 - Metadata handling
 
 ### Integration Tests
+
 - File system operations
 - Migration scenarios
 - Command integration
 - End-to-end workflows
 
 ### Acceptance Criteria
+
 - All commands use new organization
 - Existing documents migrated
 - No broken links

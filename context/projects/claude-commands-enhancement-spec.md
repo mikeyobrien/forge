@@ -1,8 +1,8 @@
 ---
 title: Claude Commands Enhancement - Technical Specification
 category: projects
-created: 2025-01-15T00:00:00.000Z
-modified: 2025-01-15T00:00:00.000Z
+created: 2025-06-12T00:00:00.000Z
+modified: 2025-06-12T00:00:00.000Z
 tags:
   - specification
   - technical-design
@@ -59,6 +59,7 @@ The enhancement consists of four main components working together to organize co
 **Purpose**: Intelligent document placement and naming engine
 
 **Key Methods**:
+
 ```typescript
 class CommandDocumentOrganizer {
   async organizeDocument(
@@ -66,29 +67,30 @@ class CommandDocumentOrganizer {
     baseName: string,
     title: string,
     content: string,
-    metadata?: Partial<CommandMetadata>
-  ): Promise<OrganizeResult>
-  
+    metadata?: Partial<CommandMetadata>,
+  ): Promise<OrganizeResult>;
+
   private determinePath(
     type: CommandDocumentType,
     project?: string,
-    category?: PARACategory
-  ): string
-  
+    category?: PARACategory,
+  ): string;
+
   private async resolveNamingConflict(
     basePath: string,
     type: CommandDocumentType,
-    baseName: string
-  ): Promise<string>
-  
+    baseName: string,
+  ): Promise<string>;
+
   private enrichMetadata(
     metadata: Partial<CommandMetadata>,
-    type: CommandDocumentType
-  ): CommandMetadata
+    type: CommandDocumentType,
+  ): CommandMetadata;
 }
 ```
 
 **Naming Conflict Resolution Algorithm**:
+
 1. Check if `[type]-[baseName].md` exists
 2. If conflict, analyze existing content
 3. Generate more specific name based on:
@@ -100,17 +102,19 @@ class CommandDocumentOrganizer {
 ### 2. Document Types and Metadata
 
 **CommandDocumentType Enum**:
+
 ```typescript
 enum CommandDocumentType {
   Design = 'design',
   Todo = 'todo',
   Report = 'report',
   Spec = 'spec',
-  Review = 'review'
+  Review = 'review',
 }
 ```
 
 **CommandMetadata Interface**:
+
 ```typescript
 interface CommandMetadata {
   // Required fields
@@ -118,13 +122,13 @@ interface CommandMetadata {
   project?: string;
   status: 'active' | 'completed' | 'superseded';
   generated_by: string;
-  
+
   // Relationship tracking
   implements?: string;
   supersedes?: string;
   related_docs?: string[];
   context_source?: string[];
-  
+
   // Standard PARA fields
   title: string;
   category: PARACategory;
@@ -137,10 +141,15 @@ interface CommandMetadata {
 ### 3. Path Generation Logic
 
 **Project-Based Organization**:
+
 ```typescript
-function determinePath(type: CommandDocumentType, project?: string, category?: PARACategory): string {
+function determinePath(
+  type: CommandDocumentType,
+  project?: string,
+  category?: PARACategory,
+): string {
   const baseCategory = category || 'projects';
-  
+
   if (project) {
     // Project-specific document
     return `${baseCategory}/${project}`;
@@ -159,12 +168,14 @@ function determinePath(type: CommandDocumentType, project?: string, category?: P
 **Purpose**: Reorganize existing documents to new structure
 
 **Key Features**:
+
 - Analyzes frontmatter to determine new location
 - Removes dates from filenames
 - Adds missing metadata fields
 - Creates git-friendly migrations
 
 **Migration Plan Structure**:
+
 ```typescript
 interface MigrationPlan {
   operations: MigrationOperation[];
@@ -195,7 +206,7 @@ import { createCommandOrganizer, createCommandDocument } from '@mcp-server/comma
 
 async function savePlanDocument(content: string, projectName: string) {
   const organizer = createCommandOrganizer(fileSystem, paraManager, contextRoot);
-  
+
   const result = await createCommandDocument(
     organizer,
     CommandDocumentType.Spec,
@@ -205,10 +216,10 @@ async function savePlanDocument(content: string, projectName: string) {
     {
       project: projectName,
       generated_by: '/plan',
-      status: 'active'
-    }
+      status: 'active',
+    },
   );
-  
+
   return result.path;
 }
 ```
@@ -256,11 +267,13 @@ npm run migrate -- --context-root /path/to/context
 ## Performance Considerations
 
 ### Caching Strategy
+
 - Cache PARA structure on startup
 - Lazy-load document metadata
 - Index project folders for quick lookup
 
 ### Optimization Points
+
 - Batch file operations during migration
 - Use streaming for large documents
 - Parallelize independent operations
@@ -268,11 +281,13 @@ npm run migrate -- --context-root /path/to/context
 ## Error Handling
 
 ### Graceful Degradation
+
 - If organizer fails, fall back to current behavior
 - Log warnings for missing metadata
 - Continue operation with partial information
 
 ### Recovery Mechanisms
+
 - Migration creates backup before execution
 - Rollback procedure for failed migrations
 - Validation step before committing changes
@@ -280,18 +295,21 @@ npm run migrate -- --context-root /path/to/context
 ## Testing Strategy
 
 ### Unit Tests
+
 - Path generation logic
 - Conflict resolution algorithms
 - Metadata enrichment
 - Migration planning
 
 ### Integration Tests
+
 - Full document creation flow
 - Migration with real file system
 - Command integration scenarios
 - Git operations
 
 ### End-to-End Tests
+
 - Complete workflow from command to organized output
 - Migration of sample context directory
 - Performance benchmarks
@@ -306,16 +324,19 @@ npm run migrate -- --context-root /path/to/context
 ## Future Extensibility
 
 ### Plugin Architecture
+
 - Allow custom document types
 - Pluggable naming strategies
 - External metadata sources
 
 ### API Design
+
 - RESTful endpoints for document management
 - WebSocket for real-time updates
 - GraphQL for complex queries
 
 ### Advanced Features
+
 - Machine learning for categorization
 - Automatic relationship detection
 - Smart archival policies
