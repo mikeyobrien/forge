@@ -1,6 +1,8 @@
 {
   "files": [],
+  "include": ["tools/**/*.ts", "code/notes-on-issues/vitest.config.ts"],
   "references": [
-    { "path": "./code/mcp-server" }
+    { "path": "./code/forge-mcp" },
+    { "path": "./code/notes-on-issues" }
   ]
 }

@@ -1,1 +1,3 @@
 npx lint-staged --config lint-staged.config.js
+pnpm --silent lint
+pnpm --silent test
