@@ -1,8 +1,8 @@
 ---
 title: Code Session Report - Fix Subdirectory Routing with Subpath
 category: projects
-created: 2025-01-13T10:00:00-08:00
-modified: 2025-01-13T10:00:00-08:00
+created: 2025-06-13T00:00:00.000Z
+modified: 2025-06-13T00:00:00.000Z
 tags: [routing, bug-fix, navigation, github-pages, subpath]
 command_type: report
 project: forge-static-site
