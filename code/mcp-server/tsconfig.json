@@ -1,0 +1,3 @@
+{
+  "extends": "../forge-mcp/tsconfig.json"
+}

@@ -71,6 +71,9 @@ Return patch only.
 ```
 
 ```
+**Status**: ✅ Complete
+**Completion**: 2025-06-14
+**Notes**: Toolchain and quality gates configured with Vitest, Husky, and lint-staged.
 Prompt P-02 — Bootstrap GitHub Action CI
 
 Repo has tooling from P-01.
