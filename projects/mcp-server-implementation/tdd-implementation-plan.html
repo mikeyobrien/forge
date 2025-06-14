@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tdd-implementation-plan | forge</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}:focus-visible{outline:2px solid var(--accent-primary);outline-offset:2px;}:root{--bg-primary:#0f0f0f;--bg-secondary:#1a1a1a;--bg-tertiary:#2a2a2a;--bg-elevated:#333333;--text-primary:#f0f0f0;--text-secondary:#b4b4b4;--text-muted:#737373;--text-subtle:#525252;--border-primary:#333333;--border-secondary:#404040;--border-subtle:#262626;--accent-primary:#0EA5E9;--accent-secondary:#3B82F6;--accent-gradient:linear-gradient(135deg,var(--accent-primary)0%,var(--accent-secondary)100%);--accent-gradient-hover:linear-gradient(135deg,#0284C7 0%,#2563EB 100%);--gradient-primary:linear-gradient(135deg,var(--accent-primary)0%,var(--accent-secondary)100%);--success:#10B981;--success-bg:rgba(16,185,129,0.1);--warning:#F59E0B;--warning-bg:rgba(245,158,11,0.1);--error:#EF4444;--error-bg:rgba(239,68,68,0.1);--info:#06B6D4;--info-bg:rgba(6,182,212,0.1);--link-primary:#60A5FA;--link-hover:#93C5FD;--link-visited:#A78BFA;--surface-base:var(--bg-primary);--surface-raised:var(--bg-secondary);--surface-overlay:var(--bg-tertiary);--surface-elevated:var(--bg-elevated);--interactive-hover:rgba(255,255,255,0.05);--interactive-active:rgba(255,255,255,0.1);--interactive-disabled:rgba(255,255,255,0.02);--shadow-sm:0 1px 2px 0 rgba(0,0,0,0.3);--shadow-base:0 1px 3px 0 rgba(0,0,0,0.4),0 1px 2px 0 rgba(0,0,0,0.3);--shadow-md:0 4px 6px -1px rgba(0,0,0,0.4),0 2px 4px -1px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4),0 4px 6px -2px rgba(0,0,0,0.3);--accent:var(--accent-primary);--accent-hover:var(--accent-secondary);--link-color:var(--link-primary);--link-hover:var(--link-hover);--border-color:var(--border-primary);}:root{--space-1:0.5rem;--space-2:1rem;--space-3:1.5rem;--space-4:2rem;--space-6:3rem;--space-8:4rem;--space-12:6rem;--space-16:8rem;--breakpoint-sm:640px;--breakpoint-md:768px;--breakpoint-lg:1024px;--breakpoint-xl:1280px;}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Inter','Helvetica Neue',sans-serif;line-height:1.6;color:var(--text-primary);background-color:var(--bg-primary);min-height:100vh;font-feature-settings:'cv11','ss01';font-variant-numeric:tabular-nums;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;display:grid;grid-template-areas:"header" "main" "footer";grid-template-rows:auto 1fr auto;grid-template-columns:1fr;}.container{max-width:1000px;margin:0 auto;padding:0 var(--space-4);width:100%;}.site-header{grid-area:header;background:linear-gradient(135deg,#181818 0%,#0E0E0E 60%);color:var(--text-primary);height:var(--header-height,80px);transition:height 0.25s ease,box-shadow 0.25s;position:sticky;top:0;z-index:100;display:flex;flex-direction:column;align-items:center;}.header-inner{width:min(90%,1200px);display:flex;justify-content:space-between;align-items:center;padding-top:var(--space-2);}.logo{font-size:2rem;color:#fff;font-weight:700;text-decoration:none;}.site-nav{display:flex;gap:1.5rem;}.nav-item{color:var(--text-secondary);font-weight:500;position:relative;text-decoration:none;transition:color 0.2s ease;}.nav-item:hover{color:var(--text-primary);text-decoration:none;}.nav-item.active{color:var(--accent-primary);}.nav-item.active::after,.nav-item:hover::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--accent-primary);}.nav-divider{width:1px;height:20px;background-color:var(--text-secondary);opacity:0.3;margin:0 0.5rem;align-self:center;}.nav-toggle{display:none;background:none;border:none;}.burger{width:24px;height:2px;background:#fff;position:relative;}.burger::before,.burger::after{content:"";position:absolute;width:24px;height:2px;background:#fff;}.burger::before{top:-6px;}.burger::after{top:6px;}body.scrolled .site-header{height:60px;box-shadow:0 2px 4px rgba(0,0,0,0.4);}.nav-search{display:none;}main{grid-area:main;padding:var(--space-4)0;min-height:0;}.file-cards{display:grid;grid-template-columns:1fr;gap:var(--space-3);margin-top:var(--space-4);max-width:1200px;margin-left:auto;margin-right:auto;}.file-card{background-color:var(--surface-raised);border:1px solid var(--border-primary);border-radius:8px;padding:var(--space-3);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1),background-color 0.3s cubic-bezier(0.4,0,0.2,1),border-color 0.3s cubic-bezier(0.4,0,0.2,1),box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;}.file-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent-gradient);opacity:0;transition:opacity 0.3s ease;}.file-card:hover{border-color:var(--border-secondary);background-color:var(--surface-overlay);transform:translateY(-2px)translateZ(0);box-shadow:var(--shadow-md);}.file-card:hover::before{opacity:1;}.file-card:active{transform:translateY(-1px)translateZ(0);transition:all 0.1s cubic-bezier(0.4,0,0.2,1);}.file-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-2);margin-bottom:var(--space-2);}.file-title{font-size:1.1rem;font-weight:600;margin:0;line-height:1.3;flex:1;min-width:0;}.file-title a{color:var(--text-primary);text-decoration:none;transition:color 0.2s ease;}.file-title a:hover{color:var(--accent-primary);text-decoration:none;}.file-category{font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;padding:0.25rem 0.5rem;border-radius:12px;white-space:nowrap;border:1px solid transparent;transition:all 0.2s ease;}.category-projects{background-color:rgba(16,185,129,0.1);color:var(--success);border-color:rgba(16,185,129,0.3);}.category-areas{background-color:rgba(59,130,246,0.1);color:var(--accent-secondary);border-color:rgba(59,130,246,0.3);}.category-resources{background-color:rgba(245,158,11,0.1);color:var(--warning);border-color:rgba(245,158,11,0.3);}.category-archives{background-color:rgba(107,114,128,0.1);color:var(--text-muted);border-color:rgba(107,114,128,0.3);}.category-other{background-color:rgba(139,92,246,0.1);color:#8B5CF6;border-color:rgba(139,92,246,0.3);}.file-card-meta{display:flex;justify-content:space-between;align-items:center;gap:var(--space-2);font-size:0.85rem;color:var(--text-muted);}.file-date{white-space:nowrap;font-feature-settings:'tnum';}.file-tags{display:flex;flex-wrap:wrap;gap:0.25rem;justify-content:flex-end;flex:1;min-width:0;}.file-tags .tag{font-size:0.75rem;padding:0.15rem 0.4rem;background-color:var(--surface-elevated);color:var(--text-secondary);border-radius:6px;border:1px solid var(--border-subtle);transition:all 0.2s ease;display:inline-flex;align-items:center;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.file-tags .tag:hover{background-color:var(--surface-overlay);border-color:var(--border-primary);color:var(--text-primary);}.no-tags{color:var(--text-muted);font-style:italic;font-size:0.8rem;}.document h1{font-size:clamp(1.75rem,4vw,2rem);margin-bottom:1rem;color:var(--text-primary);font-weight:600;letter-spacing:-0.025em;line-height:1.2;}.document-header{margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}.document-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-1);font-size:0.9rem;color:var(--text-muted);}.document-content{color:var(--text-primary);line-height:1.7;}.document-content h2{font-size:clamp(1.5rem,3.5vw,1.75rem);margin-top:var(--space-4);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.025em;line-height:1.3;}.document-content h3{font-size:clamp(1.25rem,3vw,1.5rem);margin-top:var(--space-3);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.02em;line-height:1.3;}.document-content h4{font-size:clamp(1.125rem,2.5vw,1.25rem);margin-top:var(--space-3);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.015em;line-height:1.4;}.document-content p{margin-bottom:var(--space-2);}.document-content ul,.document-content ol{margin-bottom:var(--space-2);margin-left:var(--space-3);}.document-content blockquote{border-left:3px solid var(--accent-primary);padding-left:var(--space-2);margin:var(--space-3)0;color:var(--text-secondary);font-style:italic;}.document-content code{background-color:var(--surface-raised);color:var(--text-primary);padding:0.2rem 0.4rem;border-radius:3px;font-family:'SF Mono',Monaco,'Cascadia Code','Roboto Mono',Consolas,'Courier New',monospace;font-size:0.9em;}.document-content pre{background-color:var(--surface-raised);border:1px solid var(--border-primary);padding:var(--space-2);border-radius:5px;overflow-x:auto;margin:var(--space-3)0;}.document-content pre code{background:none;padding:0;}.category-index h1{font-size:clamp(2rem,4vw,2.5rem);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:700;letter-spacing:-0.025em;line-height:1.2;}.category-description{color:var(--text-secondary);margin-bottom:var(--space-3);font-style:italic;line-height:1.5;}.document-count{color:var(--text-muted);font-size:0.9rem;margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}.document-list{display:grid;gap:var(--space-3);grid-template-columns:1fr;}.document-entry{padding:var(--space-3);border:1px solid var(--border-primary);border-radius:8px;background-color:var(--surface-raised);transition:transform 0.2s cubic-bezier(0.4,0,0.2,1),background-color 0.2s cubic-bezier(0.4,0,0.2,1),border-color 0.2s cubic-bezier(0.4,0,0.2,1);}.document-entry:hover{border-color:var(--border-secondary);background-color:var(--surface-overlay);}.document-entry h2{font-size:1.2rem;margin-bottom:0.5rem;}.document-entry h2 a{color:var(--link-primary);text-decoration:none;}.document-entry h2 a:hover{color:var(--link-hover);}.entry-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--space-1);}.summary{color:var(--text-secondary);line-height:1.5;}.directory-cards{margin-bottom:var(--space-4);}.directory-cards h2{font-size:1.5rem;margin-bottom:var(--space-3);color:var(--text-primary);}.directory-grid{display:grid;gap:var(--space-3);grid-template-columns:repeat(auto-fill,minmax(350px,1fr));}.directory-card{background-color:var(--surface-raised);border:1px solid var(--border-primary);border-radius:8px;transition:transform 0.2s cubic-bezier(0.4,0,0.2,1),background-color 0.2s cubic-bezier(0.4,0,0.2,1),border-color 0.2s cubic-bezier(0.4,0,0.2,1),box-shadow 0.2s cubic-bezier(0.4,0,0.2,1);}.directory-card:hover{transform:translateY(-2px);border-color:var(--accent-primary);background-color:var(--surface-overlay);box-shadow:0 4px 12px rgba(0,0,0,0.4);}.directory-link{display:block;padding:var(--space-3);text-decoration:none;color:inherit;height:100%;}.directory-card h3{font-size:1.25rem;margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;}.directory-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);font-size:0.875rem;color:var(--text-muted);}.directory-meta .doc-count{background-color:var(--bg-tertiary);padding:2px 8px;border-radius:4px;}.directory-meta .subdir-count{background-color:var(--bg-tertiary);padding:2px 8px;border-radius:4px;}.subdirectory-index .document-entries{margin-top:var(--space-4);}.subdirectory-index .document-entries h2{font-size:1.5rem;margin-bottom:var(--space-3);color:var(--text-primary);}.document-entries .document-entry+.document-entry{margin-top:var(--space-3);}.document-entry+.document-entry{margin-top:var(--space-3);}.empty-directory{text-align:center;color:var(--text-muted);padding:var(--space-6)var(--space-3);font-style:italic;}.subdirectory-index h1{font-size:2.5rem;margin-bottom:var(--space-2);background:var(--gradient-primary);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;}.subdirectory-description{color:var(--text-secondary);margin-bottom:var(--space-3);font-style:italic;line-height:1.5;}.item-count{color:var(--text-muted);font-size:0.9rem;margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}a{color:var(--link-primary);text-decoration:none;transition:color 0.2s cubic-bezier(0.4,0,0.2,1);}a:hover{color:var(--link-hover);text-decoration:underline;}.tag{color:var(--text-muted);font-size:0.85rem;margin-right:0.5rem;}.breadcrumbs{margin-bottom:var(--space-3);font-size:0.9rem;color:var(--text-muted);}.breadcrumbs ol{list-style:none;display:flex;align-items:center;}.breadcrumbs li{display:inline;}.breadcrumbs a{color:var(--text-secondary);text-decoration:none;}.breadcrumbs a:hover{color:var(--accent-primary);}.breadcrumbs .separator{margin:0 0.5rem;color:var(--text-muted);}.breadcrumbs .current{color:var(--text-primary);}footer{grid-area:footer;background-color:var(--surface-raised);border-top:1px solid var(--border-primary);padding:var(--space-3)0;text-align:center;color:var(--text-muted);font-size:0.85rem;}@media(max-width:640px){.container{padding:0 var(--space-2);}.nav-divider{display:none;}.nav-container{grid-template-columns:1fr;justify-items:center;gap:var(--space-2);text-align:center;}.nav-menu{justify-content:center;}grid-template-columns:repeat(2,1fr);gap:var(--space-2);max-width:200px;}.file-cards{gap:var(--space-2);}.file-card{padding:var(--space-2);}.file-card-header{flex-direction:column;align-items:flex-start;gap:var(--space-1);}.file-card-meta{flex-direction:column;align-items:flex-start;gap:var(--space-1);}.file-tags{justify-content:flex-start;}padding:var(--space-2)0;margin-bottom:var(--space-4);}main{padding:var(--space-2)0;}}@media(min-width:641px)and(max-width:768px){.nav-container{grid-template-columns:1fr auto;gap:var(--space-3);}gap:var(--space-3);max-width:300px;}.file-cards{max-width:700px;}}@media(min-width:1024px){.container{padding:0 var(--space-6);}.document-list{grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:var(--space-3);}.file-cards{gap:var(--space-4);}.nav-container{gap:var(--space-6);}}.loading{position:relative;pointer-events:none;opacity:0.7;}.loading::after{content:'';position:absolute;top:50%;left:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border:2px solid var(--accent-primary);border-radius:50%;border-top-color:transparent;animation:spinner 0.8s linear infinite;}@keyframes spinner{to{transform:rotate(360deg);}}.file-card,.document-entry,.search-result{transform:translateZ(0);backface-visibility:hidden;perspective:1000px;}.skip-link{position:absolute;top:-40px;left:0;background:var(--accent-primary);color:white;padding:var(--space-1)var(--space-2);text-decoration:none;border-radius:0 0 4px 0;z-index:1001;}.skip-link:focus{top:0;}@media(prefers-contrast:high){:root{--text-primary:#ffffff;--text-secondary:#e0e0e0;--bg-primary:#000000;--bg-secondary:#1a1a1a;--border-primary:#ffffff;}}@media print{header,footer,.search-box{display:none;}body{background:white;color:black;}a{color:black;text-decoration:underline;}}.comments-section{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border-primary);}.comments-section h2{margin-bottom:1.5rem;color:var(--text-primary);}#comments-list{margin-bottom:2rem;}.loading{color:var(--text-muted);text-align:center;padding:2rem;}.error-message{color:var(--error);background:var(--error-bg);padding:1rem;border-radius:8px;border:1px solid rgba(239,68,68,0.3);text-align:center;margin:1rem 0;}.comment{margin-bottom:1.5rem;padding:1rem;background:var(--card-bg);border-radius:8px;border:1px solid var(--border-primary);}.comment-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;}.avatar{width:32px;height:32px;border-radius:50%;border:2px solid var(--border-primary);}.comment-header .author{font-weight:500;color:var(--text-primary);text-decoration:none;}.comment-header .author:hover{color:var(--accent-primary);}.comment-header .date{color:var(--text-muted);font-size:0.85rem;margin-left:auto;}.comment-body{color:var(--text-secondary);line-height:1.6;}.comment-body p{margin:0.5rem 0;}.comment-body p:first-child{margin-top:0;}.comment-body p:last-child{margin-bottom:0;}.comment-body code{background:var(--bg-secondary);padding:0.2em 0.4em;border-radius:3px;font-size:0.9em;}.comment-body pre{background:var(--bg-secondary);padding:1rem;border-radius:4px;overflow-x:auto;}.comment-body blockquote{border-left:3px solid var(--accent-primary);padding-left:1rem;margin:1rem 0;color:var(--text-muted);}#add-comment-btn{display:inline-block;background:var(--accent-primary);color:white;padding:0.5rem 1rem;border-radius:4px;text-decoration:none;font-weight:500;transition:background-color 0.2s ease;}#add-comment-btn:hover{background:var(--accent-hover);}@media(max-width:640px){.comment{padding:0.75rem;}.comment-header{flex-wrap:wrap;}.comment-header .date{width:100%;margin-left:0;margin-top:0.5rem;}}
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="/forge/" class="logo">forge</a>
+            <nav class="site-nav">
+                <a href="/forge/projects/" class="nav-item active">Projects</a>
+                <a href="/forge/areas/" class="nav-item ">Areas</a>
+                <a href="/forge/resources/" class="nav-item ">Resources</a>
+                <a href="/forge/archives/" class="nav-item ">Archives</a>
+                <span class="nav-divider"></span>
+                <a href="/forge/blog/" class="nav-item ">Blog</a>
+            </nav>
+            <button class="nav-toggle" aria-label="Open menu">
+                <span class="burger"></span>
+            </button>
+        </div>
+    </header>
+    
+    <main id="main-content">
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/forge/">Home</a></li><li class="separator">/</li><li><a href="/forge/projects/">Projects</a></li><li class="separator">/</li><li><a href="/forge/projects/mcp-server-implementation/">Mcp Server Implementation</a></li><li class="separator">/</li><li class="current">tdd-implementation-plan</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>tdd-implementation-plan</h1>
+        <div class="document-meta"><time class="date">2025-06-14</time></div>
+    </header>
+    
+    <div class="document-content">
+        <h1>TDD Implementation Plan for Documentation &amp; Journaling System</h1>
+<h2>Overview</h2>
+<p>This plan breaks down the implementation of the MCP-based documentation system into small, testable increments. Each step builds on the previous one, ensuring continuous integration and avoiding orphaned code. The system uses the latest @modelcontextprotocol/sdk patterns and respects the CONTEXT_ROOT environment variable for document storage.</p>
+<p><strong>Language</strong>: TypeScript (strict mode) - all implementation MUST be in TypeScript with proper type safety.</p>
+<h2>Architecture Decisions</h2>
+<h3>Environment Variables</h3>
+<ul>
+<li><code>CONTEXT_ROOT</code>: Base directory for all document storage (required)</li>
+<li><code>LOG_LEVEL</code>: Logging verbosity (optional, defaults to ‘info’)</li>
+<li><code>PORT</code>: Server port for HTTP transport (optional, defaults to 3000)</li>
+<li><code>NODE_ENV</code>: Environment mode (optional, defaults to ‘production’)</li>
+</ul>
+<h3>SDK Patterns (2024-2025)</h3>
+<ul>
+<li>Use latest @modelcontextprotocol/sdk with ES modules</li>
+<li>Import paths must include .js extension</li>
+<li>Support both stdio and StreamableHttp transports</li>
+<li>Proper TypeScript configuration with module resolution</li>
+</ul>
+<h2>High-Level Phases</h2>
+<h3>Phase 1: Foundation (Steps 1-6)</h3>
+<ul>
+<li>TypeScript project setup with pre-commit hooks</li>
+<li>Environment configuration with CONTEXT_ROOT</li>
+<li>Document model and validation</li>
+<li>File system operations</li>
+</ul>
+<h3>Phase 2: Core Operations (Steps 7-11)</h3>
+<ul>
+<li>PARA structure management</li>
+<li>Create and read operations</li>
+<li>Frontmatter parsing and validation</li>
+</ul>
+<h3>Phase 3: Search &amp; Relationships (Steps 12-16)</h3>
+<ul>
+<li>Wiki-link parsing</li>
+<li>Search functionality</li>
+<li>Relationship tracking</li>
+</ul>
+<h3>Phase 4: Advanced Features (Steps 17-21)</h3>
+<ul>
+<li>Update operations</li>
+<li>Move operations between PARA categories</li>
+<li>Knowledge graph export</li>
+</ul>
+<h2>Detailed Step-by-Step Implementation</h2>
+<h3>Step 1: TypeScript Project Setup with Pre-commit Hooks</h3>
+<ul>
+<li>Initialize TypeScript project at <code>code/mcp/</code></li>
+<li>Configure strict TypeScript settings</li>
+<li>Set up ESLint with TypeScript plugin</li>
+<li>Configure Prettier for consistent formatting</li>
+<li>Install husky and lint-staged for pre-commit hooks</li>
+<li>Configure pre-commit to run: typecheck, lint, format, tests</li>
+<li>Ensure all code quality checks pass before commits</li>
+</ul>
+<h3>Step 2: MCP SDK Integration with TypeScript</h3>
+<ul>
+<li>Install @modelcontextprotocol/sdk with TypeScript types</li>
+<li>Configure for ES modules with .js imports</li>
+<li>Create basic MCP server structure with proper types</li>
+<li>Set up Jest with ts-jest for TypeScript testing</li>
+<li>Add minimal “ping” tool with full type safety</li>
+<li>Verify TypeScript compilation and type checking</li>
+</ul>
+<h3>Step 3: Environment Configuration System</h3>
+<ul>
+<li>Create typed environment configuration</li>
+<li>Validate CONTEXT_ROOT exists and is writable</li>
+<li>Support .env files for development</li>
+<li>Create configuration schema with TypeScript interfaces</li>
+<li>Add environment validation on startup</li>
+<li>Unit test configuration loading with type safety</li>
+</ul>
+<h3>Step 4: Document Model and Types</h3>
+<ul>
+<li>Define TypeScript interfaces for Document</li>
+<li>Create frontmatter schema types with strict typing</li>
+<li>Implement validation functions with proper return types</li>
+<li>Add type guards for optional fields</li>
+<li>Use Zod for runtime validation with TypeScript integration</li>
+<li>Unit test all type validations</li>
+</ul>
+<h3>Step 5: File System Abstraction Layer</h3>
+<ul>
+<li>Create FileSystem interface with TypeScript</li>
+<li>Implement with CONTEXT_ROOT base path</li>
+<li>Add typed path utilities for safe operations</li>
+<li>Ensure all paths are within CONTEXT_ROOT</li>
+<li>Create typed mock for testing</li>
+<li>Handle cross-platform path issues with types</li>
+</ul>
+<h3>Step 6: PARA Structure Management</h3>
+<ul>
+<li>Implement PARA folder creation under CONTEXT_ROOT</li>
+<li>Create typed path resolver for document locations</li>
+<li>Add category validation with TypeScript enums</li>
+<li>Ensure proper folder initialization</li>
+<li>Test edge cases for invalid paths</li>
+<li>Verify CONTEXT_ROOT isolation</li>
+</ul>
+<h3>Step 7: Frontmatter Parser with TypeScript</h3>
+<ul>
+<li>Implement YAML frontmatter extraction with types</li>
+<li>Create frontmatter serialization with type safety</li>
+<li>Handle malformed frontmatter gracefully</li>
+<li>Preserve document content during parsing</li>
+<li>Test various frontmatter formats</li>
+<li>Support both Windows and Unix line endings</li>
+</ul>
+<h3>Step 8: Document Creation Tool (context_create)</h3>
+<ul>
+<li>Implement context_create MCP tool with Zod schema</li>
+<li>Use CONTEXT_ROOT for storage location</li>
+<li>Validate required frontmatter fields with types</li>
+<li>Generate timestamps automatically</li>
+<li>Place documents in correct PARA folder</li>
+<li>Return typed document metadata</li>
+</ul>
+<h3>Step 9: Document Reading Tool (context_read)</h3>
+<ul>
+<li>Implement context_read MCP tool with types</li>
+<li>Resolve paths relative to CONTEXT_ROOT</li>
+<li>Parse frontmatter and content with type safety</li>
+<li>Handle missing documents gracefully</li>
+<li>Return structured Document objects</li>
+<li>Support both absolute and relative paths</li>
+</ul>
+<h3>Step 10: Wiki-Link Parser with TypeScript</h3>
+<ul>
+<li>Extract <span class="wiki-link broken" title="Link target not found: wiki-links">wiki-links</span> with typed results</li>
+<li>Handle nested and escaped brackets</li>
+<li>Create link normalization rules with types</li>
+<li>Build typed link index data structure</li>
+<li>Support <span class="wiki-link broken" title="Link target not found: Link">Display</span> format</li>
+<li>Unit test link extraction edge cases</li>
+</ul>
+<h3>Step 11: Basic Search Tool (context_search)</h3>
+<ul>
+<li>Implement tag-based search with typed queries</li>
+<li>Add content search within CONTEXT_ROOT</li>
+<li>Create typed search result ranking</li>
+<li>Handle empty/invalid queries with types</li>
+<li>Limit search to CONTEXT_ROOT</li>
+<li>Test search performance</li>
+</ul>
+<h3>Step 12: Integration Testing Phase 1</h3>
+<ul>
+<li>Set up test CONTEXT_ROOT directory</li>
+<li>Test complete create-&gt;read-&gt;search flow</li>
+<li>Verify PARA structure maintained</li>
+<li>Ensure CONTEXT_ROOT isolation</li>
+<li>Create typed test fixtures</li>
+<li>Benchmark performance baseline</li>
+</ul>
+<h3>Step 13: Backlink Tracking System</h3>
+<ul>
+<li>Build reverse link index with TypeScript types</li>
+<li>Update index on document operations</li>
+<li>Handle link updates efficiently</li>
+<li>Store backlinks per document with types</li>
+<li>Test circular link scenarios</li>
+<li>Ensure index consistency</li>
+</ul>
+<h3>Step 14: Link Queries Tool (context_query_links)</h3>
+<ul>
+<li>Implement context_query_links with typed inputs</li>
+<li>Find documents linking to target</li>
+<li>Get all links from document with types</li>
+<li>Build link graph traversal</li>
+<li>Respect CONTEXT_ROOT boundaries</li>
+<li>Test deep link chains</li>
+</ul>
+<h3>Step 15: Document Updates Tool (context_update)</h3>
+<ul>
+<li>Implement context_update with typed operations</li>
+<li>Preserve frontmatter structure with types</li>
+<li>Update link indexes on change</li>
+<li>Validate within CONTEXT_ROOT</li>
+<li>Handle concurrent updates with type safety</li>
+<li>Test partial updates</li>
+</ul>
+<h3>Step 16: Advanced Search Features</h3>
+<ul>
+<li>Add date range filtering with types</li>
+<li>Implement status-based search with enums</li>
+<li>Create compound queries with typed operators</li>
+<li>Add search result pagination with types</li>
+<li>Keep searches within CONTEXT_ROOT</li>
+<li>Performance test with large datasets</li>
+</ul>
+<h3>Step 17: Integration Testing Phase 2</h3>
+<ul>
+<li>Test update-&gt;search-&gt;query flow</li>
+<li>Verify link integrity after updates</li>
+<li>Stress test with many documents</li>
+<li>Ensure index consistency</li>
+<li>Verify CONTEXT_ROOT isolation</li>
+<li>Profile memory usage</li>
+</ul>
+<h3>Step 18: Document Movement Tool (context_move)</h3>
+<ul>
+<li>Implement context_move with typed parameters</li>
+<li>Update all link references with type safety</li>
+<li>Keep within CONTEXT_ROOT</li>
+<li>Handle cross-category moves with types</li>
+<li>Test invalid move operations</li>
+<li>Ensure atomic operations</li>
+</ul>
+<h3>Step 19: Knowledge Graph Builder</h3>
+<ul>
+<li>Create typed graph data structure</li>
+<li>Build from link indexes with TypeScript</li>
+<li>Add typed node/edge metadata</li>
+<li>Implement graph algorithms with types</li>
+<li>Scope to CONTEXT_ROOT documents</li>
+<li>Test cyclic graph handling</li>
+</ul>
+<h3>Step 20: Graph Export Tool (context_graph)</h3>
+<ul>
+<li>Implement context_graph with typed formats</li>
+<li>Export to JSON with TypeScript interfaces</li>
+<li>Add GraphML support with types</li>
+<li>Include typed relationship metadata</li>
+<li>Filter by CONTEXT_ROOT scope</li>
+<li>Test large graph exports</li>
+</ul>
+<h3>Step 21: Template System with TypeScript</h3>
+<ul>
+<li>Create typed document templates</li>
+<li>Store in CONTEXT_ROOT/templates</li>
+<li>Add typed template variables</li>
+<li>Implement template selection with types</li>
+<li>Build default templates with TypeScript</li>
+<li>Test template inheritance</li>
+</ul>
+<h3>Step 22: Final Integration and Polish</h3>
+<ul>
+<li>Complete MCP server with all tools typed</li>
+<li>Validate CONTEXT_ROOT on startup</li>
+<li>Add StreamableHttp transport with types</li>
+<li>Implement graceful shutdown</li>
+<li>Create deployment documentation</li>
+<li>Full system integration tests</li>
+</ul>
+<h3>Step 23: Claude Code Self-Verification Suite</h3>
+<ul>
+<li>Create test harness for headless Claude executions</li>
+<li>Write self-verification scripts for each MCP tool</li>
+<li>Test permission prompts and security boundaries</li>
+<li>Validate tool interactions and error handling</li>
+<li>Create CI/CD integration for automated testing</li>
+<li>Document self-verification patterns</li>
+</ul>
+<h2>Testing Strategy</h2>
+<h3>Unit Tests</h3>
+<ul>
+<li>Written in TypeScript with full type coverage</li>
+<li>Each function tested with typed inputs/outputs</li>
+<li>Mock file system with typed CONTEXT_ROOT</li>
+<li>Test edge cases with proper types</li>
+<li>Maintain &gt;90% coverage</li>
+</ul>
+<h3>Integration Tests</h3>
+<ul>
+<li>TypeScript tests with typed assertions</li>
+<li>Use temporary CONTEXT_ROOT directories</li>
+<li>Test tool interactions with types</li>
+<li>Verify file system changes</li>
+<li>Check data consistency with types</li>
+</ul>
+<h3>End-to-End Tests</h3>
+<ul>
+<li>Full workflow scenarios in TypeScript</li>
+<li>Performance benchmarks with typed metrics</li>
+<li>Stress testing with typed thresholds</li>
+<li>CONTEXT_ROOT isolation verification</li>
+</ul>
+<h3>Self-Verification Tests with Claude Code</h3>
+<ul>
+<li>Headless Claude executions using <code>claude -p</code> flag</li>
+<li>Automated MCP tool testing through Claude CLI</li>
+<li>Permission and security validation</li>
+<li>Real-world usage simulation</li>
+</ul>
+<h2>TypeScript Configuration</h2>
+<h3>tsconfig.json Requirements</h3>
+<ul>
+<li><code>"strict": true</code> - enable all strict type checking</li>
+<li><code>"noImplicitAny": true</code> - no implicit any types</li>
+<li><code>"strictNullChecks": true</code> - explicit null handling</li>
+<li><code>"esModuleInterop": true</code> - proper module interop</li>
+<li><code>"target": "ES2022"</code> - modern JavaScript features</li>
+<li><code>"module": "ESNext"</code> - ES modules</li>
+<li><code>"moduleResolution": "node"</code> - Node resolution</li>
+</ul>
+<h3>Code Quality Tools</h3>
+<ul>
+<li>ESLint with @typescript-eslint plugin</li>
+<li>Prettier for consistent formatting</li>
+<li>ts-prune for unused exports</li>
+<li>TypeScript compiler for type checking</li>
+</ul>
+<h2>Self-Verification Testing Strategy</h2>
+<h3>Headless Claude Testing</h3>
+<p>Each MCP tool will be tested using Claude Code’s headless mode (<code>claude -p</code>) to ensure real-world functionality:</p>
+<ol>
+<li>
+<p><strong>Test Structure</strong>:</p>
+<pre><code class="language-bash"># Start MCP server
+npm run dev &amp;
+SERVER_PID=$!
+
+# Run headless tests
+claude -p "Test context_create tool..."
+claude -p "Verify created document..."
+
+# Cleanup
+kill $SERVER_PID
+</code></pre>
+</li>
+<li>
+<p><strong>Test Categories</strong>:</p>
+<ul>
+<li><strong>Functional Tests</strong>: Verify each tool works correctly</li>
+<li><strong>Permission Tests</strong>: Ensure proper permission handling</li>
+<li><strong>Error Tests</strong>: Validate error messages and recovery</li>
+<li><strong>Integration Tests</strong>: Test tool interactions</li>
+<li><strong>Performance Tests</strong>: Measure response times</li>
+</ul>
+</li>
+<li>
+<p><strong>Verification Scripts</strong>:</p>
+<ul>
+<li><code>tests/claude/test-context-create.sh</code></li>
+<li><code>tests/claude/test-context-read.sh</code></li>
+<li><code>tests/claude/test-context-search.sh</code></li>
+<li><code>tests/claude/test-permissions.sh</code></li>
+<li><code>tests/claude/test-integration.sh</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Expected Outputs</strong>:
+Each test script will validate:</p>
+<ul>
+<li>Tool execution success/failure</li>
+<li>Output format and content</li>
+<li>Side effects (file creation/modification)</li>
+<li>Error handling behavior</li>
+</ul>
+</li>
+<li>
+<p><strong>CI/CD Integration</strong>:</p>
+<ul>
+<li>Run self-verification on every commit</li>
+<li>Generate test reports</li>
+<li>Flag any deviations from expected behavior</li>
+</ul>
+</li>
+</ol>
+<h2>Implementation Prompts</h2>
+<h3>Prompt 23: Claude Code Self-Verification Test Suite</h3>
+<pre><code class="language-text">Create a self-verification test suite that uses Claude Code's headless mode to test MCP tools.
+
+Requirements:
+1. Create tests/claude/ directory structure:
+   - test-helpers.sh - Common test functions
+   - run-all-tests.sh - Main test runner
+   - Individual test scripts for each tool
+
+2. Implement test-helpers.sh:
+   ```bash
+   #!/bin/bash
+
+   # Start MCP server and get PID
+   start_mcp_server() {
+     cd code/mcp
+     npm run dev &gt; /tmp/mcp-test.log 2&gt;&amp;1 &amp;
+     echo $!
+   }
+
+   # Execute headless Claude command
+   test_claude_command() {
+     local command="$1"
+     local expected_pattern="$2"
+
+     output=$(claude -p "$command" 2&gt;&amp;1)
+     if echo "$output" | grep -q "$expected_pattern"; then
+       echo "✓ Test passed: $command"
+       return 0
+     else
+       echo "✗ Test failed: $command"
+       echo "Expected pattern: $expected_pattern"
+       echo "Actual output: $output"
+       return 1
+     fi
+   }
+</code></pre>
+<ol start="3">
+<li>
+<p>Example test-context-create.sh:</p>
+<pre><code class="language-bash">#!/bin/bash
+source ./test-helpers.sh
+
+# Start server
+SERVER_PID=$(start_mcp_server)
+sleep 2
+
+# Test 1: Create valid document
+test_claude_command \
+  "Use the context_create MCP tool to create a document in Projects with title 'Test Document', tags ['test', 'verification'], and summary 'Testing MCP tool'" \
+  "successfully created"
+
+# Test 2: Verify document exists
+test_claude_command \
+  "Use the context_read MCP tool to read Projects/test-document.md" \
+  "Test Document"
+
+# Test 3: Test invalid input
+test_claude_command \
+  "Use the context_create MCP tool with empty title" \
+  "error\|failed\|invalid"
+
+# Cleanup
+kill $SERVER_PID
+rm -rf "$CONTEXT_ROOT/Projects/test-document.md"
+</code></pre>
+</li>
+<li>
+<p>Create TypeScript test validator:</p>
+<pre><code class="language-typescript">// tests/claude/validate-results.ts
+interface TestResult {
+  tool: string;
+  test: string;
+  passed: boolean;
+  output: string;
+  expectedPattern: string;
+}
+
+class TestValidator {
+  validateToolOutput(result: TestResult): void {
+    // Validate tool response format
+    // Check for required fields
+    // Verify error handling
+  }
+}
+</code></pre>
+</li>
+<li>
+<p>CI/CD integration (.github/workflows/self-verify.yml):</p>
+<pre><code class="language-yaml">name: Self-Verification Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: cd code/mcp &amp;&amp; npm install
+      - name: Run self-verification
+        run: |
+          export CONTEXT_ROOT=/tmp/test-context
+          cd tests/claude
+          ./run-all-tests.sh
+</code></pre>
+</li>
+<li>
+<p>Test patterns to verify:</p>
+<ul>
+<li>Tool execution success</li>
+<li>Permission handling</li>
+<li>Error messages</li>
+<li>Output format consistency</li>
+<li>CONTEXT_ROOT enforcement</li>
+<li>Tool interaction flows</li>
+</ul>
+</li>
+</ol>
+<p>This creates a comprehensive self-verification system using Claude’s own capabilities.</p>
+<pre><code>
+### Prompt 1: TypeScript Project with Pre-commit Hooks
+
+```text
+Create a new TypeScript MCP server project at code/mcp/ with strict typing and pre-commit hooks.
+
+Requirements:
+1. Initialize TypeScript project with package.json:
+   - "type": "module" for ES modules
+   - Scripts: build, test, lint, typecheck, format
+   - Node 18+ requirement
+2. Configure TypeScript (tsconfig.json):
+   - strict: true (enables all strict checks)
+   - target: ES2022, module: ESNext
+   - esModuleInterop: true
+   - resolveJsonModule: true
+   - outDir: ./dist, rootDir: ./src
+3. Set up ESLint (.eslintrc.json):
+   - extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended']
+   - TypeScript parser and plugin
+   - Rules for code quality and type safety
+4. Configure Prettier (.prettierrc):
+   - Semi-colons, single quotes
+   - 2 space indentation
+   - Trailing commas
+5. Install and configure husky + lint-staged:
+   - Pre-commit hook running:
+     * npm run typecheck
+     * npm run lint
+     * npm run test -- --findRelatedTests
+     * prettier --write
+   - Commit-msg hook for conventional commits
+6. Create initial structure:
+   - src/index.ts - entry point
+   - src/types/ - TypeScript interfaces
+   - src/tools/ - MCP tools
+   - tests/ - Jest tests
+7. Verify setup:
+   - All hooks run on commit
+   - TypeScript compiles without errors
+   - Tests pass
+
+This ensures code quality from the start.
+</code></pre>
+<h3>Prompt 2: MCP SDK Integration with TypeScript Types</h3>
+<pre><code class="language-text">Set up MCP SDK with full TypeScript type safety and create a typed ping tool.
+
+Requirements:
+1. Install dependencies:
+   - @modelcontextprotocol/sdk (latest)
+   - zod for runtime validation
+   - dotenv for environment variables
+2. Create src/server.ts with typed MCP server:
+   ```typescript
+   import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+   import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+</code></pre>
+<ul>
+<li>Define server with proper types</li>
+<li>Set up transport with TypeScript</li>
+</ul>
+<ol start="3">
+<li>Create src/tools/ping.ts:
+<ul>
+<li>Define input schema with Zod</li>
+<li>Implement tool with full type safety</li>
+<li>Return typed response</li>
+</ul>
+<pre><code class="language-typescript">const pingSchema = z.object({
+  message: z.string().optional(),
+});
+type PingInput = z.infer&lt;typeof pingSchema&gt;;
+</code></pre>
+</li>
+<li>Set up Jest with TypeScript:
+<ul>
+<li>Configure ts-jest</li>
+<li>Test the ping tool with types</li>
+<li>Mock MCP server for testing</li>
+</ul>
+</li>
+<li>Create npm scripts:
+<ul>
+<li>build: tsc</li>
+<li>dev: tsx watch src/index.ts</li>
+<li>test: jest</li>
+<li>typecheck: tsc –noEmit</li>
+</ul>
+</li>
+<li>Write tests:
+<ul>
+<li>Ping tool with various inputs</li>
+<li>Type safety verification</li>
+<li>Error handling</li>
+</ul>
+</li>
+</ol>
+<p>All code must be strongly typed TypeScript.</p>
+<pre><code>
+### Prompt 3: Typed Environment Configuration
+
+```text
+Create a fully typed environment configuration system with CONTEXT_ROOT validation.
+
+Requirements:
+1. Create src/config/environment.ts:
+   ```typescript
+   interface EnvironmentConfig {
+     contextRoot: string;
+     logLevel: 'debug' | 'info' | 'warn' | 'error';
+     port: number;
+     nodeEnv: 'development' | 'production' | 'test';
+   }
+</code></pre>
+<ol start="2">
+<li>Implementation requirements:
+<ul>
+<li>Load from process.env with type coercion</li>
+<li>Validate CONTEXT_ROOT exists and is writable</li>
+<li>Support .env file in development</li>
+<li>Throw typed errors for invalid config</li>
+</ul>
+</li>
+<li>Create src/config/validation.ts:
+<ul>
+<li>validateDirectory(path: string): Promise<void></li>
+<li>Type-safe validation functions</li>
+<li>Custom error types</li>
+</ul>
+</li>
+<li>Error handling:
+<pre><code class="language-typescript">class ConfigurationError extends Error {
+  constructor(
+    public field: string,
+    public reason: string,
+  ) {
+    super(`Configuration error: ${field} - ${reason}`);
+  }
+}
+</code></pre>
+</li>
+<li>Tests with TypeScript:
+<ul>
+<li>Valid configuration loading</li>
+<li>Missing CONTEXT_ROOT handling</li>
+<li>Invalid directory handling</li>
+<li>Type coercion testing</li>
+</ul>
+</li>
+<li>Export typed config object:
+<ul>
+<li>Singleton pattern</li>
+<li>Lazy validation</li>
+<li>Type-safe access</li>
+</ul>
+</li>
+</ol>
+<p>No any types allowed - everything must be properly typed.</p>
+<pre><code>
+### Prompt 4: Document Model with Full TypeScript Types
+
+```text
+Create comprehensive TypeScript types for the document system.
+
+Requirements:
+1. Create src/types/document.ts:
+   ```typescript
+   interface FrontmatterRequired {
+     created_date: string; // ISO 8601
+     tags: string[];
+     summary: string;
+   }
+
+   interface FrontmatterOptional {
+     context?: string;
+     decisions?: string[];
+     status?: 'active' | 'resolved' | 'deprecated';
+     stakeholders?: string[];
+     related?: string[];
+     priority?: 'high' | 'medium' | 'low';
+     next_actions?: string[];
+   }
+
+   interface Document {
+     path: string; // Relative to CONTEXT_ROOT
+     frontmatter: FrontmatterRequired &amp; Partial&lt;FrontmatterOptional&gt;;
+     content: string;
+     links: string[];
+     backlinks: string[];
+   }
+</code></pre>
+<ol start="2">
+<li>Create src/types/para.ts:
+<pre><code class="language-typescript">enum PARACategory {
+  Projects = 'Projects',
+  Areas = 'Areas',
+  Resources = 'Resources',
+  Archives = 'Archives',
+}
+</code></pre>
+</li>
+<li>Zod schemas for validation:
+<ul>
+<li>Match TypeScript interfaces exactly</li>
+<li>Runtime validation aligned with types</li>
+<li>Type inference from schemas</li>
+</ul>
+</li>
+<li>Type guards:
+<pre><code class="language-typescript">function isValidDocument(obj: unknown): obj is Document;
+function hasRequiredFrontmatter(fm: unknown): fm is FrontmatterRequired;
+</code></pre>
+</li>
+<li>Path types:
+<pre><code class="language-typescript">type RelativePath = string &amp; { __brand: 'RelativePath' };
+type AbsolutePath = string &amp; { __brand: 'AbsolutePath' };
+</code></pre>
+</li>
+<li>Tests:
+<ul>
+<li>Type guard functionality</li>
+<li>Zod schema validation</li>
+<li>Type inference verification</li>
+</ul>
+</li>
+</ol>
+<p>Use branded types for path safety.</p>
+<pre><code>
+### Prompt 5: Typed File System Abstraction
+
+```text
+Create a type-safe file system abstraction enforcing CONTEXT_ROOT boundaries.
+
+Requirements:
+1. Create src/utils/filesystem.ts:
+   ```typescript
+   interface IFileSystem {
+     readFile(path: RelativePath): Promise&lt;string&gt;;
+     writeFile(path: RelativePath, content: string): Promise&lt;void&gt;;
+     exists(path: RelativePath): Promise&lt;boolean&gt;;
+     mkdir(path: RelativePath, recursive?: boolean): Promise&lt;void&gt;;
+     listFiles(path: RelativePath, pattern?: string): Promise&lt;RelativePath[]&gt;;
+   }
+
+   class FileSystem implements IFileSystem {
+     constructor(private contextRoot: AbsolutePath) {}
+   }
+</code></pre>
+<ol start="2">
+<li>Path utilities with types:
+<pre><code class="language-typescript">function toRelativePath(path: string): RelativePath;
+function toAbsolutePath(path: string, base: AbsolutePath): AbsolutePath;
+function isWithinContextRoot(path: AbsolutePath, root: AbsolutePath): boolean;
+</code></pre>
+</li>
+<li>Security with TypeScript:
+<ul>
+<li>Path validation at type level</li>
+<li>Runtime checks for safety</li>
+<li>Custom typed errors</li>
+</ul>
+</li>
+<li>Error types:
+<pre><code class="language-typescript">class SecurityError extends Error {
+  constructor(
+    public attemptedPath: string,
+    public contextRoot: string,
+  ) {}
+}
+</code></pre>
+</li>
+<li>Mock implementation:
+<pre><code class="language-typescript">class MockFileSystem implements IFileSystem
+</code></pre>
+</li>
+<li>Tests with full type coverage:
+<ul>
+<li>Path traversal prevention</li>
+<li>Type safety verification</li>
+<li>Mock behavior validation</li>
+</ul>
+</li>
+</ol>
+<p>Use TypeScript’s type system to prevent security issues.</p>
+<pre><code>
+### Prompt 6: PARA Structure with TypeScript
+
+```text
+Implement PARA methodology with full TypeScript type safety.
+
+Requirements:
+1. Create src/utils/para.ts:
+   ```typescript
+   interface PARAStructure {
+     initializeStructure(): Promise&lt;void&gt;;
+     validateCategory(category: string): category is PARACategory;
+     resolvePath(category: PARACategory, filename: string): RelativePath;
+     getCategoryFromPath(path: RelativePath): PARACategory | null;
+   }
+
+   class PARAManager implements PARAStructure {
+     constructor(private fs: IFileSystem) {}
+   }
+</code></pre>
+<ol start="2">
+<li>Type-safe operations:
+<ul>
+<li>Use enum for categories</li>
+<li>Typed path resolution</li>
+<li>Validation with type predicates</li>
+</ul>
+</li>
+<li>Constants with types:
+<pre><code class="language-typescript">const PARA_PATHS: Record&lt;PARACategory, RelativePath&gt; = {
+  [PARACategory.Projects]: 'Projects' as RelativePath,
+  // etc...
+};
+</code></pre>
+</li>
+<li>Integration types:
+<pre><code class="language-typescript">interface PARADocument extends Document {
+  category: PARACategory;
+}
+</code></pre>
+</li>
+<li>Tests with TypeScript:
+<ul>
+<li>Category validation</li>
+<li>Path resolution accuracy</li>
+<li>Type predicate testing</li>
+</ul>
+</li>
+<li>Startup integration:
+<ul>
+<li>Type-safe initialization</li>
+<li>Error handling with types</li>
+</ul>
+</li>
+</ol>
+<p>Leverage TypeScript enums and type predicates.</p>
+<pre><code>
+### Prompt 7: Frontmatter Parser with TypeScript Types
+
+```text
+Create a type-safe frontmatter parser for markdown documents.
+
+Requirements:
+1. Create src/utils/frontmatter.ts:
+   ```typescript
+   interface ParseResult&lt;T = unknown&gt; {
+     frontmatter: T;
+     body: string;
+     raw: string;
+   }
+
+   class FrontmatterParser {
+     parse&lt;T = unknown&gt;(content: string): ParseResult&lt;T&gt;;
+     serialize&lt;T&gt;(frontmatter: T, body: string): string;
+     update&lt;T extends Record&lt;string, unknown&gt;&gt;(
+       content: string,
+       updates: Partial&lt;T&gt;
+     ): string;
+   }
+</code></pre>
+<ol start="2">
+<li>Type-safe parsing:
+<ul>
+<li>Generic types for frontmatter</li>
+<li>Preserve type information</li>
+<li>Validation with Zod schemas</li>
+</ul>
+</li>
+<li>Specific extractors:
+<pre><code class="language-typescript">function extractTags(frontmatter: unknown): string[];
+function extractDate(frontmatter: unknown): Date | null;
+function extractAs&lt;T&gt;(frontmatter: unknown, schema: ZodSchema&lt;T&gt;): T;
+</code></pre>
+</li>
+<li>Safe YAML options:
+<ul>
+<li>Prevent code execution</li>
+<li>Type-safe loading</li>
+<li>Error handling</li>
+</ul>
+</li>
+<li>Tests with types:
+<ul>
+<li>Generic parsing</li>
+<li>Type preservation</li>
+<li>Schema validation</li>
+<li>Round-trip accuracy</li>
+</ul>
+</li>
+</ol>
+<p>Use generics for flexible yet safe parsing.</p>
+<pre><code>
+### Prompt 8: Create Document Tool with Full Types
+
+```text
+Implement context_create tool with comprehensive TypeScript types.
+
+Requirements:
+1. Create src/tools/context_create.ts:
+   ```typescript
+   const createInputSchema = z.object({
+     category: z.nativeEnum(PARACategory),
+     title: z.string().min(1),
+     tags: z.array(z.string()),
+     summary: z.string(),
+     context: z.string().optional(),
+     priority: z.enum(['high', 'medium', 'low']).optional()
+   });
+
+   type CreateInput = z.infer&lt;typeof createInputSchema&gt;;
+
+   interface CreateResult {
+     path: RelativePath;
+     document: Document;
+   }
+</code></pre>
+<ol start="2">
+<li>Tool implementation:
+<pre><code class="language-typescript">server.tool(
+  'context_create',
+  createInputSchema,
+  async (input: CreateInput): Promise&lt;ToolResult&lt;CreateResult&gt;&gt; =&gt; {
+    // Fully typed implementation
+  },
+);
+</code></pre>
+</li>
+<li>Type-safe operations:
+<ul>
+<li>Validate with Zod schema</li>
+<li>Return typed results</li>
+<li>Handle errors with types</li>
+</ul>
+</li>
+<li>Filename generation:
+<pre><code class="language-typescript">function generateFilename(title: string, existing: Set&lt;string&gt;): string;
+</code></pre>
+</li>
+<li>Tests with TypeScript:
+<ul>
+<li>Input validation</li>
+<li>Type inference</li>
+<li>Error scenarios</li>
+<li>Result types</li>
+</ul>
+</li>
+</ol>
+<p>Every function must have explicit TypeScript types.</p>
+<pre><code>
+### Prompt 9: Read Document Tool with TypeScript
+
+```text
+Implement context_read tool with full type safety.
+
+Requirements:
+1. Create src/tools/context_read.ts:
+   ```typescript
+   const readInputSchema = z.object({
+     path: z.string().transform(toRelativePath)
+   });
+
+   type ReadInput = z.infer&lt;typeof readInputSchema&gt;;
+
+   interface ReadResult {
+     document: Document;
+     metadata: {
+       size: number;
+       modified: Date;
+       category: PARACategory;
+     };
+   }
+</code></pre>
+<ol start="2">
+<li>Path resolution with types:
+<pre><code class="language-typescript">async function resolveDocumentPath(
+  input: RelativePath,
+  para: PARAManager,
+): Promise&lt;RelativePath | null&gt;;
+</code></pre>
+</li>
+<li>Tool response:
+<pre><code class="language-typescript">interface ToolResult&lt;T&gt; {
+  content: Array&lt;{
+    type: 'text';
+    text: string;
+  }&gt;;
+}
+</code></pre>
+</li>
+<li>Error handling:
+<pre><code class="language-typescript">class DocumentNotFoundError extends Error {
+  constructor(public path: RelativePath) {
+    super(`Document not found: ${path}`);
+  }
+}
+</code></pre>
+</li>
+<li>Tests:
+<ul>
+<li>Type safety throughout</li>
+<li>Path resolution types</li>
+<li>Error type verification</li>
+</ul>
+</li>
+</ol>
+<p>Maintain type safety from input to output.</p>
+<pre><code>
+### Prompt 10: Wiki-Link Parser with TypeScript
+
+```text
+Create a type-safe wiki-link parser with TypeScript.
+
+Requirements:
+1. Create src/utils/links.ts:
+   ```typescript
+   interface WikiLink {
+     raw: string;
+     target: string;
+     display?: string;
+   }
+
+   interface LinkExtractor {
+     extractLinks(content: string): WikiLink[];
+     normalizeLink(link: string): string;
+     parseLink(raw: string): WikiLink | null;
+   }
+</code></pre>
+<ol start="2">
+<li>
+<p>Type-safe regex patterns:</p>
+<pre><code class="language-typescript">const WIKI_LINK_PATTERN = /\[\[([^\]]+)\]\]/g;
+
+function isValidLink(text: string): text is WikiLinkFormat {
+  return WIKI_LINK_PATTERN.test(text);
+}
+</code></pre>
+</li>
+<li>
+<p>Link index with types:</p>
+<pre><code class="language-typescript">class LinkIndex {
+  private forward: Map&lt;RelativePath, Set&lt;RelativePath&gt;&gt;;
+  private backward: Map&lt;RelativePath, Set&lt;RelativePath&gt;&gt;;
+
+  addDocument(doc: Document): void;
+  getBacklinks(path: RelativePath): RelativePath[];
+  getForwardLinks(path: RelativePath): RelativePath[];
+}
+</code></pre>
+</li>
+<li>
+<p>Type guards:</p>
+<pre><code class="language-typescript">function isWikiLink(obj: unknown): obj is WikiLink;
+</code></pre>
+</li>
+<li>
+<p>Tests with types:</p>
+<ul>
+<li>Link extraction accuracy</li>
+<li>Type guard functionality</li>
+<li>Index operations</li>
+</ul>
+</li>
+</ol>
+<p>Use TypeScript interfaces for link structure.</p>
+<pre><code>
+### Prompt 11: Search Tool with Typed Queries
+
+```text
+Implement context_search with fully typed search queries and results.
+
+Requirements:
+1. Create src/tools/context_search.ts:
+   ```typescript
+   const searchInputSchema = z.object({
+     tags: z.array(z.string()).optional(),
+     text: z.string().optional(),
+     category: z.nativeEnum(PARACategory).optional(),
+     limit: z.number().default(20)
+   });
+
+   type SearchInput = z.infer&lt;typeof searchInputSchema&gt;;
+
+   interface SearchResult {
+     path: RelativePath;
+     score: number;
+     highlights: string[];
+     document: Pick&lt;Document, 'frontmatter'&gt;;
+   }
+</code></pre>
+<ol start="2">
+<li>
+<p>Search index with types:</p>
+<pre><code class="language-typescript">interface SearchIndex {
+  addDocument(doc: Document): void;
+  search(query: SearchInput): SearchResult[];
+  removeDocument(path: RelativePath): void;
+}
+</code></pre>
+</li>
+<li>
+<p>Scoring with types:</p>
+<pre><code class="language-typescript">interface ScoringFactors {
+  tagMatch: number;
+  textMatch: number;
+  titleMatch: number;
+}
+
+function calculateScore(factors: ScoringFactors): number;
+</code></pre>
+</li>
+<li>
+<p>Result formatting:</p>
+<pre><code class="language-typescript">function formatResults(results: SearchResult[]): ToolResult&lt;SearchResult[]&gt;;
+</code></pre>
+</li>
+<li>
+<p>Tests:</p>
+<ul>
+<li>Query type validation</li>
+<li>Result type accuracy</li>
+<li>Score calculation types</li>
+</ul>
+</li>
+</ol>
+<p>Every search operation must be type-safe.</p>
+<pre><code>
+### Prompt 12: Phase 1 Integration Tests with TypeScript
+
+```text
+Create comprehensive TypeScript integration tests for Phase 1.
+
+Requirements:
+1. Create tests/integration/phase1.test.ts:
+   ```typescript
+   describe('Phase 1 Integration', () =&gt; {
+     let testContext: TestContext;
+
+     interface TestContext {
+       contextRoot: AbsolutePath;
+       server: Server;
+       fs: IFileSystem;
+     }
+   });
+</code></pre>
+<ol start="2">
+<li>
+<p>Typed test helpers:</p>
+<pre><code class="language-typescript">async function createTestDocument(
+  context: TestContext,
+  params: Partial&lt;CreateInput&gt;,
+): Promise&lt;Document&gt;;
+
+async function assertDocumentExists(context: TestContext, path: RelativePath): Promise&lt;void&gt;;
+</code></pre>
+</li>
+<li>
+<p>Test scenarios with types:</p>
+<ul>
+<li>Type-safe document creation</li>
+<li>Typed search queries</li>
+<li>Result type verification</li>
+</ul>
+</li>
+<li>
+<p>Performance types:</p>
+<pre><code class="language-typescript">interface PerformanceMetrics {
+  operationTime: number;
+  memoryUsed: number;
+}
+
+function measurePerformance&lt;T&gt;(operation: () =&gt; Promise&lt;T&gt;): Promise&lt;[T, PerformanceMetrics]&gt;;
+</code></pre>
+</li>
+<li>
+<p>Cleanup with types:</p>
+<pre><code class="language-typescript">async function cleanupTestContext(context: TestContext): Promise&lt;void&gt;;
+</code></pre>
+</li>
+</ol>
+<p>All test code must use TypeScript with proper types.</p>
+<pre><code>
+Continue with remaining prompts following the same TypeScript-first pattern...
+
+## Success Criteria
+
+Each step must:
+1. Use TypeScript with strict mode enabled
+2. Have zero `any` types (use `unknown` when needed)
+3. Pass all pre-commit hooks before commit
+4. Have comprehensive typed tests
+5. Use proper TypeScript patterns (interfaces, enums, generics)
+6. Document types with JSDoc when helpful
+7. Export all necessary types for consumers
+
+## TypeScript Best Practices
+
+1. **No Any Types**: Use `unknown` and type guards instead
+2. **Branded Types**: Use for paths and other string types needing validation
+3. **Const Assertions**: Use `as const` for literal types
+4. **Discriminated Unions**: For different document types or results
+5. **Generic Constraints**: Use extends to constrain generic types
+6. **Type Predicates**: For runtime type checking
+7. **Strict Null Checks**: Handle null/undefined explicitly
+
+The final system should leverage TypeScript's type system to prevent bugs at compile time while maintaining the security boundary of CONTEXT_ROOT.
+</code></pre>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer role="contentinfo">
+        <div class="container">
+            <p>Generated by para-ssg | Press <kbd>Ctrl</kbd>+<kbd>K</kbd> to search</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.0.0/marked.min.js"></script>
+    <script>
+        
+(function(){let searchIndex=null;let searchInput=null;let searchResults=null;let searchOverlay=null;let currentFocus=-1;
+document.addEventListener('DOMContentLoaded',function(){initializeSearch();});function initializeSearch(){
+createSearchOverlay();
+document.addEventListener('keydown',function(e){
+if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openSearch();}
+else if(e.key==='/'&&!isInputElement(e.target)){e.preventDefault();openSearch();}
+else if(e.key==='Escape'&&searchOverlay.style.display==='block'){closeSearch();}});
+loadSearchIndex();}function createSearchOverlay(){
+searchOverlay=document.createElement('div');searchOverlay.id='search-overlay';searchOverlay.setAttribute('role','dialog');searchOverlay.setAttribute('aria-modal','true');searchOverlay.setAttribute('aria-labelledby','search-input');searchOverlay.style.cssText=`display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,10,10,0.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:1000;opacity:0;transition:opacity 0.3s ease;`;
+const searchContainer=document.createElement('div');searchContainer.id='search-container';searchContainer.style.cssText=`position:absolute;top:10%;left:50%;transform:translateX(-50%)scale(0.95);width:90%;max-width:700px;background:var(--surface-2,#2a2a2a);border:1px solid var(--surface-3,#333);border-radius:16px;box-shadow:0 24px 48px rgba(0,0,0,0.4),0 12px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.05);max-height:80vh;display:flex;flex-direction:column;opacity:0;transition:transform 0.3s ease,opacity 0.3s ease;`;
+searchInput=document.createElement('input');searchInput.type='text';searchInput.id='search-input';searchInput.placeholder='Search documents... (Press "/" or Ctrl+K)';searchInput.setAttribute('aria-label','Search documents');searchInput.setAttribute('aria-describedby','search-instructions');searchInput.style.cssText=`padding:24px 28px;font-size:18px;font-weight:400;border:none;border-bottom:1px solid var(--surface-3,#333);background:transparent;outline:none;color:var(--text-primary,#e0e0e0);transition:border-color 0.2s ease;`;searchInput.setAttribute('autocomplete','off');searchInput.setAttribute('spellcheck','false');
+searchResults=document.createElement('div');searchResults.id='search-results';searchResults.setAttribute('role','listbox');searchResults.setAttribute('aria-label','Search results');searchResults.setAttribute('aria-live','polite');searchResults.style.cssText=`padding:0 12px 12px;overflow-y:auto;max-height:calc(80vh-90px);scrollbar-width:thin;scrollbar-color:var(--surface-4,#444)transparent;`;
+const scrollbarStyles=document.createElement('style');scrollbarStyles.textContent=`#search-results::-webkit-scrollbar{width:8px;}#search-results::-webkit-scrollbar-track{background:transparent;}#search-results::-webkit-scrollbar-thumb{background:var(--surface-4,#444);border-radius:4px;}#search-results::-webkit-scrollbar-thumb:hover{background:var(--surface-5,#555);}#search-container.search-active{transform:translateX(-50%)scale(1);opacity:1;}#search-overlay.search-active{opacity:1;}@keyframes resultFadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}.search-result{animation:resultFadeIn 0.3s ease forwards;}.search-result:nth-child(1){animation-delay:0s;}.search-result:nth-child(2){animation-delay:0.05s;}.search-result:nth-child(3){animation-delay:0.1s;}.search-result:nth-child(4){animation-delay:0.15s;}.search-result:nth-child(5){animation-delay:0.2s;}.search-result:nth-child(n+6){animation-delay:0.25s;}`;document.head.appendChild(scrollbarStyles);
+const searchInstructions=document.createElement('div');searchInstructions.id='search-instructions';searchInstructions.className='sr-only';searchInstructions.textContent='Type to search. Use arrow keys to navigate results. Press Enter to select.';searchInstructions.style.cssText=`position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;`;
+searchContainer.appendChild(searchInput);searchContainer.appendChild(searchInstructions);searchContainer.appendChild(searchResults);searchOverlay.appendChild(searchContainer);document.body.appendChild(searchOverlay);
+searchInput.addEventListener('input',performSearch);searchInput.addEventListener('keydown',handleSearchNavigation);searchOverlay.addEventListener('click',function(e){if(e.target===searchOverlay){closeSearch();}});}function loadSearchIndex(){fetch('/search-index.json').then(response=>response.json()).then(data=>{searchIndex=data;console.log('Search index loaded:',data.stats);}).catch(error=>{console.error('Failed to load search index:',error);});}function openSearch(){if(!searchOverlay)return;searchOverlay.style.display='block';searchInput.value='';searchResults.innerHTML='';currentFocus=-1;
+requestAnimationFrame(()=>{searchOverlay.classList.add('search-active');document.getElementById('search-container').classList.add('search-active');searchInput.focus();});}function closeSearch(){if(!searchOverlay)return;
+searchOverlay.classList.remove('search-active');document.getElementById('search-container').classList.remove('search-active');
+setTimeout(()=>{searchOverlay.style.display='none';searchInput.value='';searchResults.innerHTML='';},300);}function performSearch(){const query=searchInput.value.toLowerCase().trim();if(!query){searchResults.innerHTML='';return;}if(!searchIndex||!searchIndex.entries){searchResults.innerHTML='<p style="color: #a0a0a0;">Search index not loaded yet...</p>';return;}const results=searchDocuments(query);displayResults(results,query);}function searchDocuments(query){const results=[];const queryWords=query.split(/\s+/).filter(w=>w.length>0);for(const entry of searchIndex.entries){let score=0;let matches=[];
+for(const word of queryWords){if(entry.title.toLowerCase().includes(word)){score+=10;matches.push('title');}}
+for(const tag of entry.tags){for(const word of queryWords){if(tag.toLowerCase().includes(word)){score+=5;matches.push('tag');break;}}}
+for(const word of queryWords){if(entry.content.includes(word)){score+=1;matches.push('content');}}if(score>0){results.push({entry:entry,score:score,matches:[...new Set(matches)]});}}
+results.sort((a,b)=>b.score-a.score);return results.slice(0,20);
+}function displayResults(results,query){if(results.length===0){searchResults.innerHTML='<p style="color: #a0a0a0;" role="status">No results found</p>';searchResults.setAttribute('aria-label','No search results found');return;}searchResults.setAttribute('aria-label',`${results.length}search results found`);const html=results.map((result,index)=>{const entry=result.entry;const highlightedTitle=highlightText(entry.title,query);const highlightedExcerpt=highlightText(entry.excerpt,query);const categoryColors={'projects':'var(--accent-gradient-1, linear-gradient(135deg, #007acc, #0099ff))','areas':'var(--accent-gradient-2, linear-gradient(135deg, #00cc88, #00ffaa))','resources':'var(--accent-gradient-3, linear-gradient(135deg, #cc7700, #ff9900))','archives':'var(--accent-gradient-4, linear-gradient(135deg, #cc0077, #ff0099))'};const categoryGradient=categoryColors[entry.category]||categoryColors['resources'];return`<div class="search-result"data-index="${index}"role="option"aria-selected="false"tabindex="-1"style="
+                    position: relative;
+                    padding: 20px;
+                    margin: 0 16px 16px;
+                    background: var(--surface-1, #1a1a1a);
+                    border: 1px solid var(--surface-3, #333);
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                "><div style="
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        width: 4px;
+                        background: ${categoryGradient};
+                        border-radius: 12px 0 0 12px;
+                        transition: width 0.3s ease;
+                    "></div><h3 style="
+                        margin: 0 0 8px 0;
+                        padding-left: 8px;
+                        font-size: 18px;
+                        font-weight: 600;
+                        line-height: 1.4;
+                    "><a href="${entry.path}"style="
+                            text-decoration: none;
+                            color: var(--text-primary, #e0e0e0);
+                            transition: color 0.2s ease;
+                        "onmouseover="this.style.color='var(--link-hover, #4a9eff)'"onmouseout="this.style.color='var(--text-primary, #e0e0e0)'">${highlightedTitle}</a></h3><p style="
+                        margin: 0 0 12px 0;
+                        padding-left: 8px;
+                        color: var(--text-secondary, #a0a0a0);
+                        font-size: 14px;
+                        line-height: 1.6;
+                    ">${highlightedExcerpt}</p><div style="
+                        padding-left: 8px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                        align-items: center;
+                    "><span style="
+                            background: ${categoryGradient};
+                            color: white;
+                            padding: 4px 12px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 500;
+                            text-transform: capitalize;
+                        ">${entry.category}</span>${entry.tags.slice(0,3).map(tag=>`<span style="
+                                background: var(--surface-3, #333);
+                                color: var(--text-secondary, #a0a0a0);
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 12px;
+                                transition: all 0.2s ease;
+                            "onmouseover="this.style.background='var(--surface-4, #444)'"onmouseout="this.style.background='var(--surface-3, #333)'">${tag}</span>`).join('')}</div></div>`;}).join('');searchResults.innerHTML=html;
+const resultElements=searchResults.querySelectorAll('.search-result');resultElements.forEach(el=>{
+el.addEventListener('mouseenter',function(){this.style.background='var(--surface-2, #2a2a2a)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.2)';const accentBar=this.querySelector('div');if(accentBar)accentBar.style.width='6px';});el.addEventListener('mouseleave',function(){this.style.background='var(--surface-1, #1a1a1a)';this.style.transform='translateY(0)';this.style.boxShadow='none';const accentBar=this.querySelector('div');if(accentBar)accentBar.style.width='4px';});
+el.addEventListener('click',function(e){if(!e.target.closest('a')){const link=this.querySelector('a');if(link)window.location.href=link.href;}});});}function highlightText(text,query){if(!text)return'';const words=query.split(/\s+/).filter(w=>w.length>0);let highlighted=text;for(const word of words){const regex=new RegExp(`(${escapeRegex(word)})`,'gi');highlighted=highlighted.replace(regex,'<mark style="background: var(--link-color, #007acc); color: white; padding: 1px 4px; border-radius: 3px; font-weight: 500;">$1</mark>');}return highlighted;}function handleSearchNavigation(e){const results=searchResults.querySelectorAll('.search-result');if(e.key==='ArrowDown'){e.preventDefault();currentFocus++;if(currentFocus>=results.length)currentFocus=0;setFocus(results);}else if(e.key==='ArrowUp'){e.preventDefault();currentFocus--;if(currentFocus<0)currentFocus=results.length-1;setFocus(results);}else if(e.key==='Enter'&&currentFocus>=0&&currentFocus<results.length){e.preventDefault();const link=results[currentFocus].querySelector('a');if(link)window.location.href=link.href;}}function setFocus(results){results.forEach((el,index)=>{if(index===currentFocus){el.style.background='var(--link-color, #007acc)';el.style.transform='translateY(-2px) translateZ(0)';el.style.boxShadow='0 0 0 2px var(--link-color, #007acc)';el.scrollIntoView({block:'nearest',behavior:'smooth'});el.setAttribute('aria-selected','true');el.setAttribute('tabindex','0');const accentBar=el.querySelector('div');if(accentBar)accentBar.style.width='8px';}else{el.style.background='var(--surface-1, #1a1a1a)';el.style.transform='translateY(0) translateZ(0)';el.style.boxShadow='none';el.setAttribute('aria-selected','false');el.setAttribute('tabindex','-1');const accentBar=el.querySelector('div');if(accentBar)accentBar.style.width='4px';}});}function isInputElement(element){return element.tagName==='INPUT'||element.tagName==='TEXTAREA'||element.isContentEditable;}function escapeRegex(string){return string.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+document.addEventListener('DOMContentLoaded',function(){const inlineSearchBoxes=document.querySelectorAll('.search-box');inlineSearchBoxes.forEach(box=>{box.addEventListener('click',openSearch);box.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();openSearch();}});});});})();
+        // Header interactions for para-ssg
+(function(){
+    const header = document.querySelector('.site-header');
+    const toggle = document.querySelector('.nav-toggle');
+    if(toggle){
+        toggle.addEventListener('click', () => header.classList.toggle('open'));
+    }
+    window.addEventListener('scroll', () => {
+        if(window.scrollY > 40){
+            document.body.classList.add('scrolled');
+        } else {
+            document.body.classList.remove('scrolled');
+        }
+    });
+})();
+    </script>
+</body>
+</html>

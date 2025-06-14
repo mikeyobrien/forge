@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Markdown CMS Specification v3 - Self-Hosted | forge</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}:focus-visible{outline:2px solid var(--accent-primary);outline-offset:2px;}:root{--bg-primary:#0f0f0f;--bg-secondary:#1a1a1a;--bg-tertiary:#2a2a2a;--bg-elevated:#333333;--text-primary:#f0f0f0;--text-secondary:#b4b4b4;--text-muted:#737373;--text-subtle:#525252;--border-primary:#333333;--border-secondary:#404040;--border-subtle:#262626;--accent-primary:#0EA5E9;--accent-secondary:#3B82F6;--accent-gradient:linear-gradient(135deg,var(--accent-primary)0%,var(--accent-secondary)100%);--accent-gradient-hover:linear-gradient(135deg,#0284C7 0%,#2563EB 100%);--gradient-primary:linear-gradient(135deg,var(--accent-primary)0%,var(--accent-secondary)100%);--success:#10B981;--success-bg:rgba(16,185,129,0.1);--warning:#F59E0B;--warning-bg:rgba(245,158,11,0.1);--error:#EF4444;--error-bg:rgba(239,68,68,0.1);--info:#06B6D4;--info-bg:rgba(6,182,212,0.1);--link-primary:#60A5FA;--link-hover:#93C5FD;--link-visited:#A78BFA;--surface-base:var(--bg-primary);--surface-raised:var(--bg-secondary);--surface-overlay:var(--bg-tertiary);--surface-elevated:var(--bg-elevated);--interactive-hover:rgba(255,255,255,0.05);--interactive-active:rgba(255,255,255,0.1);--interactive-disabled:rgba(255,255,255,0.02);--shadow-sm:0 1px 2px 0 rgba(0,0,0,0.3);--shadow-base:0 1px 3px 0 rgba(0,0,0,0.4),0 1px 2px 0 rgba(0,0,0,0.3);--shadow-md:0 4px 6px -1px rgba(0,0,0,0.4),0 2px 4px -1px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4),0 4px 6px -2px rgba(0,0,0,0.3);--accent:var(--accent-primary);--accent-hover:var(--accent-secondary);--link-color:var(--link-primary);--link-hover:var(--link-hover);--border-color:var(--border-primary);}:root{--space-1:0.5rem;--space-2:1rem;--space-3:1.5rem;--space-4:2rem;--space-6:3rem;--space-8:4rem;--space-12:6rem;--space-16:8rem;--breakpoint-sm:640px;--breakpoint-md:768px;--breakpoint-lg:1024px;--breakpoint-xl:1280px;}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Inter','Helvetica Neue',sans-serif;line-height:1.6;color:var(--text-primary);background-color:var(--bg-primary);min-height:100vh;font-feature-settings:'cv11','ss01';font-variant-numeric:tabular-nums;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;display:grid;grid-template-areas:"header" "main" "footer";grid-template-rows:auto 1fr auto;grid-template-columns:1fr;}.container{max-width:1000px;margin:0 auto;padding:0 var(--space-4);width:100%;}.site-header{grid-area:header;background:linear-gradient(135deg,#181818 0%,#0E0E0E 60%);color:var(--text-primary);height:var(--header-height,80px);transition:height 0.25s ease,box-shadow 0.25s;position:sticky;top:0;z-index:100;display:flex;flex-direction:column;align-items:center;}.header-inner{width:min(90%,1200px);display:flex;justify-content:space-between;align-items:center;padding-top:var(--space-2);}.logo{font-size:2rem;color:#fff;font-weight:700;text-decoration:none;}.site-nav{display:flex;gap:1.5rem;}.nav-item{color:var(--text-secondary);font-weight:500;position:relative;text-decoration:none;transition:color 0.2s ease;}.nav-item:hover{color:var(--text-primary);text-decoration:none;}.nav-item.active{color:var(--accent-primary);}.nav-item.active::after,.nav-item:hover::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--accent-primary);}.nav-divider{width:1px;height:20px;background-color:var(--text-secondary);opacity:0.3;margin:0 0.5rem;align-self:center;}.nav-toggle{display:none;background:none;border:none;}.burger{width:24px;height:2px;background:#fff;position:relative;}.burger::before,.burger::after{content:"";position:absolute;width:24px;height:2px;background:#fff;}.burger::before{top:-6px;}.burger::after{top:6px;}body.scrolled .site-header{height:60px;box-shadow:0 2px 4px rgba(0,0,0,0.4);}.nav-search{display:none;}main{grid-area:main;padding:var(--space-4)0;min-height:0;}.file-cards{display:grid;grid-template-columns:1fr;gap:var(--space-3);margin-top:var(--space-4);max-width:1200px;margin-left:auto;margin-right:auto;}.file-card{background-color:var(--surface-raised);border:1px solid var(--border-primary);border-radius:8px;padding:var(--space-3);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1),background-color 0.3s cubic-bezier(0.4,0,0.2,1),border-color 0.3s cubic-bezier(0.4,0,0.2,1),box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;}.file-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent-gradient);opacity:0;transition:opacity 0.3s ease;}.file-card:hover{border-color:var(--border-secondary);background-color:var(--surface-overlay);transform:translateY(-2px)translateZ(0);box-shadow:var(--shadow-md);}.file-card:hover::before{opacity:1;}.file-card:active{transform:translateY(-1px)translateZ(0);transition:all 0.1s cubic-bezier(0.4,0,0.2,1);}.file-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-2);margin-bottom:var(--space-2);}.file-title{font-size:1.1rem;font-weight:600;margin:0;line-height:1.3;flex:1;min-width:0;}.file-title a{color:var(--text-primary);text-decoration:none;transition:color 0.2s ease;}.file-title a:hover{color:var(--accent-primary);text-decoration:none;}.file-category{font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;padding:0.25rem 0.5rem;border-radius:12px;white-space:nowrap;border:1px solid transparent;transition:all 0.2s ease;}.category-projects{background-color:rgba(16,185,129,0.1);color:var(--success);border-color:rgba(16,185,129,0.3);}.category-areas{background-color:rgba(59,130,246,0.1);color:var(--accent-secondary);border-color:rgba(59,130,246,0.3);}.category-resources{background-color:rgba(245,158,11,0.1);color:var(--warning);border-color:rgba(245,158,11,0.3);}.category-archives{background-color:rgba(107,114,128,0.1);color:var(--text-muted);border-color:rgba(107,114,128,0.3);}.category-other{background-color:rgba(139,92,246,0.1);color:#8B5CF6;border-color:rgba(139,92,246,0.3);}.file-card-meta{display:flex;justify-content:space-between;align-items:center;gap:var(--space-2);font-size:0.85rem;color:var(--text-muted);}.file-date{white-space:nowrap;font-feature-settings:'tnum';}.file-tags{display:flex;flex-wrap:wrap;gap:0.25rem;justify-content:flex-end;flex:1;min-width:0;}.file-tags .tag{font-size:0.75rem;padding:0.15rem 0.4rem;background-color:var(--surface-elevated);color:var(--text-secondary);border-radius:6px;border:1px solid var(--border-subtle);transition:all 0.2s ease;display:inline-flex;align-items:center;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.file-tags .tag:hover{background-color:var(--surface-overlay);border-color:var(--border-primary);color:var(--text-primary);}.no-tags{color:var(--text-muted);font-style:italic;font-size:0.8rem;}.document h1{font-size:clamp(1.75rem,4vw,2rem);margin-bottom:1rem;color:var(--text-primary);font-weight:600;letter-spacing:-0.025em;line-height:1.2;}.document-header{margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}.document-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-1);font-size:0.9rem;color:var(--text-muted);}.document-content{color:var(--text-primary);line-height:1.7;}.document-content h2{font-size:clamp(1.5rem,3.5vw,1.75rem);margin-top:var(--space-4);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.025em;line-height:1.3;}.document-content h3{font-size:clamp(1.25rem,3vw,1.5rem);margin-top:var(--space-3);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.02em;line-height:1.3;}.document-content h4{font-size:clamp(1.125rem,2.5vw,1.25rem);margin-top:var(--space-3);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.015em;line-height:1.4;}.document-content p{margin-bottom:var(--space-2);}.document-content ul,.document-content ol{margin-bottom:var(--space-2);margin-left:var(--space-3);}.document-content blockquote{border-left:3px solid var(--accent-primary);padding-left:var(--space-2);margin:var(--space-3)0;color:var(--text-secondary);font-style:italic;}.document-content code{background-color:var(--surface-raised);color:var(--text-primary);padding:0.2rem 0.4rem;border-radius:3px;font-family:'SF Mono',Monaco,'Cascadia Code','Roboto Mono',Consolas,'Courier New',monospace;font-size:0.9em;}.document-content pre{background-color:var(--surface-raised);border:1px solid var(--border-primary);padding:var(--space-2);border-radius:5px;overflow-x:auto;margin:var(--space-3)0;}.document-content pre code{background:none;padding:0;}.category-index h1{font-size:clamp(2rem,4vw,2.5rem);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:700;letter-spacing:-0.025em;line-height:1.2;}.category-description{color:var(--text-secondary);margin-bottom:var(--space-3);font-style:italic;line-height:1.5;}.document-count{color:var(--text-muted);font-size:0.9rem;margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}.document-list{display:grid;gap:var(--space-3);grid-template-columns:1fr;}.document-entry{padding:var(--space-3);border:1px solid var(--border-primary);border-radius:8px;background-color:var(--surface-raised);transition:transform 0.2s cubic-bezier(0.4,0,0.2,1),background-color 0.2s cubic-bezier(0.4,0,0.2,1),border-color 0.2s cubic-bezier(0.4,0,0.2,1);}.document-entry:hover{border-color:var(--border-secondary);background-color:var(--surface-overlay);}.document-entry h2{font-size:1.2rem;margin-bottom:0.5rem;}.document-entry h2 a{color:var(--link-primary);text-decoration:none;}.document-entry h2 a:hover{color:var(--link-hover);}.entry-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--space-1);}.summary{color:var(--text-secondary);line-height:1.5;}.directory-cards{margin-bottom:var(--space-4);}.directory-cards h2{font-size:1.5rem;margin-bottom:var(--space-3);color:var(--text-primary);}.directory-grid{display:grid;gap:var(--space-3);grid-template-columns:repeat(auto-fill,minmax(350px,1fr));}.directory-card{background-color:var(--surface-raised);border:1px solid var(--border-primary);border-radius:8px;transition:transform 0.2s cubic-bezier(0.4,0,0.2,1),background-color 0.2s cubic-bezier(0.4,0,0.2,1),border-color 0.2s cubic-bezier(0.4,0,0.2,1),box-shadow 0.2s cubic-bezier(0.4,0,0.2,1);}.directory-card:hover{transform:translateY(-2px);border-color:var(--accent-primary);background-color:var(--surface-overlay);box-shadow:0 4px 12px rgba(0,0,0,0.4);}.directory-link{display:block;padding:var(--space-3);text-decoration:none;color:inherit;height:100%;}.directory-card h3{font-size:1.25rem;margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;}.directory-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);font-size:0.875rem;color:var(--text-muted);}.directory-meta .doc-count{background-color:var(--bg-tertiary);padding:2px 8px;border-radius:4px;}.directory-meta .subdir-count{background-color:var(--bg-tertiary);padding:2px 8px;border-radius:4px;}.subdirectory-index .document-entries{margin-top:var(--space-4);}.subdirectory-index .document-entries h2{font-size:1.5rem;margin-bottom:var(--space-3);color:var(--text-primary);}.document-entries .document-entry+.document-entry{margin-top:var(--space-3);}.document-entry+.document-entry{margin-top:var(--space-3);}.empty-directory{text-align:center;color:var(--text-muted);padding:var(--space-6)var(--space-3);font-style:italic;}.subdirectory-index h1{font-size:2.5rem;margin-bottom:var(--space-2);background:var(--gradient-primary);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;}.subdirectory-description{color:var(--text-secondary);margin-bottom:var(--space-3);font-style:italic;line-height:1.5;}.item-count{color:var(--text-muted);font-size:0.9rem;margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}a{color:var(--link-primary);text-decoration:none;transition:color 0.2s cubic-bezier(0.4,0,0.2,1);}a:hover{color:var(--link-hover);text-decoration:underline;}.tag{color:var(--text-muted);font-size:0.85rem;margin-right:0.5rem;}.breadcrumbs{margin-bottom:var(--space-3);font-size:0.9rem;color:var(--text-muted);}.breadcrumbs ol{list-style:none;display:flex;align-items:center;}.breadcrumbs li{display:inline;}.breadcrumbs a{color:var(--text-secondary);text-decoration:none;}.breadcrumbs a:hover{color:var(--accent-primary);}.breadcrumbs .separator{margin:0 0.5rem;color:var(--text-muted);}.breadcrumbs .current{color:var(--text-primary);}footer{grid-area:footer;background-color:var(--surface-raised);border-top:1px solid var(--border-primary);padding:var(--space-3)0;text-align:center;color:var(--text-muted);font-size:0.85rem;}@media(max-width:640px){.container{padding:0 var(--space-2);}.nav-divider{display:none;}.nav-container{grid-template-columns:1fr;justify-items:center;gap:var(--space-2);text-align:center;}.nav-menu{justify-content:center;}grid-template-columns:repeat(2,1fr);gap:var(--space-2);max-width:200px;}.file-cards{gap:var(--space-2);}.file-card{padding:var(--space-2);}.file-card-header{flex-direction:column;align-items:flex-start;gap:var(--space-1);}.file-card-meta{flex-direction:column;align-items:flex-start;gap:var(--space-1);}.file-tags{justify-content:flex-start;}padding:var(--space-2)0;margin-bottom:var(--space-4);}main{padding:var(--space-2)0;}}@media(min-width:641px)and(max-width:768px){.nav-container{grid-template-columns:1fr auto;gap:var(--space-3);}gap:var(--space-3);max-width:300px;}.file-cards{max-width:700px;}}@media(min-width:1024px){.container{padding:0 var(--space-6);}.document-list{grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:var(--space-3);}.file-cards{gap:var(--space-4);}.nav-container{gap:var(--space-6);}}.loading{position:relative;pointer-events:none;opacity:0.7;}.loading::after{content:'';position:absolute;top:50%;left:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border:2px solid var(--accent-primary);border-radius:50%;border-top-color:transparent;animation:spinner 0.8s linear infinite;}@keyframes spinner{to{transform:rotate(360deg);}}.file-card,.document-entry,.search-result{transform:translateZ(0);backface-visibility:hidden;perspective:1000px;}.skip-link{position:absolute;top:-40px;left:0;background:var(--accent-primary);color:white;padding:var(--space-1)var(--space-2);text-decoration:none;border-radius:0 0 4px 0;z-index:1001;}.skip-link:focus{top:0;}@media(prefers-contrast:high){:root{--text-primary:#ffffff;--text-secondary:#e0e0e0;--bg-primary:#000000;--bg-secondary:#1a1a1a;--border-primary:#ffffff;}}@media print{header,footer,.search-box{display:none;}body{background:white;color:black;}a{color:black;text-decoration:underline;}}.comments-section{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border-primary);}.comments-section h2{margin-bottom:1.5rem;color:var(--text-primary);}#comments-list{margin-bottom:2rem;}.loading{color:var(--text-muted);text-align:center;padding:2rem;}.error-message{color:var(--error);background:var(--error-bg);padding:1rem;border-radius:8px;border:1px solid rgba(239,68,68,0.3);text-align:center;margin:1rem 0;}.comment{margin-bottom:1.5rem;padding:1rem;background:var(--card-bg);border-radius:8px;border:1px solid var(--border-primary);}.comment-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;}.avatar{width:32px;height:32px;border-radius:50%;border:2px solid var(--border-primary);}.comment-header .author{font-weight:500;color:var(--text-primary);text-decoration:none;}.comment-header .author:hover{color:var(--accent-primary);}.comment-header .date{color:var(--text-muted);font-size:0.85rem;margin-left:auto;}.comment-body{color:var(--text-secondary);line-height:1.6;}.comment-body p{margin:0.5rem 0;}.comment-body p:first-child{margin-top:0;}.comment-body p:last-child{margin-bottom:0;}.comment-body code{background:var(--bg-secondary);padding:0.2em 0.4em;border-radius:3px;font-size:0.9em;}.comment-body pre{background:var(--bg-secondary);padding:1rem;border-radius:4px;overflow-x:auto;}.comment-body blockquote{border-left:3px solid var(--accent-primary);padding-left:1rem;margin:1rem 0;color:var(--text-muted);}#add-comment-btn{display:inline-block;background:var(--accent-primary);color:white;padding:0.5rem 1rem;border-radius:4px;text-decoration:none;font-weight:500;transition:background-color 0.2s ease;}#add-comment-btn:hover{background:var(--accent-hover);}@media(max-width:640px){.comment{padding:0.75rem;}.comment-header{flex-wrap:wrap;}.comment-header .date{width:100%;margin-left:0;margin-top:0.5rem;}}
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="/forge/" class="logo">forge</a>
+            <nav class="site-nav">
+                <a href="/forge/projects/" class="nav-item active">Projects</a>
+                <a href="/forge/areas/" class="nav-item ">Areas</a>
+                <a href="/forge/resources/" class="nav-item ">Resources</a>
+                <a href="/forge/archives/" class="nav-item ">Archives</a>
+                <span class="nav-divider"></span>
+                <a href="/forge/blog/" class="nav-item ">Blog</a>
+            </nav>
+            <button class="nav-toggle" aria-label="Open menu">
+                <span class="burger"></span>
+            </button>
+        </div>
+    </header>
+    
+    <main id="main-content">
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/forge/">Home</a></li><li class="separator">/</li><li><a href="/forge/projects/">Projects</a></li><li class="separator">/</li><li><a href="/forge/projects/github-markdown-cms/">Github Markdown Cms</a></li><li class="separator">/</li><li class="current">GitHub Markdown CMS Specification v3 - Self-Hosted</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>GitHub Markdown CMS Specification v3 - Self-Hosted</h1>
+        <div class="document-meta"><time class="date">2025-06-14</time>
+<span class="status status-active">active</span>
+<div class="tags"><span class="tag">cms</span> <span class="tag">github</span> <span class="tag">markdown</span> <span class="tag">specification</span> <span class="tag">self-hosted</span> <span class="tag">kubernetes</span> <span class="tag">v3</span></div></div>
+    </header>
+    
+    <div class="document-content">
+        <h1>GitHub Markdown CMS Specification v3 - Self-Hosted</h1>
+<h2>Executive Summary</h2>
+<h3>Problem Statement</h3>
+<p>Technical bloggers using GitHub Pages need an efficient way to manage their content without leaving their keyboard-driven workflow. Current solutions either require too much context switching (GitHub.com), lack version control (traditional CMS), depend on expensive SaaS providers, or have too much overhead (local development).</p>
+<h3>Proposed Solution</h3>
+<p>A fully self-hosted progressive web application that provides a fast, keyboard-centric interface for managing GitHub-hosted blogs. The CMS is designed for easy deployment via Docker and Kubernetes, with zero external dependencies beyond GitHub’s API. It adapts to the user’s skill level while maintaining excellent mobile support and essential blogging features.</p>
+<h3>Key Benefits</h3>
+<ul>
+<li><strong>Zero SaaS Dependencies</strong>: Completely self-hosted, no vendor lock-in</li>
+<li><strong>Easy Deployment</strong>: One-command setup via Docker or Helm</li>
+<li><strong>Progressive Enhancement</strong>: Works for beginners, scales to power users</li>
+<li><strong>Mobile-First Responsive</strong>: Full functionality on all devices</li>
+<li><strong>Media-Aware</strong>: Native support for images and assets</li>
+<li><strong>Offline-First</strong>: Never lose work, sync when ready</li>
+<li><strong>Zero Setup Option</strong>: Try before you authenticate</li>
+</ul>
+<h2>Requirements</h2>
+<h3>Functional Requirements</h3>
+<h4>Self-Hosting Infrastructure</h4>
+<ul>
+<li>
+<p><strong>Container-Based Deployment</strong></p>
+<ul>
+<li>Docker image with all dependencies included</li>
+<li>Kubernetes-ready with Helm charts</li>
+<li>Support for docker-compose local deployment</li>
+<li>Built-in health checks and monitoring endpoints</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuration Management</strong></p>
+<ul>
+<li>Environment-based configuration</li>
+<li>Support for ConfigMaps and Secrets</li>
+<li>Runtime configuration updates</li>
+<li>Multi-instance deployment support</li>
+</ul>
+</li>
+</ul>
+<h4>Core Editor</h4>
+<ul>
+<li><strong>Progressive Keyboard Support</strong>
+<ul>
+<li>Basic: Standard shortcuts (Ctrl+S, Ctrl+Z)</li>
+<li>Advanced: Vim mode (optional, can be enabled)</li>
+<li>Mobile: Touch-optimized toolbar</li>
+</ul>
+</li>
+<li><strong>Rich Markdown Editing</strong>
+<ul>
+<li>Syntax highlighting</li>
+<li>Live preview (side-by-side or toggle)</li>
+<li>Markdown shortcuts toolbar</li>
+<li>Image paste from clipboard</li>
+<li>Drag-and-drop file support</li>
+</ul>
+</li>
+</ul>
+<h4>Media Management</h4>
+<ul>
+<li><strong>Image Handling</strong>
+<ul>
+<li>Paste from clipboard</li>
+<li>Drag-and-drop upload</li>
+<li>Client-side optimization (resize, compress)</li>
+<li>Storage options (same repo, media branch, GitHub LFS)</li>
+<li>Image gallery view</li>
+</ul>
+</li>
+<li><strong>Asset Organization</strong>
+<ul>
+<li>Configurable media directory</li>
+<li>Automatic file naming</li>
+<li>Usage tracking (which posts use which images)</li>
+</ul>
+</li>
+</ul>
+<h4>File Navigation</h4>
+<ul>
+<li><strong>Multi-Modal Search</strong>
+<ul>
+<li>Command palette (Cmd+K)</li>
+<li>File tree sidebar (collapsible)</li>
+<li>Recent files quick access</li>
+<li>Client-side full-text search</li>
+</ul>
+</li>
+<li><strong>Smart Organization</strong>
+<ul>
+<li>Sort by date, title, or custom</li>
+<li>Filter by tags, draft status</li>
+<li>Bulk operations support</li>
+</ul>
+</li>
+</ul>
+<h4>GitHub Integration</h4>
+<ul>
+<li><strong>Authentication Options</strong>
+<ul>
+<li>Direct GitHub OAuth (self-hosted flow)</li>
+<li>Personal Access Token (simple option)</li>
+<li>Demo mode (no auth required)</li>
+</ul>
+</li>
+<li><strong>Repository Management</strong>
+<ul>
+<li>Multi-repo support</li>
+<li>Branch selection</li>
+<li>Create branches for drafts</li>
+<li>Pull request creation via GitHub API</li>
+</ul>
+</li>
+<li><strong>Smart Sync</strong>
+<ul>
+<li>Detect external changes</li>
+<li>Three-way merge UI</li>
+<li>Conflict resolution wizard</li>
+<li>Background sync queue</li>
+</ul>
+</li>
+</ul>
+<h4>Mobile Experience</h4>
+<ul>
+<li><strong>Touch-First Interface</strong>
+<ul>
+<li>Swipe gestures for navigation</li>
+<li>Touch-friendly button sizes</li>
+<li>Responsive layout breakpoints</li>
+<li>Mobile-specific shortcuts menu</li>
+</ul>
+</li>
+<li><strong>Progressive Web App</strong>
+<ul>
+<li>Install to home screen</li>
+<li>Work offline</li>
+<li>Local notifications for sync status</li>
+</ul>
+</li>
+</ul>
+<h3>Non-Functional Requirements</h3>
+<h4>Deployment</h4>
+<ul>
+<li><strong>Container Requirements</strong>
+<ul>
+<li>Single container image &lt;100MB</li>
+<li>Stateless application design</li>
+<li>Horizontal scaling support</li>
+<li>Resource limits: 256MB RAM, 0.5 CPU</li>
+</ul>
+</li>
+<li><strong>Kubernetes Support</strong>
+<ul>
+<li>Helm chart with sensible defaults</li>
+<li>Support for Ingress controllers</li>
+<li>ConfigMap for runtime config</li>
+<li>Optional persistent volume for cache</li>
+</ul>
+</li>
+</ul>
+<h4>Performance</h4>
+<ul>
+<li><strong>Targets by Deployment</strong>
+<ul>
+<li>Self-hosted: &lt;50ms response for all actions</li>
+<li>Mobile: &lt;100ms response on 4G</li>
+<li>Offline: Instant for cached content</li>
+</ul>
+</li>
+<li><strong>Scalability</strong>
+<ul>
+<li>Handle 10,000+ posts per user</li>
+<li>Support 100+ concurrent users per instance</li>
+<li>Horizontal scaling via Kubernetes</li>
+<li>Client-side processing for heavy operations</li>
+</ul>
+</li>
+</ul>
+<h4>Security</h4>
+<ul>
+<li><strong>Defense in Depth</strong>
+<ul>
+<li>CSP headers enforced by application</li>
+<li>Sandboxed preview iframe</li>
+<li>Encrypted token storage (client-side)</li>
+<li>No server-side token storage</li>
+</ul>
+</li>
+<li><strong>Privacy First</strong>
+<ul>
+<li>No telemetry or analytics</li>
+<li>All data stays in user’s browser/GitHub</li>
+<li>No cookies beyond session</li>
+<li>GDPR compliant by design</li>
+</ul>
+</li>
+</ul>
+<h3>Acceptance Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Deploy with single docker/helm command</li>
+<li><input disabled="" type="checkbox"/>
+New user can start editing in &lt;30 seconds</li>
+<li><input disabled="" type="checkbox"/>
+Power user can access all features via keyboard</li>
+<li><input disabled="" type="checkbox"/>
+Mobile user can create and publish posts</li>
+<li><input disabled="" type="checkbox"/>
+Works offline with full functionality</li>
+<li><input disabled="" type="checkbox"/>
+Handles 1000+ posts without degradation</li>
+<li><input disabled="" type="checkbox"/>
+Zero data loss in all scenarios</li>
+<li><input disabled="" type="checkbox"/>
+No external service dependencies</li>
+</ul>
+<h2>Technical Considerations</h2>
+<h3>Self-Hosted Architecture</h3>
+<pre><code>┌─────────────────────────────────────────────────┐
+│                   User Devices                   │
+├─────────────────────────────────────────────────┤
+│  Desktop Browser    Mobile Browser    PWA App   │
+└─────────────────────────────────────────────────┘
+                          │
+                          │ HTTPS
+                          ▼
+┌─────────────────────────────────────────────────┐
+│              Self-Hosted Instance               │
+├─────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌──────────────┐            │
+│  │   Fastify   │  │   SQLite3   │            │
+│  │  (Server)   │  │   (Cache)   │            │
+│  └─────────────┘  └──────────────┘            │
+│                                                 │
+│  ┌─────────────────────────────────┐           │
+│  │        Docker Container         │           │
+│  │  - Fastify + Helmet security   │           │
+│  │  - Oslo OAuth implementation   │           │
+│  │  - Pino structured logging     │           │
+│  │  - UnoCSS + Marked frontend    │           │
+│  └─────────────────────────────────┘           │
+└─────────────────────────────────────────────────┘
+                          │
+                          │ HTTPS (Direct)
+                          ▼
+                ┌─────────────────┐
+                │   GitHub API    │
+                └─────────────────┘
+</code></pre>
+<h3>Technology Choices</h3>
+<ul>
+<li><strong>Frontend</strong>:
+<ul>
+<li><strong>Core</strong>: Vanilla JS + Web Components</li>
+<li><strong>Markdown</strong>: <a href="https://marked.js.org/">Marked</a> - Fast, lightweight markdown parser</li>
+<li><strong>Styling</strong>: <a href="https://unocss.dev/">UnoCSS</a> - Atomic CSS engine for minimal bundle size</li>
+<li><strong>State</strong>: LocalStorage + IndexedDB</li>
+<li><strong>Build</strong>: <a href="https://esbuild.github.io/">Esbuild</a> - Extremely fast bundler and minifier</li>
+</ul>
+</li>
+<li><strong>Backend</strong>:
+<ul>
+<li><strong>Framework</strong>: <a href="https://www.fastify.io/">Fastify</a> - Fast, low-overhead web framework</li>
+<li><strong>Database</strong>: <a href="https://github.com/WiseLibs/better-sqlite3">better-sqlite3</a> - For optional caching layer</li>
+<li><strong>Security</strong>: <a href="https://helmetjs.github.io/">Helmet</a> - Security headers middleware</li>
+<li><strong>Logging</strong>: <a href="https://getpino.io/">Pino</a> - Fast, low-overhead logger</li>
+<li><strong>OAuth</strong>: <a href="https://oslo.js.org/">Oslo</a> - Modern auth utilities for GitHub OAuth</li>
+<li><strong>Validation</strong>: <a href="https://zod.dev/">Zod</a> - TypeScript-first schema validation</li>
+</ul>
+</li>
+<li><strong>Development</strong>:
+<ul>
+<li><strong>Linting</strong>: <a href="https://biomejs.dev/">Biome</a> - Fast formatter and linter</li>
+<li><strong>Testing</strong>: <a href="https://vitest.dev/">Vitest</a> - Fast unit test framework</li>
+<li><strong>Language</strong>: TypeScript for type safety</li>
+</ul>
+</li>
+<li><strong>Deployment</strong>: Docker + Kubernetes
+<ul>
+<li>Single container image</li>
+<li>Helm charts for K8s</li>
+<li>Docker Compose for simple deploys</li>
+</ul>
+</li>
+</ul>
+<h3>Deployment Strategy</h3>
+<pre><code class="language-yaml"># docker-compose.yml
+version: '3.8'
+services:
+  github-cms:
+    image: github-markdown-cms:latest
+    ports:
+      - '3000:3000'
+    environment:
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+      - BASE_URL=${BASE_URL:-http://localhost:3000}
+    volumes:
+      - ./config:/app/config:ro
+    restart: unless-stopped
+</code></pre>
+<pre><code class="language-yaml"># values.yaml (Helm)
+replicaCount: 2
+
+image:
+  repository: github-markdown-cms
+  tag: 'latest'
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: cms.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+</code></pre>
+<h2>Feature Specifications</h2>
+<h3>Demo Mode</h3>
+<p><strong>Zero-Friction Trial</strong></p>
+<ul>
+<li>Landing page with embedded editor</li>
+<li>Pre-loaded sample content</li>
+<li>All features work locally</li>
+<li>Browser storage only</li>
+<li>“Sign in to sync with GitHub” prompt</li>
+</ul>
+<h3>Progressive Vim Mode</h3>
+<pre><code class="language-typescript">// Skill level detection - all client-side
+enum VimLevel {
+  Off = 'off',
+  Basic = 'basic',
+  Intermediate = 'intermediate',
+  Advanced = 'advanced',
+}
+
+const vimLevelDescriptions: Record&lt;VimLevel, string&gt; = {
+  [VimLevel.Off]: 'No vim bindings',
+  [VimLevel.Basic]: 'Common commands (:w, :q, hjkl)',
+  [VimLevel.Intermediate]: '+ visual mode, searching',
+  [VimLevel.Advanced]: '+ macros, registers, ex commands',
+};
+
+// Store preference locally with type safety
+export function setVimLevel(level: VimLevel): void {
+  localStorage.setItem('vim-level', level);
+}
+</code></pre>
+<h3>GitHub OAuth (Self-Hosted)</h3>
+<pre><code class="language-typescript">// Server-side OAuth using Oslo and Fastify
+import { GitHub } from '@oslo/oauth2';
+import { z } from 'zod';
+
+// Validation schemas
+const AuthCallbackSchema = z.object({
+  code: z.string(),
+  state: z.string(),
+});
+
+// OAuth setup with Oslo
+export function setupOAuth(fastify: FastifyInstance) {
+  const github = new GitHub(process.env.GITHUB_CLIENT_ID!, process.env.GITHUB_CLIENT_SECRET!);
+
+  // Initiate OAuth flow
+  fastify.get('/api/auth/login', async (request, reply) =&gt; {
+    const state = generateState();
+    const url = await github.createAuthorizationURL(state, {
+      scopes: ['repo', 'user'],
+    });
+
+    // Store state in secure session
+    reply.setCookie('oauth_state', state, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 60 * 10, // 10 minutes
+    });
+
+    return reply.redirect(url.toString());
+  });
+
+  // Handle OAuth callback
+  fastify.post('/api/auth/callback', async (request, reply) =&gt; {
+    const { code, state } = AuthCallbackSchema.parse(request.body);
+    const storedState = request.cookies.oauth_state;
+
+    if (!storedState || storedState !== state) {
+      throw new Error('Invalid state');
+    }
+
+    const tokens = await github.validateAuthorizationCode(code);
+
+    // Return token to client (encrypted in production)
+    return { access_token: tokens.accessToken };
+  });
+}
+</code></pre>
+<h3>Offline Sync Architecture</h3>
+<pre><code class="language-typescript">import { z } from 'zod';
+
+// Operation schema validation
+const SyncOperationSchema = z.object({
+  id: z.string().optional(),
+  type: z.enum(['create', 'update', 'delete']),
+  path: z.string(),
+  content: z.string().optional(),
+  timestamp: z.number(),
+});
+
+type SyncOperation = z.infer&lt;typeof SyncOperationSchema&gt;;
+
+// Browser-based sync queue with IndexedDB
+export class OfflineSync {
+  private db: IDBDatabase | null = null;
+
+  async initialize(): Promise&lt;void&gt; {
+    const request = indexedDB.open('GitHubCMS', 1);
+
+    request.onupgradeneeded = (event) =&gt; {
+      const db = (event.target as IDBOpenDBRequest).result;
+
+      if (!db.objectStoreNames.contains('queue')) {
+        const queue = db.createObjectStore('queue', {
+          keyPath: 'id',
+          autoIncrement: true,
+        });
+        queue.createIndex('timestamp', 'timestamp');
+      }
+
+      if (!db.objectStoreNames.contains('cache')) {
+        const cache = db.createObjectStore('cache', { keyPath: 'path' });
+        cache.createIndex('modified', 'modified');
+      }
+    };
+
+    this.db = await new Promise((resolve, reject) =&gt; {
+      request.onsuccess = () =&gt; resolve(request.result);
+      request.onerror = () =&gt; reject(request.error);
+    });
+  }
+
+  async queueOperation(operation: Omit&lt;SyncOperation, 'id'&gt;): Promise&lt;void&gt; {
+    const validated = SyncOperationSchema.parse({
+      ...operation,
+      timestamp: Date.now(),
+    });
+
+    const tx = this.db!.transaction(['queue'], 'readwrite');
+    await tx.objectStore('queue').add(validated);
+
+    if (navigator.onLine) {
+      this.processQueue();
+    }
+  }
+
+  async processQueue(): Promise&lt;void&gt; {
+    const tx = this.db!.transaction(['queue'], 'readonly');
+    const pending = await this.getAllFromStore&lt;SyncOperation&gt;(tx.objectStore('queue'));
+
+    for (const op of pending) {
+      try {
+        await this.executeOperation(op);
+        await this.removeFromQueue(op.id!);
+      } catch (error: any) {
+        if (error.status === 409) {
+          await this.handleConflict(op);
+        }
+      }
+    }
+  }
+
+  private async getAllFromStore&lt;T&gt;(store: IDBObjectStore): Promise&lt;T[]&gt; {
+    return new Promise((resolve, reject) =&gt; {
+      const request = store.getAll();
+      request.onsuccess = () =&gt; resolve(request.result);
+      request.onerror = () =&gt; reject(request.error);
+    });
+  }
+
+  private async removeFromQueue(id: string | number): Promise&lt;void&gt; {
+    const tx = this.db!.transaction(['queue'], 'readwrite');
+    await tx.objectStore('queue').delete(id);
+  }
+
+  private async executeOperation(op: SyncOperation): Promise&lt;void&gt; {
+    // Implementation depends on GitHub API client
+    throw new Error('Not implemented');
+  }
+
+  private async handleConflict(op: SyncOperation): Promise&lt;void&gt; {
+    // Show conflict resolution UI
+    throw new Error('Not implemented');
+  }
+}
+
+// Server-side cache with better-sqlite3 (optional)
+import Database from 'better-sqlite3';
+
+export class ServerCache {
+  private db: Database.Database;
+
+  constructor(dbPath: string = ':memory:') {
+    this.db = new Database(dbPath);
+    this.initialize();
+  }
+
+  private initialize(): void {
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS cache (
+        path TEXT PRIMARY KEY,
+        content TEXT,
+        etag TEXT,
+        modified INTEGER,
+        created INTEGER DEFAULT (unixepoch())
+      );
+      
+      CREATE INDEX IF NOT EXISTS idx_modified ON cache(modified);
+    `);
+  }
+
+  get(path: string): any {
+    const stmt = this.db.prepare('SELECT * FROM cache WHERE path = ?');
+    return stmt.get(path);
+  }
+
+  set(path: string, content: string, etag: string): void {
+    const stmt = this.db.prepare(`
+      INSERT OR REPLACE INTO cache (path, content, etag, modified)
+      VALUES (?, ?, ?, ?)
+    `);
+    stmt.run(path, content, etag, Date.now());
+  }
+
+  clear(): void {
+    this.db.exec('DELETE FROM cache');
+  }
+}
+</code></pre>
+<h2>Implementation Priorities</h2>
+<h3>Phase 1: Core Foundation (Week 1-2)</h3>
+<ol>
+<li>Docker setup with multi-stage build</li>
+<li>Basic HTML/CSS/JS structure</li>
+<li>GitHub OAuth implementation</li>
+<li>Simple file navigation</li>
+<li>Mobile responsive layout</li>
+<li>Demo mode with local storage</li>
+</ol>
+<h3>Phase 2: Essential Features (Week 3-4)</h3>
+<ol>
+<li>Markdown editor implementation</li>
+<li>Service worker for offline</li>
+<li>Client-side search</li>
+<li>Basic vim mode</li>
+<li>GitHub API integration</li>
+<li>Conflict detection</li>
+</ol>
+<h3>Phase 3: Deployment &amp; Scaling (Week 5-6)</h3>
+<ol>
+<li>Kubernetes manifests</li>
+<li>Helm chart creation</li>
+<li>Health check endpoints</li>
+<li>Horizontal scaling tests</li>
+<li>Load balancing setup</li>
+<li>Backup strategies</li>
+</ol>
+<h3>Phase 4: Power Features (Week 7-8)</h3>
+<ol>
+<li>Advanced vim mode</li>
+<li>Multi-file operations</li>
+<li>Git history viewer</li>
+<li>Pull request creation</li>
+<li>Media optimization</li>
+<li>Bulk operations</li>
+</ol>
+<h2>Success Metrics</h2>
+<h3>Deployment</h3>
+<ul>
+<li>Single command deployment time &lt;5 minutes</li>
+<li>Docker image size &lt;100MB</li>
+<li>Helm chart works on major K8s providers</li>
+<li>Zero configuration for basic usage</li>
+</ul>
+<h3>Performance</h3>
+<ul>
+<li>Lighthouse score &gt;95</li>
+<li>First paint &lt;1s on 3G</li>
+<li>Offline mode fully functional</li>
+<li>100 concurrent users per instance</li>
+</ul>
+<h3>Adoption</h3>
+<ul>
+<li>1000 GitHub stars in 3 months</li>
+<li>50+ self-hosted instances</li>
+<li>Active community contributions</li>
+<li>Multiple language translations</li>
+</ul>
+<h2>Conclusion</h2>
+<p>This specification provides a truly self-hosted GitHub Markdown CMS that aligns with the philosophy of user ownership and control. By eliminating all SaaS dependencies and providing simple deployment options, we enable users to run their own instances while maintaining all the powerful features of the original vision.</p>
+<p>The key differentiator is that users own their infrastructure, their data, and their deployment - with no vendor lock-in or ongoing service costs beyond their own hosting.</p>
+
+    </div>
+    
+    <section class="backlinks">
+                <h2>Backlinks</h2>
+                <ul class="backlinks-list"><li><a href="/forge/projects/github-markdown-cms/index.html">GitHub Markdown CMS Project</a></li></ul>
+            </section>
+</article>
+
+        </div>
+    </main>
+    
+    <footer role="contentinfo">
+        <div class="container">
+            <p>Generated by para-ssg | Press <kbd>Ctrl</kbd>+<kbd>K</kbd> to search</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.0.0/marked.min.js"></script>
+    <script>
+        
+(function(){let searchIndex=null;let searchInput=null;let searchResults=null;let searchOverlay=null;let currentFocus=-1;
+document.addEventListener('DOMContentLoaded',function(){initializeSearch();});function initializeSearch(){
+createSearchOverlay();
+document.addEventListener('keydown',function(e){
+if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openSearch();}
+else if(e.key==='/'&&!isInputElement(e.target)){e.preventDefault();openSearch();}
+else if(e.key==='Escape'&&searchOverlay.style.display==='block'){closeSearch();}});
+loadSearchIndex();}function createSearchOverlay(){
+searchOverlay=document.createElement('div');searchOverlay.id='search-overlay';searchOverlay.setAttribute('role','dialog');searchOverlay.setAttribute('aria-modal','true');searchOverlay.setAttribute('aria-labelledby','search-input');searchOverlay.style.cssText=`display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,10,10,0.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:1000;opacity:0;transition:opacity 0.3s ease;`;
+const searchContainer=document.createElement('div');searchContainer.id='search-container';searchContainer.style.cssText=`position:absolute;top:10%;left:50%;transform:translateX(-50%)scale(0.95);width:90%;max-width:700px;background:var(--surface-2,#2a2a2a);border:1px solid var(--surface-3,#333);border-radius:16px;box-shadow:0 24px 48px rgba(0,0,0,0.4),0 12px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.05);max-height:80vh;display:flex;flex-direction:column;opacity:0;transition:transform 0.3s ease,opacity 0.3s ease;`;
+searchInput=document.createElement('input');searchInput.type='text';searchInput.id='search-input';searchInput.placeholder='Search documents... (Press "/" or Ctrl+K)';searchInput.setAttribute('aria-label','Search documents');searchInput.setAttribute('aria-describedby','search-instructions');searchInput.style.cssText=`padding:24px 28px;font-size:18px;font-weight:400;border:none;border-bottom:1px solid var(--surface-3,#333);background:transparent;outline:none;color:var(--text-primary,#e0e0e0);transition:border-color 0.2s ease;`;searchInput.setAttribute('autocomplete','off');searchInput.setAttribute('spellcheck','false');
+searchResults=document.createElement('div');searchResults.id='search-results';searchResults.setAttribute('role','listbox');searchResults.setAttribute('aria-label','Search results');searchResults.setAttribute('aria-live','polite');searchResults.style.cssText=`padding:0 12px 12px;overflow-y:auto;max-height:calc(80vh-90px);scrollbar-width:thin;scrollbar-color:var(--surface-4,#444)transparent;`;
+const scrollbarStyles=document.createElement('style');scrollbarStyles.textContent=`#search-results::-webkit-scrollbar{width:8px;}#search-results::-webkit-scrollbar-track{background:transparent;}#search-results::-webkit-scrollbar-thumb{background:var(--surface-4,#444);border-radius:4px;}#search-results::-webkit-scrollbar-thumb:hover{background:var(--surface-5,#555);}#search-container.search-active{transform:translateX(-50%)scale(1);opacity:1;}#search-overlay.search-active{opacity:1;}@keyframes resultFadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}.search-result{animation:resultFadeIn 0.3s ease forwards;}.search-result:nth-child(1){animation-delay:0s;}.search-result:nth-child(2){animation-delay:0.05s;}.search-result:nth-child(3){animation-delay:0.1s;}.search-result:nth-child(4){animation-delay:0.15s;}.search-result:nth-child(5){animation-delay:0.2s;}.search-result:nth-child(n+6){animation-delay:0.25s;}`;document.head.appendChild(scrollbarStyles);
+const searchInstructions=document.createElement('div');searchInstructions.id='search-instructions';searchInstructions.className='sr-only';searchInstructions.textContent='Type to search. Use arrow keys to navigate results. Press Enter to select.';searchInstructions.style.cssText=`position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;`;
+searchContainer.appendChild(searchInput);searchContainer.appendChild(searchInstructions);searchContainer.appendChild(searchResults);searchOverlay.appendChild(searchContainer);document.body.appendChild(searchOverlay);
+searchInput.addEventListener('input',performSearch);searchInput.addEventListener('keydown',handleSearchNavigation);searchOverlay.addEventListener('click',function(e){if(e.target===searchOverlay){closeSearch();}});}function loadSearchIndex(){fetch('/search-index.json').then(response=>response.json()).then(data=>{searchIndex=data;console.log('Search index loaded:',data.stats);}).catch(error=>{console.error('Failed to load search index:',error);});}function openSearch(){if(!searchOverlay)return;searchOverlay.style.display='block';searchInput.value='';searchResults.innerHTML='';currentFocus=-1;
+requestAnimationFrame(()=>{searchOverlay.classList.add('search-active');document.getElementById('search-container').classList.add('search-active');searchInput.focus();});}function closeSearch(){if(!searchOverlay)return;
+searchOverlay.classList.remove('search-active');document.getElementById('search-container').classList.remove('search-active');
+setTimeout(()=>{searchOverlay.style.display='none';searchInput.value='';searchResults.innerHTML='';},300);}function performSearch(){const query=searchInput.value.toLowerCase().trim();if(!query){searchResults.innerHTML='';return;}if(!searchIndex||!searchIndex.entries){searchResults.innerHTML='<p style="color: #a0a0a0;">Search index not loaded yet...</p>';return;}const results=searchDocuments(query);displayResults(results,query);}function searchDocuments(query){const results=[];const queryWords=query.split(/\s+/).filter(w=>w.length>0);for(const entry of searchIndex.entries){let score=0;let matches=[];
+for(const word of queryWords){if(entry.title.toLowerCase().includes(word)){score+=10;matches.push('title');}}
+for(const tag of entry.tags){for(const word of queryWords){if(tag.toLowerCase().includes(word)){score+=5;matches.push('tag');break;}}}
+for(const word of queryWords){if(entry.content.includes(word)){score+=1;matches.push('content');}}if(score>0){results.push({entry:entry,score:score,matches:[...new Set(matches)]});}}
+results.sort((a,b)=>b.score-a.score);return results.slice(0,20);
+}function displayResults(results,query){if(results.length===0){searchResults.innerHTML='<p style="color: #a0a0a0;" role="status">No results found</p>';searchResults.setAttribute('aria-label','No search results found');return;}searchResults.setAttribute('aria-label',`${results.length}search results found`);const html=results.map((result,index)=>{const entry=result.entry;const highlightedTitle=highlightText(entry.title,query);const highlightedExcerpt=highlightText(entry.excerpt,query);const categoryColors={'projects':'var(--accent-gradient-1, linear-gradient(135deg, #007acc, #0099ff))','areas':'var(--accent-gradient-2, linear-gradient(135deg, #00cc88, #00ffaa))','resources':'var(--accent-gradient-3, linear-gradient(135deg, #cc7700, #ff9900))','archives':'var(--accent-gradient-4, linear-gradient(135deg, #cc0077, #ff0099))'};const categoryGradient=categoryColors[entry.category]||categoryColors['resources'];return`<div class="search-result"data-index="${index}"role="option"aria-selected="false"tabindex="-1"style="
+                    position: relative;
+                    padding: 20px;
+                    margin: 0 16px 16px;
+                    background: var(--surface-1, #1a1a1a);
+                    border: 1px solid var(--surface-3, #333);
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                "><div style="
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        width: 4px;
+                        background: ${categoryGradient};
+                        border-radius: 12px 0 0 12px;
+                        transition: width 0.3s ease;
+                    "></div><h3 style="
+                        margin: 0 0 8px 0;
+                        padding-left: 8px;
+                        font-size: 18px;
+                        font-weight: 600;
+                        line-height: 1.4;
+                    "><a href="${entry.path}"style="
+                            text-decoration: none;
+                            color: var(--text-primary, #e0e0e0);
+                            transition: color 0.2s ease;
+                        "onmouseover="this.style.color='var(--link-hover, #4a9eff)'"onmouseout="this.style.color='var(--text-primary, #e0e0e0)'">${highlightedTitle}</a></h3><p style="
+                        margin: 0 0 12px 0;
+                        padding-left: 8px;
+                        color: var(--text-secondary, #a0a0a0);
+                        font-size: 14px;
+                        line-height: 1.6;
+                    ">${highlightedExcerpt}</p><div style="
+                        padding-left: 8px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                        align-items: center;
+                    "><span style="
+                            background: ${categoryGradient};
+                            color: white;
+                            padding: 4px 12px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 500;
+                            text-transform: capitalize;
+                        ">${entry.category}</span>${entry.tags.slice(0,3).map(tag=>`<span style="
+                                background: var(--surface-3, #333);
+                                color: var(--text-secondary, #a0a0a0);
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 12px;
+                                transition: all 0.2s ease;
+                            "onmouseover="this.style.background='var(--surface-4, #444)'"onmouseout="this.style.background='var(--surface-3, #333)'">${tag}</span>`).join('')}</div></div>`;}).join('');searchResults.innerHTML=html;
+const resultElements=searchResults.querySelectorAll('.search-result');resultElements.forEach(el=>{
+el.addEventListener('mouseenter',function(){this.style.background='var(--surface-2, #2a2a2a)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.2)';const accentBar=this.querySelector('div');if(accentBar)accentBar.style.width='6px';});el.addEventListener('mouseleave',function(){this.style.background='var(--surface-1, #1a1a1a)';this.style.transform='translateY(0)';this.style.boxShadow='none';const accentBar=this.querySelector('div');if(accentBar)accentBar.style.width='4px';});
+el.addEventListener('click',function(e){if(!e.target.closest('a')){const link=this.querySelector('a');if(link)window.location.href=link.href;}});});}function highlightText(text,query){if(!text)return'';const words=query.split(/\s+/).filter(w=>w.length>0);let highlighted=text;for(const word of words){const regex=new RegExp(`(${escapeRegex(word)})`,'gi');highlighted=highlighted.replace(regex,'<mark style="background: var(--link-color, #007acc); color: white; padding: 1px 4px; border-radius: 3px; font-weight: 500;">$1</mark>');}return highlighted;}function handleSearchNavigation(e){const results=searchResults.querySelectorAll('.search-result');if(e.key==='ArrowDown'){e.preventDefault();currentFocus++;if(currentFocus>=results.length)currentFocus=0;setFocus(results);}else if(e.key==='ArrowUp'){e.preventDefault();currentFocus--;if(currentFocus<0)currentFocus=results.length-1;setFocus(results);}else if(e.key==='Enter'&&currentFocus>=0&&currentFocus<results.length){e.preventDefault();const link=results[currentFocus].querySelector('a');if(link)window.location.href=link.href;}}function setFocus(results){results.forEach((el,index)=>{if(index===currentFocus){el.style.background='var(--link-color, #007acc)';el.style.transform='translateY(-2px) translateZ(0)';el.style.boxShadow='0 0 0 2px var(--link-color, #007acc)';el.scrollIntoView({block:'nearest',behavior:'smooth'});el.setAttribute('aria-selected','true');el.setAttribute('tabindex','0');const accentBar=el.querySelector('div');if(accentBar)accentBar.style.width='8px';}else{el.style.background='var(--surface-1, #1a1a1a)';el.style.transform='translateY(0) translateZ(0)';el.style.boxShadow='none';el.setAttribute('aria-selected','false');el.setAttribute('tabindex','-1');const accentBar=el.querySelector('div');if(accentBar)accentBar.style.width='4px';}});}function isInputElement(element){return element.tagName==='INPUT'||element.tagName==='TEXTAREA'||element.isContentEditable;}function escapeRegex(string){return string.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+document.addEventListener('DOMContentLoaded',function(){const inlineSearchBoxes=document.querySelectorAll('.search-box');inlineSearchBoxes.forEach(box=>{box.addEventListener('click',openSearch);box.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();openSearch();}});});});})();
+        // Header interactions for para-ssg
+(function(){
+    const header = document.querySelector('.site-header');
+    const toggle = document.querySelector('.nav-toggle');
+    if(toggle){
+        toggle.addEventListener('click', () => header.classList.toggle('open'));
+    }
+    window.addEventListener('scroll', () => {
+        if(window.scrollY > 40){
+            document.body.classList.add('scrolled');
+        } else {
+            document.body.classList.remove('scrolled');
+        }
+    });
+})();
+    </script>
+</body>
+</html>

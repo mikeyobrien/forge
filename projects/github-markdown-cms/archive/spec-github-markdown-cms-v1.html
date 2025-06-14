@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Markdown CMS Specification | forge</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}:focus-visible{outline:2px solid var(--accent-primary);outline-offset:2px;}:root{--bg-primary:#0f0f0f;--bg-secondary:#1a1a1a;--bg-tertiary:#2a2a2a;--bg-elevated:#333333;--text-primary:#f0f0f0;--text-secondary:#b4b4b4;--text-muted:#737373;--text-subtle:#525252;--border-primary:#333333;--border-secondary:#404040;--border-subtle:#262626;--accent-primary:#0EA5E9;--accent-secondary:#3B82F6;--accent-gradient:linear-gradient(135deg,var(--accent-primary)0%,var(--accent-secondary)100%);--accent-gradient-hover:linear-gradient(135deg,#0284C7 0%,#2563EB 100%);--gradient-primary:linear-gradient(135deg,var(--accent-primary)0%,var(--accent-secondary)100%);--success:#10B981;--success-bg:rgba(16,185,129,0.1);--warning:#F59E0B;--warning-bg:rgba(245,158,11,0.1);--error:#EF4444;--error-bg:rgba(239,68,68,0.1);--info:#06B6D4;--info-bg:rgba(6,182,212,0.1);--link-primary:#60A5FA;--link-hover:#93C5FD;--link-visited:#A78BFA;--surface-base:var(--bg-primary);--surface-raised:var(--bg-secondary);--surface-overlay:var(--bg-tertiary);--surface-elevated:var(--bg-elevated);--interactive-hover:rgba(255,255,255,0.05);--interactive-active:rgba(255,255,255,0.1);--interactive-disabled:rgba(255,255,255,0.02);--shadow-sm:0 1px 2px 0 rgba(0,0,0,0.3);--shadow-base:0 1px 3px 0 rgba(0,0,0,0.4),0 1px 2px 0 rgba(0,0,0,0.3);--shadow-md:0 4px 6px -1px rgba(0,0,0,0.4),0 2px 4px -1px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4),0 4px 6px -2px rgba(0,0,0,0.3);--accent:var(--accent-primary);--accent-hover:var(--accent-secondary);--link-color:var(--link-primary);--link-hover:var(--link-hover);--border-color:var(--border-primary);}:root{--space-1:0.5rem;--space-2:1rem;--space-3:1.5rem;--space-4:2rem;--space-6:3rem;--space-8:4rem;--space-12:6rem;--space-16:8rem;--breakpoint-sm:640px;--breakpoint-md:768px;--breakpoint-lg:1024px;--breakpoint-xl:1280px;}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Inter','Helvetica Neue',sans-serif;line-height:1.6;color:var(--text-primary);background-color:var(--bg-primary);min-height:100vh;font-feature-settings:'cv11','ss01';font-variant-numeric:tabular-nums;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;display:grid;grid-template-areas:"header" "main" "footer";grid-template-rows:auto 1fr auto;grid-template-columns:1fr;}.container{max-width:1000px;margin:0 auto;padding:0 var(--space-4);width:100%;}.site-header{grid-area:header;background:linear-gradient(135deg,#181818 0%,#0E0E0E 60%);color:var(--text-primary);height:var(--header-height,80px);transition:height 0.25s ease,box-shadow 0.25s;position:sticky;top:0;z-index:100;display:flex;flex-direction:column;align-items:center;}.header-inner{width:min(90%,1200px);display:flex;justify-content:space-between;align-items:center;padding-top:var(--space-2);}.logo{font-size:2rem;color:#fff;font-weight:700;text-decoration:none;}.site-nav{display:flex;gap:1.5rem;}.nav-item{color:var(--text-secondary);font-weight:500;position:relative;text-decoration:none;transition:color 0.2s ease;}.nav-item:hover{color:var(--text-primary);text-decoration:none;}.nav-item.active{color:var(--accent-primary);}.nav-item.active::after,.nav-item:hover::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--accent-primary);}.nav-divider{width:1px;height:20px;background-color:var(--text-secondary);opacity:0.3;margin:0 0.5rem;align-self:center;}.nav-toggle{display:none;background:none;border:none;}.burger{width:24px;height:2px;background:#fff;position:relative;}.burger::before,.burger::after{content:"";position:absolute;width:24px;height:2px;background:#fff;}.burger::before{top:-6px;}.burger::after{top:6px;}body.scrolled .site-header{height:60px;box-shadow:0 2px 4px rgba(0,0,0,0.4);}.nav-search{display:none;}main{grid-area:main;padding:var(--space-4)0;min-height:0;}.file-cards{display:grid;grid-template-columns:1fr;gap:var(--space-3);margin-top:var(--space-4);max-width:1200px;margin-left:auto;margin-right:auto;}.file-card{background-color:var(--surface-raised);border:1px solid var(--border-primary);border-radius:8px;padding:var(--space-3);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1),background-color 0.3s cubic-bezier(0.4,0,0.2,1),border-color 0.3s cubic-bezier(0.4,0,0.2,1),box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;}.file-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent-gradient);opacity:0;transition:opacity 0.3s ease;}.file-card:hover{border-color:var(--border-secondary);background-color:var(--surface-overlay);transform:translateY(-2px)translateZ(0);box-shadow:var(--shadow-md);}.file-card:hover::before{opacity:1;}.file-card:active{transform:translateY(-1px)translateZ(0);transition:all 0.1s cubic-bezier(0.4,0,0.2,1);}.file-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-2);margin-bottom:var(--space-2);}.file-title{font-size:1.1rem;font-weight:600;margin:0;line-height:1.3;flex:1;min-width:0;}.file-title a{color:var(--text-primary);text-decoration:none;transition:color 0.2s ease;}.file-title a:hover{color:var(--accent-primary);text-decoration:none;}.file-category{font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;padding:0.25rem 0.5rem;border-radius:12px;white-space:nowrap;border:1px solid transparent;transition:all 0.2s ease;}.category-projects{background-color:rgba(16,185,129,0.1);color:var(--success);border-color:rgba(16,185,129,0.3);}.category-areas{background-color:rgba(59,130,246,0.1);color:var(--accent-secondary);border-color:rgba(59,130,246,0.3);}.category-resources{background-color:rgba(245,158,11,0.1);color:var(--warning);border-color:rgba(245,158,11,0.3);}.category-archives{background-color:rgba(107,114,128,0.1);color:var(--text-muted);border-color:rgba(107,114,128,0.3);}.category-other{background-color:rgba(139,92,246,0.1);color:#8B5CF6;border-color:rgba(139,92,246,0.3);}.file-card-meta{display:flex;justify-content:space-between;align-items:center;gap:var(--space-2);font-size:0.85rem;color:var(--text-muted);}.file-date{white-space:nowrap;font-feature-settings:'tnum';}.file-tags{display:flex;flex-wrap:wrap;gap:0.25rem;justify-content:flex-end;flex:1;min-width:0;}.file-tags .tag{font-size:0.75rem;padding:0.15rem 0.4rem;background-color:var(--surface-elevated);color:var(--text-secondary);border-radius:6px;border:1px solid var(--border-subtle);transition:all 0.2s ease;display:inline-flex;align-items:center;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.file-tags .tag:hover{background-color:var(--surface-overlay);border-color:var(--border-primary);color:var(--text-primary);}.no-tags{color:var(--text-muted);font-style:italic;font-size:0.8rem;}.document h1{font-size:clamp(1.75rem,4vw,2rem);margin-bottom:1rem;color:var(--text-primary);font-weight:600;letter-spacing:-0.025em;line-height:1.2;}.document-header{margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}.document-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-1);font-size:0.9rem;color:var(--text-muted);}.document-content{color:var(--text-primary);line-height:1.7;}.document-content h2{font-size:clamp(1.5rem,3.5vw,1.75rem);margin-top:var(--space-4);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.025em;line-height:1.3;}.document-content h3{font-size:clamp(1.25rem,3vw,1.5rem);margin-top:var(--space-3);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.02em;line-height:1.3;}.document-content h4{font-size:clamp(1.125rem,2.5vw,1.25rem);margin-top:var(--space-3);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.015em;line-height:1.4;}.document-content p{margin-bottom:var(--space-2);}.document-content ul,.document-content ol{margin-bottom:var(--space-2);margin-left:var(--space-3);}.document-content blockquote{border-left:3px solid var(--accent-primary);padding-left:var(--space-2);margin:var(--space-3)0;color:var(--text-secondary);font-style:italic;}.document-content code{background-color:var(--surface-raised);color:var(--text-primary);padding:0.2rem 0.4rem;border-radius:3px;font-family:'SF Mono',Monaco,'Cascadia Code','Roboto Mono',Consolas,'Courier New',monospace;font-size:0.9em;}.document-content pre{background-color:var(--surface-raised);border:1px solid var(--border-primary);padding:var(--space-2);border-radius:5px;overflow-x:auto;margin:var(--space-3)0;}.document-content pre code{background:none;padding:0;}.category-index h1{font-size:clamp(2rem,4vw,2.5rem);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:700;letter-spacing:-0.025em;line-height:1.2;}.category-description{color:var(--text-secondary);margin-bottom:var(--space-3);font-style:italic;line-height:1.5;}.document-count{color:var(--text-muted);font-size:0.9rem;margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}.document-list{display:grid;gap:var(--space-3);grid-template-columns:1fr;}.document-entry{padding:var(--space-3);border:1px solid var(--border-primary);border-radius:8px;background-color:var(--surface-raised);transition:transform 0.2s cubic-bezier(0.4,0,0.2,1),background-color 0.2s cubic-bezier(0.4,0,0.2,1),border-color 0.2s cubic-bezier(0.4,0,0.2,1);}.document-entry:hover{border-color:var(--border-secondary);background-color:var(--surface-overlay);}.document-entry h2{font-size:1.2rem;margin-bottom:0.5rem;}.document-entry h2 a{color:var(--link-primary);text-decoration:none;}.document-entry h2 a:hover{color:var(--link-hover);}.entry-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--space-1);}.summary{color:var(--text-secondary);line-height:1.5;}.directory-cards{margin-bottom:var(--space-4);}.directory-cards h2{font-size:1.5rem;margin-bottom:var(--space-3);color:var(--text-primary);}.directory-grid{display:grid;gap:var(--space-3);grid-template-columns:repeat(auto-fill,minmax(350px,1fr));}.directory-card{background-color:var(--surface-raised);border:1px solid var(--border-primary);border-radius:8px;transition:transform 0.2s cubic-bezier(0.4,0,0.2,1),background-color 0.2s cubic-bezier(0.4,0,0.2,1),border-color 0.2s cubic-bezier(0.4,0,0.2,1),box-shadow 0.2s cubic-bezier(0.4,0,0.2,1);}.directory-card:hover{transform:translateY(-2px);border-color:var(--accent-primary);background-color:var(--surface-overlay);box-shadow:0 4px 12px rgba(0,0,0,0.4);}.directory-link{display:block;padding:var(--space-3);text-decoration:none;color:inherit;height:100%;}.directory-card h3{font-size:1.25rem;margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;}.directory-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);font-size:0.875rem;color:var(--text-muted);}.directory-meta .doc-count{background-color:var(--bg-tertiary);padding:2px 8px;border-radius:4px;}.directory-meta .subdir-count{background-color:var(--bg-tertiary);padding:2px 8px;border-radius:4px;}.subdirectory-index .document-entries{margin-top:var(--space-4);}.subdirectory-index .document-entries h2{font-size:1.5rem;margin-bottom:var(--space-3);color:var(--text-primary);}.document-entries .document-entry+.document-entry{margin-top:var(--space-3);}.document-entry+.document-entry{margin-top:var(--space-3);}.empty-directory{text-align:center;color:var(--text-muted);padding:var(--space-6)var(--space-3);font-style:italic;}.subdirectory-index h1{font-size:2.5rem;margin-bottom:var(--space-2);background:var(--gradient-primary);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;}.subdirectory-description{color:var(--text-secondary);margin-bottom:var(--space-3);font-style:italic;line-height:1.5;}.item-count{color:var(--text-muted);font-size:0.9rem;margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}a{color:var(--link-primary);text-decoration:none;transition:color 0.2s cubic-bezier(0.4,0,0.2,1);}a:hover{color:var(--link-hover);text-decoration:underline;}.tag{color:var(--text-muted);font-size:0.85rem;margin-right:0.5rem;}.breadcrumbs{margin-bottom:var(--space-3);font-size:0.9rem;color:var(--text-muted);}.breadcrumbs ol{list-style:none;display:flex;align-items:center;}.breadcrumbs li{display:inline;}.breadcrumbs a{color:var(--text-secondary);text-decoration:none;}.breadcrumbs a:hover{color:var(--accent-primary);}.breadcrumbs .separator{margin:0 0.5rem;color:var(--text-muted);}.breadcrumbs .current{color:var(--text-primary);}footer{grid-area:footer;background-color:var(--surface-raised);border-top:1px solid var(--border-primary);padding:var(--space-3)0;text-align:center;color:var(--text-muted);font-size:0.85rem;}@media(max-width:640px){.container{padding:0 var(--space-2);}.nav-divider{display:none;}.nav-container{grid-template-columns:1fr;justify-items:center;gap:var(--space-2);text-align:center;}.nav-menu{justify-content:center;}grid-template-columns:repeat(2,1fr);gap:var(--space-2);max-width:200px;}.file-cards{gap:var(--space-2);}.file-card{padding:var(--space-2);}.file-card-header{flex-direction:column;align-items:flex-start;gap:var(--space-1);}.file-card-meta{flex-direction:column;align-items:flex-start;gap:var(--space-1);}.file-tags{justify-content:flex-start;}padding:var(--space-2)0;margin-bottom:var(--space-4);}main{padding:var(--space-2)0;}}@media(min-width:641px)and(max-width:768px){.nav-container{grid-template-columns:1fr auto;gap:var(--space-3);}gap:var(--space-3);max-width:300px;}.file-cards{max-width:700px;}}@media(min-width:1024px){.container{padding:0 var(--space-6);}.document-list{grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:var(--space-3);}.file-cards{gap:var(--space-4);}.nav-container{gap:var(--space-6);}}.loading{position:relative;pointer-events:none;opacity:0.7;}.loading::after{content:'';position:absolute;top:50%;left:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border:2px solid var(--accent-primary);border-radius:50%;border-top-color:transparent;animation:spinner 0.8s linear infinite;}@keyframes spinner{to{transform:rotate(360deg);}}.file-card,.document-entry,.search-result{transform:translateZ(0);backface-visibility:hidden;perspective:1000px;}.skip-link{position:absolute;top:-40px;left:0;background:var(--accent-primary);color:white;padding:var(--space-1)var(--space-2);text-decoration:none;border-radius:0 0 4px 0;z-index:1001;}.skip-link:focus{top:0;}@media(prefers-contrast:high){:root{--text-primary:#ffffff;--text-secondary:#e0e0e0;--bg-primary:#000000;--bg-secondary:#1a1a1a;--border-primary:#ffffff;}}@media print{header,footer,.search-box{display:none;}body{background:white;color:black;}a{color:black;text-decoration:underline;}}.comments-section{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border-primary);}.comments-section h2{margin-bottom:1.5rem;color:var(--text-primary);}#comments-list{margin-bottom:2rem;}.loading{color:var(--text-muted);text-align:center;padding:2rem;}.error-message{color:var(--error);background:var(--error-bg);padding:1rem;border-radius:8px;border:1px solid rgba(239,68,68,0.3);text-align:center;margin:1rem 0;}.comment{margin-bottom:1.5rem;padding:1rem;background:var(--card-bg);border-radius:8px;border:1px solid var(--border-primary);}.comment-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;}.avatar{width:32px;height:32px;border-radius:50%;border:2px solid var(--border-primary);}.comment-header .author{font-weight:500;color:var(--text-primary);text-decoration:none;}.comment-header .author:hover{color:var(--accent-primary);}.comment-header .date{color:var(--text-muted);font-size:0.85rem;margin-left:auto;}.comment-body{color:var(--text-secondary);line-height:1.6;}.comment-body p{margin:0.5rem 0;}.comment-body p:first-child{margin-top:0;}.comment-body p:last-child{margin-bottom:0;}.comment-body code{background:var(--bg-secondary);padding:0.2em 0.4em;border-radius:3px;font-size:0.9em;}.comment-body pre{background:var(--bg-secondary);padding:1rem;border-radius:4px;overflow-x:auto;}.comment-body blockquote{border-left:3px solid var(--accent-primary);padding-left:1rem;margin:1rem 0;color:var(--text-muted);}#add-comment-btn{display:inline-block;background:var(--accent-primary);color:white;padding:0.5rem 1rem;border-radius:4px;text-decoration:none;font-weight:500;transition:background-color 0.2s ease;}#add-comment-btn:hover{background:var(--accent-hover);}@media(max-width:640px){.comment{padding:0.75rem;}.comment-header{flex-wrap:wrap;}.comment-header .date{width:100%;margin-left:0;margin-top:0.5rem;}}
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="/forge/" class="logo">forge</a>
+            <nav class="site-nav">
+                <a href="/forge/projects/" class="nav-item active">Projects</a>
+                <a href="/forge/areas/" class="nav-item ">Areas</a>
+                <a href="/forge/resources/" class="nav-item ">Resources</a>
+                <a href="/forge/archives/" class="nav-item ">Archives</a>
+                <span class="nav-divider"></span>
+                <a href="/forge/blog/" class="nav-item ">Blog</a>
+            </nav>
+            <button class="nav-toggle" aria-label="Open menu">
+                <span class="burger"></span>
+            </button>
+        </div>
+    </header>
+    
+    <main id="main-content">
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/forge/">Home</a></li><li class="separator">/</li><li><a href="/forge/projects/">Projects</a></li><li class="separator">/</li><li><a href="/forge/projects/github-markdown-cms/">Github Markdown Cms</a></li><li class="separator">/</li><li><a href="/forge/projects/github-markdown-cms/archive/">Archive</a></li><li class="separator">/</li><li class="current">GitHub Markdown CMS Specification</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>GitHub Markdown CMS Specification</h1>
+        <div class="document-meta"><time class="date">2025-06-14</time>
+<span class="status status-active">active</span>
+<div class="tags"><span class="tag">cms</span> <span class="tag">github</span> <span class="tag">markdown</span> <span class="tag">specification</span> <span class="tag">vim</span></div></div>
+    </header>
+    
+    <div class="document-content">
+        <hr />
+<p>title: GitHub Markdown CMS Specification
+category: projects
+created: 2025-06-14
+modified: 2025-06-14
+tags: [cms, github, markdown, web-application, vim, github-pages]
+command_type: spec
+project: github-markdown-cms
+status: active
+generated_by: /spec
+related_docs: [projects/github-markdown-cms/index.md]
+context_source: []</p>
+<hr />
+<h1>GitHub Markdown CMS Specification</h1>
+<h2>Executive Summary</h2>
+<h3>Problem Statement</h3>
+<p>Bloggers using GitHub Pages need to manage their markdown posts through Git commands or GitHub’s web interface, which creates friction in the writing workflow. Existing solutions are either too complex (full CMS systems) or too simple (basic file editors).</p>
+<h3>Proposed Solution</h3>
+<p>A minimalist, keyboard-driven markdown CMS with vim bindings that uses GitHub as the backend storage. Features a Telescope-like fuzzy finder for rapid post navigation and seamless switching between raw markdown and rendered preview.</p>
+<h3>Key Benefits</h3>
+<ul>
+<li>Familiar vim keybindings for power users</li>
+<li>Fast, fuzzy post navigation</li>
+<li>Direct GitHub integration for version control</li>
+<li>Zero infrastructure costs (uses GitHub for storage)</li>
+<li>Instant publishing to GitHub Pages</li>
+</ul>
+<h2>Requirements</h2>
+<h3>Functional Requirements</h3>
+<h4>Core Editor</h4>
+<ul>
+<li>Vim keybindings for all editing operations</li>
+<li>Toggle between raw markdown and rendered preview</li>
+<li>Syntax highlighting for markdown</li>
+<li>Real-time preview updates</li>
+<li>Clean, distraction-free interface</li>
+</ul>
+<h4>File Navigation</h4>
+<ul>
+<li>Telescope-like fuzzy finder overlay</li>
+<li>Search by filename, title, or content</li>
+<li>Keyboard-only navigation</li>
+<li>Quick preview on selection</li>
+<li>Recently edited files section</li>
+</ul>
+<h4>GitHub Integration</h4>
+<ul>
+<li>OAuth authentication with GitHub</li>
+<li>List repositories with GitHub Pages enabled</li>
+<li>Read/write markdown files from repository</li>
+<li>Commit changes with meaningful messages</li>
+<li>Push to trigger GitHub Pages rebuild</li>
+</ul>
+<h4>Post Management</h4>
+<ul>
+<li>Create new posts with frontmatter templates</li>
+<li>Edit existing posts</li>
+<li>Delete posts (with confirmation)</li>
+<li>View post history (git log)</li>
+<li>Revert to previous versions</li>
+</ul>
+<h3>Non-Functional Requirements</h3>
+<h4>Performance</h4>
+<ul>
+<li>Fuzzy finder responds within 50ms</li>
+<li>File switching under 100ms</li>
+<li>Editor latency under 10ms for typing</li>
+<li>Preview rendering under 200ms</li>
+</ul>
+<h4>Usability</h4>
+<ul>
+<li>All actions accessible via keyboard</li>
+<li>Vim users should feel at home</li>
+<li>Minimal learning curve for vim users</li>
+<li>Clear visual feedback for all actions</li>
+</ul>
+<h4>Technical</h4>
+<ul>
+<li>Works in modern browsers (Chrome, Firefox, Safari)</li>
+<li>No backend server required (static hosting possible)</li>
+<li>Responsive design for various screen sizes</li>
+<li>Offline editing with sync when online</li>
+</ul>
+<h3>Acceptance Criteria</h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+User can authenticate with GitHub</li>
+<li><input disabled="" type="checkbox"/>
+User can select a GitHub Pages repository</li>
+<li><input disabled="" type="checkbox"/>
+User can create, edit, and delete posts</li>
+<li><input disabled="" type="checkbox"/>
+Vim keybindings work as expected</li>
+<li><input disabled="" type="checkbox"/>
+Fuzzy finder opens with configurable hotkey</li>
+<li><input disabled="" type="checkbox"/>
+Changes are committed and pushed to GitHub</li>
+<li><input disabled="" type="checkbox"/>
+Preview accurately renders GitHub Flavored Markdown</li>
+</ul>
+<h2>Technical Considerations</h2>
+<h3>Architecture Overview</h3>
+<pre><code>┌─────────────────┐     ┌──────────────────┐
+│                 │     │                  │
+│  Static Web App │────▶│  GitHub API      │
+│  (Frontend)     │     │  (Backend)       │
+│                 │     │                  │
+└─────────────────┘     └──────────────────┘
+        │
+        ▼
+┌─────────────────┐
+│                 │
+│  User's Browser │
+│  - LocalStorage │
+│  - IndexedDB    │
+│                 │
+└─────────────────┘
+</code></pre>
+<h3>Technology Choices</h3>
+<ul>
+<li><strong>Frontend Framework</strong>: Vanilla JS or lightweight framework (TBD)</li>
+<li><strong>Editor</strong>: CodeMirror or Monaco with vim mode</li>
+<li><strong>Fuzzy Search</strong>: Fuse.js or similar</li>
+<li><strong>Markdown Rendering</strong>: Marked.js or markdown-it</li>
+<li><strong>GitHub Integration</strong>: Octokit.js</li>
+<li><strong>Styling</strong>: Minimal CSS, dark theme default</li>
+</ul>
+<h3>Integration Points</h3>
+<ul>
+<li>GitHub OAuth for authentication</li>
+<li>GitHub REST API for repository operations</li>
+<li>GitHub Pages for hosting the blog</li>
+<li>Browser LocalStorage for preferences</li>
+<li>IndexedDB for offline drafts</li>
+</ul>
+<h2>Constraints &amp; Risks</h2>
+<h3>Known Limitations</h3>
+<ul>
+<li>GitHub API rate limits (5000 requests/hour authenticated)</li>
+<li>File size limits (100MB per file)</li>
+<li>No real-time collaboration</li>
+<li>Limited to public repositories (unless user has GitHub Pro)</li>
+</ul>
+<h3>Potential Challenges</h3>
+<ul>
+<li>Handling merge conflicts if edited elsewhere</li>
+<li>OAuth token management and refresh</li>
+<li>Cross-origin requests to GitHub API</li>
+<li>Vim mode completeness vs. implementation effort</li>
+</ul>
+<h3>Mitigation Strategies</h3>
+<ul>
+<li>Implement request caching and batching</li>
+<li>Check for conflicts before saving</li>
+<li>Use GitHub’s OAuth app flow properly</li>
+<li>Focus on essential vim commands first</li>
+</ul>
+<h2>Success Metrics</h2>
+<h3>Measurable Outcomes</h3>
+<ul>
+<li>Time from idea to published post &lt; 5 minutes</li>
+<li>All common actions achievable without mouse</li>
+<li>Page load time &lt; 2 seconds</li>
+<li>90% of vim commands work as expected</li>
+</ul>
+<h3>Performance Targets</h3>
+<ul>
+<li>Fuzzy search through 1000 posts &lt; 100ms</li>
+<li>Markdown preview render &lt; 200ms</li>
+<li>API response caching reduces requests by 80%</li>
+</ul>
+<h3>Quality Indicators</h3>
+<ul>
+<li>Zero data loss incidents</li>
+<li>Successful GitHub sync rate &gt; 99%</li>
+<li>User can work offline and sync later</li>
+<li>Vim users report familiar experience</li>
+</ul>
+<h2>Next Steps</h2>
+<ol>
+<li>Finalize technology stack decisions</li>
+<li>Create detailed UI mockups</li>
+<li>Set up GitHub OAuth application</li>
+<li>Implement MVP with core features</li>
+<li>Test with real GitHub Pages blogs</li>
+<li>Iterate based on user feedback</li>
+</ol>
+<h2>Open Questions</h2>
+<ul>
+<li>Should we support multiple repositories?</li>
+<li>Custom frontmatter fields needed?</li>
+<li>Support for draft posts (separate branch)?</li>
+<li>Custom keyboard shortcut configuration?</li>
+</ul>
+<h2>Security Architecture Decision</h2>
+<h3>OAuth Implementation: Proxy Auth Server</h3>
+<p>For maximum public trust, we’ll implement a proxy auth server:</p>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li>GitHub access tokens never touch the browser</li>
+<li>Clear separation of concerns</li>
+<li>Industry standard practice (like Netlify CMS)</li>
+<li>Users can inspect network traffic and see no tokens</li>
+<li>Allows for token rotation without user intervention</li>
+</ul>
+<p><strong>Architecture:</strong></p>
+<pre><code>Browser ←→ Auth Proxy Server ←→ GitHub API
+         (encrypted session)   (access token)
+</code></pre>
+<p><strong>Security Benefits:</strong></p>
+<ul>
+<li>Access tokens stored only on secure backend</li>
+<li>Session cookies with httpOnly, secure, sameSite</li>
+<li>Automatic token refresh handling</li>
+<li>Rate limiting at proxy level</li>
+<li>Audit logging capability</li>
+</ul>
+<h3>Repository Management</h3>
+<p><strong>Approach:</strong> SSG-agnostic</p>
+<ul>
+<li>Users configure their own static site generator</li>
+<li>CMS only manages markdown files</li>
+<li>No assumptions about blog structure</li>
+<li>Respects existing Jekyll/Hugo/Eleventy setups</li>
+</ul>
+<p>This gives users full control and builds trust through transparency.</p>
+<h2>Save &amp; Publish Workflow</h2>
+<h3>Local-First Approach</h3>
+<p><strong>Auto-save Behavior:</strong></p>
+<ul>
+<li>Save to IndexedDB on every pause (debounced 1s)</li>
+<li>Visual indicator for unsaved changes</li>
+<li>Diff tracking between local and remote versions</li>
+<li>Keyboard shortcut for manual save (<code>:w</code> in vim mode)</li>
+</ul>
+<h3>LLM-Powered Commit Messages</h3>
+<p><strong>Conventional Commit Generation:</strong></p>
+<pre><code>Input: Diff of changes
+Output: Semantic commit message
+
+Examples:
+- "feat(blog): add post about vim productivity tips"
+- "fix(content): correct typos in react hooks article"
+- "refactor(posts): reorganize golang series structure"
+- "docs: update about page with new bio"
+</code></pre>
+<p><strong>Implementation:</strong></p>
+<ul>
+<li>Analyze diff to understand changes</li>
+<li>Follow conventional commit format</li>
+<li>Include post title in scope when relevant</li>
+<li>User can edit before confirming</li>
+</ul>
+<h3>Publish Flow</h3>
+<p><strong>Keyboard-Driven Publishing:</strong></p>
+<ol>
+<li><code>:publish</code> or <code>&lt;Leader&gt;p</code> triggers publish flow</li>
+<li>Show diff preview</li>
+<li>Display generated commit message</li>
+<li>Allow edit/confirm</li>
+<li>Push to GitHub</li>
+<li>Show success/failure state</li>
+</ol>
+<p><strong>Sync Status Indicators:</strong></p>
+<ul>
+<li>Green: Synced with remote</li>
+<li>Yellow: Local changes pending</li>
+<li>Red: Sync conflict detected</li>
+<li>Gray: Offline mode</li>
+</ul>
+<h3>Conflict Resolution</h3>
+<p><strong>Smart Conflict Handling:</strong></p>
+<ul>
+<li>Detect conflicts before publish</li>
+<li>Show three-way diff (local/remote/base)</li>
+<li>Vim-style conflict markers</li>
+<li>Option to force push or merge</li>
+</ul>
+<h2>Configuration &amp; Setup</h2>
+<h3>First-Time Setup Wizard</h3>
+<p><strong>Guided Flow:</strong></p>
+<ol>
+<li>Welcome screen with app overview</li>
+<li>GitHub OAuth authorization</li>
+<li>LLM provider selection (via LiteLLM)
+<ul>
+<li>Enter API key for chosen provider</li>
+<li>Test connection with sample commit message</li>
+</ul>
+</li>
+<li>Repository selection/creation</li>
+<li>Blog preferences configuration</li>
+<li>Quick vim tutorial (optional)</li>
+</ol>
+<h3>LiteLLM Integration</h3>
+<p><strong>Provider Flexibility:</strong></p>
+<pre><code class="language-javascript">// User provides:
+{
+  "llm_provider": "anthropic|openai|cohere|local",
+  "llm_api_key": "sk-...",
+  "llm_model": "claude-3-sonnet|gpt-4|etc"  // optional, defaults to recommended
+}
+</code></pre>
+<p><strong>Default Commit Prompt Template:</strong></p>
+<pre><code>Given the following git diff, generate a conventional commit message.
+Use feat: for new features, fix: for bug fixes, docs: for documentation.
+Include the post title in parentheses when relevant.
+Keep it concise and descriptive.
+
+Diff:
+{diff}
+
+Output only the commit message, no explanation.
+</code></pre>
+<h3>User Customization</h3>
+<p><strong>Config File (<code>.vim-cms.config.js</code>):</strong></p>
+<pre><code class="language-javascript">export default {
+  // Vim configuration
+  vimrc: [
+    'set relativenumber',
+    'set tabstop=2',
+    'map &lt;Leader&gt;p :publish&lt;CR&gt;',
+    // User's custom mappings
+  ],
+
+  // Blog settings
+  blog: {
+    frontmatterTemplate: {
+      title: '',
+      date: '{{date}}',
+      tags: [],
+      draft: false,
+      // User's custom fields
+    },
+    fileNaming: 'slug', // or 'date-slug'
+    postsDirectory: '_posts/', // default location
+  },
+
+  // LLM settings
+  llm: {
+    commitPrompt: '...custom prompt...',
+    generateSummary: true, // for longer posts
+  },
+
+  // UI preferences (limited by design)
+  ui: {
+    keyboardShortcuts: {
+      fuzzyFind: '&lt;C-p&gt;',
+      togglePreview: '&lt;Leader&gt;m',
+      save: ':w',
+      publish: '&lt;Leader&gt;p',
+    },
+  },
+};
+</code></pre>
+<h3>Design Decisions</h3>
+<p><strong>Visual Design:</strong></p>
+<ul>
+<li>Theme: Rosé Pine (dark mode only)</li>
+<li>Font: Iosevka (monospace)</li>
+<li>Minimal UI chrome</li>
+<li>Focus on content area</li>
+</ul>
+<p><strong>Opinionated Defaults:</strong></p>
+<ul>
+<li>Smart tab completion</li>
+<li>Auto-pairs for markdown syntax</li>
+<li>Soft line wrapping for prose</li>
+<li>Distraction-free mode by default</li>
+</ul>
+<h3>File Naming Options</h3>
+<p><strong>Slug Format:</strong></p>
+<ul>
+<li><code>my-awesome-post.md</code></li>
+<li>Clean URLs: <code>/my-awesome-post</code></li>
+</ul>
+<p><strong>Date-Slug Format:</strong></p>
+<ul>
+<li><code>2024-06-14-my-awesome-post.md</code></li>
+<li>URLs: <code>/2024/06/14/my-awesome-post</code></li>
+<li>Better for chronological organization</li>
+</ul>
+<h2>Implementation Priorities</h2>
+<h3>MVP Features (Phase 1)</h3>
+<ol>
+<li>GitHub OAuth with proxy server</li>
+<li>Basic vim-mode editor (CodeMirror/Monaco)</li>
+<li>Fuzzy file finder</li>
+<li>Local auto-save to IndexedDB</li>
+<li>Manual publish to GitHub</li>
+<li>Markdown preview toggle</li>
+<li>Rosé Pine theme + Iosevka font</li>
+</ol>
+<h3>Phase 2 Enhancements</h3>
+<ol>
+<li>LiteLLM integration for commit messages</li>
+<li>Config file support (.vim-cms.config.js)</li>
+<li>Frontmatter templates</li>
+<li>Custom vim mappings</li>
+<li>Conflict detection/resolution</li>
+<li>Setup wizard</li>
+</ol>
+<h3>Phase 3 Polish</h3>
+<ol>
+<li>Offline mode with sync queue</li>
+<li>Post search within content</li>
+<li>Git history viewer</li>
+<li>Performance optimizations</li>
+<li>Keyboard shortcut customization</li>
+<li>Export/backup functionality</li>
+</ol>
+<h2>Technical Stack Recommendation</h2>
+<h3>Frontend</h3>
+<ul>
+<li><strong>Editor</strong>: CodeMirror 6 with vim mode
+<ul>
+<li>Better vim emulation than Monaco</li>
+<li>Smaller bundle size</li>
+<li>Excellent performance</li>
+</ul>
+</li>
+</ul>
+<h3>Markdown Preview</h3>
+<ul>
+<li><strong>Renderer</strong>: markdown-it
+<ul>
+<li>GitHub Flavored Markdown support</li>
+<li>Extensible for future features</li>
+<li>Fast rendering</li>
+</ul>
+</li>
+</ul>
+<h3>Fuzzy Search</h3>
+<ul>
+<li><strong>Library</strong>: Fuse.js
+<ul>
+<li>Lightweight</li>
+<li>No dependencies</li>
+<li>Configurable fuzzy matching</li>
+</ul>
+</li>
+</ul>
+<h3>State Management</h3>
+<ul>
+<li><strong>Approach</strong>: Vanilla JS with custom store
+<ul>
+<li>No framework overhead</li>
+<li>Full control over performance</li>
+<li>Easier vim integration</li>
+</ul>
+</li>
+</ul>
+<h3>Auth Proxy Server</h3>
+<ul>
+<li><strong>Language</strong>: Node.js or Go
+<ul>
+<li>Simple OAuth flow handler</li>
+<li>Session management</li>
+<li>GitHub API proxy</li>
+<li>Minimal deployment footprint</li>
+</ul>
+</li>
+</ul>
+<h2>Summary</h2>
+<p>This specification defines a minimalist, keyboard-driven CMS that respects both the power user’s workflow and the security concerns of managing blog content. By using GitHub as the backend and focusing on vim-style efficiency, we create a tool that feels native to developers while solving the real friction of blog post management.</p>
+<p>The use of LiteLLM for commit messages and a proper OAuth proxy demonstrates a commitment to both user experience and security best practices. The local-first approach ensures writers never lose work, while the clean configuration system allows power users to customize their environment without overwhelming new users.</p>
+<p>Next steps would be to create a technical implementation plan breaking down the work into specific tasks and milestones.</p>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer role="contentinfo">
+        <div class="container">
+            <p>Generated by para-ssg | Press <kbd>Ctrl</kbd>+<kbd>K</kbd> to search</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.0.0/marked.min.js"></script>
+    <script>
+        
+(function(){let searchIndex=null;let searchInput=null;let searchResults=null;let searchOverlay=null;let currentFocus=-1;
+document.addEventListener('DOMContentLoaded',function(){initializeSearch();});function initializeSearch(){
+createSearchOverlay();
+document.addEventListener('keydown',function(e){
+if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openSearch();}
+else if(e.key==='/'&&!isInputElement(e.target)){e.preventDefault();openSearch();}
+else if(e.key==='Escape'&&searchOverlay.style.display==='block'){closeSearch();}});
+loadSearchIndex();}function createSearchOverlay(){
+searchOverlay=document.createElement('div');searchOverlay.id='search-overlay';searchOverlay.setAttribute('role','dialog');searchOverlay.setAttribute('aria-modal','true');searchOverlay.setAttribute('aria-labelledby','search-input');searchOverlay.style.cssText=`display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,10,10,0.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:1000;opacity:0;transition:opacity 0.3s ease;`;
+const searchContainer=document.createElement('div');searchContainer.id='search-container';searchContainer.style.cssText=`position:absolute;top:10%;left:50%;transform:translateX(-50%)scale(0.95);width:90%;max-width:700px;background:var(--surface-2,#2a2a2a);border:1px solid var(--surface-3,#333);border-radius:16px;box-shadow:0 24px 48px rgba(0,0,0,0.4),0 12px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.05);max-height:80vh;display:flex;flex-direction:column;opacity:0;transition:transform 0.3s ease,opacity 0.3s ease;`;
+searchInput=document.createElement('input');searchInput.type='text';searchInput.id='search-input';searchInput.placeholder='Search documents... (Press "/" or Ctrl+K)';searchInput.setAttribute('aria-label','Search documents');searchInput.setAttribute('aria-describedby','search-instructions');searchInput.style.cssText=`padding:24px 28px;font-size:18px;font-weight:400;border:none;border-bottom:1px solid var(--surface-3,#333);background:transparent;outline:none;color:var(--text-primary,#e0e0e0);transition:border-color 0.2s ease;`;searchInput.setAttribute('autocomplete','off');searchInput.setAttribute('spellcheck','false');
+searchResults=document.createElement('div');searchResults.id='search-results';searchResults.setAttribute('role','listbox');searchResults.setAttribute('aria-label','Search results');searchResults.setAttribute('aria-live','polite');searchResults.style.cssText=`padding:0 12px 12px;overflow-y:auto;max-height:calc(80vh-90px);scrollbar-width:thin;scrollbar-color:var(--surface-4,#444)transparent;`;
+const scrollbarStyles=document.createElement('style');scrollbarStyles.textContent=`#search-results::-webkit-scrollbar{width:8px;}#search-results::-webkit-scrollbar-track{background:transparent;}#search-results::-webkit-scrollbar-thumb{background:var(--surface-4,#444);border-radius:4px;}#search-results::-webkit-scrollbar-thumb:hover{background:var(--surface-5,#555);}#search-container.search-active{transform:translateX(-50%)scale(1);opacity:1;}#search-overlay.search-active{opacity:1;}@keyframes resultFadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}.search-result{animation:resultFadeIn 0.3s ease forwards;}.search-result:nth-child(1){animation-delay:0s;}.search-result:nth-child(2){animation-delay:0.05s;}.search-result:nth-child(3){animation-delay:0.1s;}.search-result:nth-child(4){animation-delay:0.15s;}.search-result:nth-child(5){animation-delay:0.2s;}.search-result:nth-child(n+6){animation-delay:0.25s;}`;document.head.appendChild(scrollbarStyles);
+const searchInstructions=document.createElement('div');searchInstructions.id='search-instructions';searchInstructions.className='sr-only';searchInstructions.textContent='Type to search. Use arrow keys to navigate results. Press Enter to select.';searchInstructions.style.cssText=`position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;`;
+searchContainer.appendChild(searchInput);searchContainer.appendChild(searchInstructions);searchContainer.appendChild(searchResults);searchOverlay.appendChild(searchContainer);document.body.appendChild(searchOverlay);
+searchInput.addEventListener('input',performSearch);searchInput.addEventListener('keydown',handleSearchNavigation);searchOverlay.addEventListener('click',function(e){if(e.target===searchOverlay){closeSearch();}});}function loadSearchIndex(){fetch('/search-index.json').then(response=>response.json()).then(data=>{searchIndex=data;console.log('Search index loaded:',data.stats);}).catch(error=>{console.error('Failed to load search index:',error);});}function openSearch(){if(!searchOverlay)return;searchOverlay.style.display='block';searchInput.value='';searchResults.innerHTML='';currentFocus=-1;
+requestAnimationFrame(()=>{searchOverlay.classList.add('search-active');document.getElementById('search-container').classList.add('search-active');searchInput.focus();});}function closeSearch(){if(!searchOverlay)return;
+searchOverlay.classList.remove('search-active');document.getElementById('search-container').classList.remove('search-active');
+setTimeout(()=>{searchOverlay.style.display='none';searchInput.value='';searchResults.innerHTML='';},300);}function performSearch(){const query=searchInput.value.toLowerCase().trim();if(!query){searchResults.innerHTML='';return;}if(!searchIndex||!searchIndex.entries){searchResults.innerHTML='<p style="color: #a0a0a0;">Search index not loaded yet...</p>';return;}const results=searchDocuments(query);displayResults(results,query);}function searchDocuments(query){const results=[];const queryWords=query.split(/\s+/).filter(w=>w.length>0);for(const entry of searchIndex.entries){let score=0;let matches=[];
+for(const word of queryWords){if(entry.title.toLowerCase().includes(word)){score+=10;matches.push('title');}}
+for(const tag of entry.tags){for(const word of queryWords){if(tag.toLowerCase().includes(word)){score+=5;matches.push('tag');break;}}}
+for(const word of queryWords){if(entry.content.includes(word)){score+=1;matches.push('content');}}if(score>0){results.push({entry:entry,score:score,matches:[...new Set(matches)]});}}
+results.sort((a,b)=>b.score-a.score);return results.slice(0,20);
+}function displayResults(results,query){if(results.length===0){searchResults.innerHTML='<p style="color: #a0a0a0;" role="status">No results found</p>';searchResults.setAttribute('aria-label','No search results found');return;}searchResults.setAttribute('aria-label',`${results.length}search results found`);const html=results.map((result,index)=>{const entry=result.entry;const highlightedTitle=highlightText(entry.title,query);const highlightedExcerpt=highlightText(entry.excerpt,query);const categoryColors={'projects':'var(--accent-gradient-1, linear-gradient(135deg, #007acc, #0099ff))','areas':'var(--accent-gradient-2, linear-gradient(135deg, #00cc88, #00ffaa))','resources':'var(--accent-gradient-3, linear-gradient(135deg, #cc7700, #ff9900))','archives':'var(--accent-gradient-4, linear-gradient(135deg, #cc0077, #ff0099))'};const categoryGradient=categoryColors[entry.category]||categoryColors['resources'];return`<div class="search-result"data-index="${index}"role="option"aria-selected="false"tabindex="-1"style="
+                    position: relative;
+                    padding: 20px;
+                    margin: 0 16px 16px;
+                    background: var(--surface-1, #1a1a1a);
+                    border: 1px solid var(--surface-3, #333);
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                "><div style="
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        width: 4px;
+                        background: ${categoryGradient};
+                        border-radius: 12px 0 0 12px;
+                        transition: width 0.3s ease;
+                    "></div><h3 style="
+                        margin: 0 0 8px 0;
+                        padding-left: 8px;
+                        font-size: 18px;
+                        font-weight: 600;
+                        line-height: 1.4;
+                    "><a href="${entry.path}"style="
+                            text-decoration: none;
+                            color: var(--text-primary, #e0e0e0);
+                            transition: color 0.2s ease;
+                        "onmouseover="this.style.color='var(--link-hover, #4a9eff)'"onmouseout="this.style.color='var(--text-primary, #e0e0e0)'">${highlightedTitle}</a></h3><p style="
+                        margin: 0 0 12px 0;
+                        padding-left: 8px;
+                        color: var(--text-secondary, #a0a0a0);
+                        font-size: 14px;
+                        line-height: 1.6;
+                    ">${highlightedExcerpt}</p><div style="
+                        padding-left: 8px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                        align-items: center;
+                    "><span style="
+                            background: ${categoryGradient};
+                            color: white;
+                            padding: 4px 12px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 500;
+                            text-transform: capitalize;
+                        ">${entry.category}</span>${entry.tags.slice(0,3).map(tag=>`<span style="
+                                background: var(--surface-3, #333);
+                                color: var(--text-secondary, #a0a0a0);
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 12px;
+                                transition: all 0.2s ease;
+                            "onmouseover="this.style.background='var(--surface-4, #444)'"onmouseout="this.style.background='var(--surface-3, #333)'">${tag}</span>`).join('')}</div></div>`;}).join('');searchResults.innerHTML=html;
+const resultElements=searchResults.querySelectorAll('.search-result');resultElements.forEach(el=>{
+el.addEventListener('mouseenter',function(){this.style.background='var(--surface-2, #2a2a2a)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.2)';const accentBar=this.querySelector('div');if(accentBar)accentBar.style.width='6px';});el.addEventListener('mouseleave',function(){this.style.background='var(--surface-1, #1a1a1a)';this.style.transform='translateY(0)';this.style.boxShadow='none';const accentBar=this.querySelector('div');if(accentBar)accentBar.style.width='4px';});
+el.addEventListener('click',function(e){if(!e.target.closest('a')){const link=this.querySelector('a');if(link)window.location.href=link.href;}});});}function highlightText(text,query){if(!text)return'';const words=query.split(/\s+/).filter(w=>w.length>0);let highlighted=text;for(const word of words){const regex=new RegExp(`(${escapeRegex(word)})`,'gi');highlighted=highlighted.replace(regex,'<mark style="background: var(--link-color, #007acc); color: white; padding: 1px 4px; border-radius: 3px; font-weight: 500;">$1</mark>');}return highlighted;}function handleSearchNavigation(e){const results=searchResults.querySelectorAll('.search-result');if(e.key==='ArrowDown'){e.preventDefault();currentFocus++;if(currentFocus>=results.length)currentFocus=0;setFocus(results);}else if(e.key==='ArrowUp'){e.preventDefault();currentFocus--;if(currentFocus<0)currentFocus=results.length-1;setFocus(results);}else if(e.key==='Enter'&&currentFocus>=0&&currentFocus<results.length){e.preventDefault();const link=results[currentFocus].querySelector('a');if(link)window.location.href=link.href;}}function setFocus(results){results.forEach((el,index)=>{if(index===currentFocus){el.style.background='var(--link-color, #007acc)';el.style.transform='translateY(-2px) translateZ(0)';el.style.boxShadow='0 0 0 2px var(--link-color, #007acc)';el.scrollIntoView({block:'nearest',behavior:'smooth'});el.setAttribute('aria-selected','true');el.setAttribute('tabindex','0');const accentBar=el.querySelector('div');if(accentBar)accentBar.style.width='8px';}else{el.style.background='var(--surface-1, #1a1a1a)';el.style.transform='translateY(0) translateZ(0)';el.style.boxShadow='none';el.setAttribute('aria-selected','false');el.setAttribute('tabindex','-1');const accentBar=el.querySelector('div');if(accentBar)accentBar.style.width='4px';}});}function isInputElement(element){return element.tagName==='INPUT'||element.tagName==='TEXTAREA'||element.isContentEditable;}function escapeRegex(string){return string.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+document.addEventListener('DOMContentLoaded',function(){const inlineSearchBoxes=document.querySelectorAll('.search-box');inlineSearchBoxes.forEach(box=>{box.addEventListener('click',openSearch);box.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();openSearch();}});});});})();
+        // Header interactions for para-ssg
+(function(){
+    const header = document.querySelector('.site-header');
+    const toggle = document.querySelector('.nav-toggle');
+    if(toggle){
+        toggle.addEventListener('click', () => header.classList.toggle('open'));
+    }
+    window.addEventListener('scroll', () => {
+        if(window.scrollY > 40){
+            document.body.classList.add('scrolled');
+        } else {
+            document.body.classList.remove('scrolled');
+        }
+    });
+})();
+    </script>
+</body>
+</html>
