@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-06-14T00:53:33.110Z",
+  "lastUpdated": "2025-06-14T19:57:18.890Z",
   "index": {
     "/Users/mobrienv/Code/why/code/mcp-server/resources/projects/test-project.md": [
       {
@@ -53,10 +53,19 @@
         "lineNumber": 69,
         "linkType": "wiki"
       }
+    ],
+    "/Users/mobrienv/Code/why/code/forge-mcp/projects/github-markdown-cms/spec-github-markdown-cms.md": [
+      {
+        "sourcePath": "projects/github-markdown-cms/index.md",
+        "targetPath": "/Users/mobrienv/Code/why/code/forge-mcp/projects/github-markdown-cms/spec-github-markdown-cms.md",
+        "context": "... CMS  ## Key Documents - [[spec-github-markdown-cms]] - Main specification doc...",
+        "lineNumber": 12,
+        "linkType": "wiki"
+      }
     ]
   },
   "metadata": {
-    "documentCount": 9,
-    "linkCount": 6
+    "documentCount": 11,
+    "linkCount": 7
   }
 }
