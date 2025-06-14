@@ -40,6 +40,9 @@ Return a unix-style patch (diff) that applies cleanly to root.
 ```
 
 ```
+**Status**: ✅ Complete
+**Completion**: 2025-06-14
+**Notes**: Monorepo skeleton created with pnpm workspace, package.json, README, and self-check script.
 Prompt P-01 — Toolchain & Quality Gates
 
 Context: Repo contains the skeleton from P-00.
