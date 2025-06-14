@@ -199,9 +199,14 @@ fn generate_excerpt(content: &str, max_length: usize) -> String {
 fn process_content_for_search(content: &str, max_length: usize) -> String {
     let content_lower = content.to_lowercase();
 
-    // Truncate if too long
+    // Truncate if too long, ensuring we don't cut in the middle of a UTF-8 character
     let truncated = if content_lower.len() > max_length {
-        &content_lower[..max_length]
+        // Find a safe character boundary
+        let mut boundary = max_length;
+        while !content_lower.is_char_boundary(boundary) && boundary > 0 {
+            boundary -= 1;
+        }
+        &content_lower[..boundary]
     } else {
         &content_lower
     };

@@ -1,7 +1,8 @@
 ---
 title: Subdirectory Index Generation - Completed
+category: projects
 status: completed
-created: '2025-06-12'
+created: 2025-06-12
 tags: [static-site-generator, bug-fix, completed]
 ---
 
