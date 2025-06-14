@@ -1,11 +1,14 @@
 //! ABOUTME: HTML generation and templating functionality
 //! ABOUTME: Creates static HTML pages from parsed documents
 
+use crate::config::BlogConfig;
 use crate::parser::Document;
+use crate::theme::comments::render_comments_widget;
 use crate::theme::styles::get_default_styles;
 use crate::theme::templates::{
     BreadcrumbItem, DocumentMetadata as TemplateMetadata, DocumentSummary, TemplateEngine,
 };
+use crate::utils::blog::is_blog_post;
 use crate::{ParaSsgError, Result};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -17,17 +20,24 @@ pub struct HtmlGenerator {
     styles: String,
     site_title: String,
     base_url: String,
+    blog_config: BlogConfig,
 }
 
 impl HtmlGenerator {
     /// Create a new HTML generator
-    pub fn new(output_dir: PathBuf, site_title: String, base_url: String) -> Self {
+    pub fn new(
+        output_dir: PathBuf,
+        site_title: String,
+        base_url: String,
+        blog_config: BlogConfig,
+    ) -> Self {
         Self {
             template_engine: TemplateEngine::new(),
             output_dir,
             styles: get_default_styles(),
             site_title,
             base_url,
+            blog_config,
         }
     }
 
@@ -69,12 +79,33 @@ impl HtmlGenerator {
         };
 
         // Generate document HTML
-        let doc_content = self.template_engine.render_document(
+        let mut doc_content = self.template_engine.render_document(
             doc.title(),
             &doc.html_content,
             &template_meta,
             backlinks_html.as_deref(),
         )?;
+
+        // If this is a blog post and comments are configured, inject comments widget
+        if is_blog_post(&doc.relative_path) && self.blog_config.is_valid_for_comments() {
+            // Extract github_issue from metadata
+            let github_issue = doc
+                .metadata
+                .custom
+                .get("github_issue")
+                .and_then(|v| v.as_str());
+
+            let comments_html = render_comments_widget(
+                &self.blog_config.github_owner,
+                &self.blog_config.github_repo,
+                github_issue,
+            );
+
+            // Inject comments before closing </article> tag
+            if let Some(pos) = doc_content.rfind("</article>") {
+                doc_content.insert_str(pos, &comments_html);
+            }
+        }
 
         // Generate breadcrumbs
         let breadcrumbs = self.generate_breadcrumbs_for_document(doc);
@@ -413,6 +444,63 @@ impl HtmlGenerator {
         )
     }
 
+    /// Generate a blog listing page
+    pub fn generate_blog_listing_page(&self, blog_posts: &[Document]) -> Result<String> {
+        // Convert blog posts to summaries
+        let mut summaries: Vec<DocumentSummary> = blog_posts.iter()
+            .filter(|doc| !doc.is_draft()) // Exclude drafts from listings
+            .map(|doc| {
+                let url = format!("{}{}", self.base_url, doc.output_path.display());
+                let summary = crate::parser::extract_summary(&doc.raw_content, 200);
+
+                DocumentSummary {
+                    url,
+                    title: doc.title().to_string(),
+                    date: doc.date().map(|d| d.format("%Y-%m-%d").to_string()),
+                    tags: doc.metadata.tags.clone(),
+                    summary: Some(summary),
+                }
+            })
+            .collect();
+
+        // Sort by date (newest first) or title if no date
+        summaries.sort_by(|a, b| match (&b.date, &a.date) {
+            (Some(d1), Some(d2)) => d1.cmp(d2),
+            (Some(_), None) => std::cmp::Ordering::Less,
+            (None, Some(_)) => std::cmp::Ordering::Greater,
+            (None, None) => a.title.cmp(&b.title),
+        });
+
+        // Generate blog listing content using category template
+        let blog_content = self
+            .template_engine
+            .render_category_index("blog", &summaries)?;
+
+        // Generate breadcrumbs
+        let breadcrumbs = vec![
+            BreadcrumbItem {
+                title: "Home".to_string(),
+                url: Some(self.base_url.clone()),
+            },
+            BreadcrumbItem {
+                title: "Blog".to_string(),
+                url: None,
+            },
+        ];
+        let breadcrumb_html = self.template_engine.render_breadcrumbs(&breadcrumbs)?;
+
+        // Generate full page
+        self.template_engine.render_base(
+            "Blog",
+            &blog_content,
+            Some("blog"),
+            Some(&breadcrumb_html),
+            &self.styles,
+            &self.site_title,
+            &self.base_url,
+        )
+    }
+
     /// Write an HTML page to disk
     pub fn write_page(&self, relative_path: &Path, content: &str) -> Result<()> {
         let output_path = self.output_dir.join(relative_path);
@@ -537,7 +625,8 @@ fn html_escape(text: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::parser::document::{Document, DocumentMetadata};
+    use crate::config::BlogConfig;
+    use crate::parser::{Document, DocumentMetadata};
     use std::path::PathBuf;
     use tempfile::TempDir;
 
@@ -555,6 +644,7 @@ mod tests {
             temp_dir.path().to_path_buf(),
             "Test Site".to_string(),
             "/".to_string(),
+            BlogConfig::new(),
         );
 
         let mut doc = Document::new(
@@ -584,6 +674,7 @@ mod tests {
             temp_dir.path().to_path_buf(),
             "Test Site".to_string(),
             "/".to_string(),
+            BlogConfig::new(),
         );
 
         let mut doc = Document::new(
@@ -611,6 +702,7 @@ mod tests {
             temp_dir.path().to_path_buf(),
             "Test Site".to_string(),
             "/".to_string(),
+            BlogConfig::new(),
         );
 
         let mut doc = Document::new(
@@ -636,6 +728,7 @@ mod tests {
             temp_dir.path().to_path_buf(),
             "Test Site".to_string(),
             "/".to_string(),
+            BlogConfig::new(),
         );
 
         let content = "<html><body>Test</body></html>";
@@ -654,6 +747,7 @@ mod tests {
             temp_dir.path().to_path_buf(),
             "Test Site".to_string(),
             "/".to_string(),
+            BlogConfig::new(),
         );
 
         let mut doc = Document::new(
@@ -671,5 +765,105 @@ mod tests {
         assert_eq!(breadcrumbs[2].title, "Rust");
         assert_eq!(breadcrumbs[3].title, "My Rust Project"); // Uses document title
         assert!(breadcrumbs[3].url.is_none());
+    }
+
+    #[test]
+    fn test_blog_comments_with_config() {
+        let temp_dir = TempDir::new().unwrap();
+        let mut blog_config = BlogConfig::new();
+        blog_config.github_owner = "testowner".to_string();
+        blog_config.github_repo = "testrepo".to_string();
+
+        let generator = HtmlGenerator::new(
+            temp_dir.path().to_path_buf(),
+            "Test Site".to_string(),
+            "/".to_string(),
+            blog_config,
+        );
+
+        let mut doc = Document {
+            source_path: PathBuf::from("/input/areas/blog/test-post.md"),
+            relative_path: PathBuf::from("areas/blog/test-post.md"),
+            output_path: PathBuf::from("areas/blog/test-post.html"),
+            category: "areas".to_string(),
+            metadata: DocumentMetadata::default(),
+            raw_content: "Test blog post".to_string(),
+            html_content: "<article><p>Test blog post</p></article>".to_string(),
+            wiki_links: vec![],
+            backlinks: vec![],
+        };
+
+        // Add github_issue to metadata
+        doc.metadata.custom.insert(
+            "github_issue".to_string(),
+            serde_yaml::Value::String("42".to_string()),
+        );
+
+        let html = generator.generate_document_page(&doc).unwrap();
+        assert!(html.contains("const owner = 'testowner'"));
+        assert!(html.contains("const repo = 'testrepo'"));
+        assert!(html.contains("const issueNumber = '42'"));
+        assert!(html.contains("blog-comments"));
+    }
+
+    #[test]
+    fn test_blog_comments_disabled() {
+        let temp_dir = TempDir::new().unwrap();
+        let mut blog_config = BlogConfig::new();
+        blog_config.comments_enabled = false;
+        blog_config.github_owner = "testowner".to_string();
+        blog_config.github_repo = "testrepo".to_string();
+
+        let generator = HtmlGenerator::new(
+            temp_dir.path().to_path_buf(),
+            "Test Site".to_string(),
+            "/".to_string(),
+            blog_config,
+        );
+
+        let doc = Document {
+            source_path: PathBuf::from("/input/areas/blog/test-post.md"),
+            relative_path: PathBuf::from("areas/blog/test-post.md"),
+            output_path: PathBuf::from("areas/blog/test-post.html"),
+            category: "areas".to_string(),
+            metadata: DocumentMetadata::default(),
+            raw_content: "Test blog post".to_string(),
+            html_content: "<article><p>Test blog post</p></article>".to_string(),
+            wiki_links: vec![],
+            backlinks: vec![],
+        };
+
+        let html = generator.generate_document_page(&doc).unwrap();
+        assert!(!html.contains("blog-comments"));
+        assert!(!html.contains("const owner"));
+    }
+
+    #[test]
+    fn test_blog_comments_no_config() {
+        let temp_dir = TempDir::new().unwrap();
+        let blog_config = BlogConfig::new(); // Empty config
+
+        let generator = HtmlGenerator::new(
+            temp_dir.path().to_path_buf(),
+            "Test Site".to_string(),
+            "/".to_string(),
+            blog_config,
+        );
+
+        let doc = Document {
+            source_path: PathBuf::from("/input/areas/blog/test-post.md"),
+            relative_path: PathBuf::from("areas/blog/test-post.md"),
+            output_path: PathBuf::from("areas/blog/test-post.html"),
+            category: "areas".to_string(),
+            metadata: DocumentMetadata::default(),
+            raw_content: "Test blog post".to_string(),
+            html_content: "<article><p>Test blog post</p></article>".to_string(),
+            wiki_links: vec![],
+            backlinks: vec![],
+        };
+
+        let html = generator.generate_document_page(&doc).unwrap();
+        // Should not include comments when config is not set
+        assert!(!html.contains("blog-comments"));
     }
 }

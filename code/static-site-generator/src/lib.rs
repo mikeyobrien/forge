@@ -1,6 +1,7 @@
 //! ABOUTME: Library exports for para-ssg static site generator
 //! ABOUTME: Provides public API for the static site generation functionality
 
+pub mod config;
 pub mod generator;
 pub mod parser;
 pub mod theme;
@@ -46,49 +47,8 @@ pub enum ParaSsgError {
 /// Result type for para-ssg operations
 pub type Result<T> = std::result::Result<T, ParaSsgError>;
 
-/// Configuration for site generation
-#[derive(Debug, Clone)]
-pub struct Config {
-    pub input_dir: String,
-    pub output_dir: String,
-    pub base_url: String,
-    pub site_title: String,
-    pub verbose: bool,
-    pub watch: bool,
-}
-
-impl Config {
-    /// Create new configuration with input and output directories
-    pub fn new(input_dir: String, output_dir: String) -> Self {
-        // Check for base URL from environment variable
-        let base_url = std::env::var("PARA_SSG_BASE_URL").unwrap_or_else(|_| "/".to_string());
-
-        Self {
-            input_dir,
-            output_dir,
-            base_url,
-            site_title: "forge".to_string(),
-            verbose: false,
-            watch: false,
-        }
-    }
-
-    /// Validate the configuration
-    pub fn validate(&self) -> Result<()> {
-        if !Path::new(&self.input_dir).exists() {
-            return Err(ParaSsgError::DirectoryNotFound(self.input_dir.clone()));
-        }
-
-        if !Path::new(&self.input_dir).is_dir() {
-            return Err(ParaSsgError::InvalidPath(format!(
-                "Input path '{}' is not a directory",
-                self.input_dir
-            )));
-        }
-
-        Ok(())
-    }
-}
+// Re-export Config from config module
+pub use config::{BlogConfig, Config};
 
 /// Generate static site from configuration
 pub fn generate_site(config: &Config) -> Result<()> {
@@ -368,6 +328,7 @@ pub fn generate_site(config: &Config) -> Result<()> {
         output_path.to_path_buf(),
         config.site_title.clone(),
         config.base_url.clone(),
+        config.blog.clone(),
     ));
 
     // Save document count before moving documents
@@ -464,6 +425,16 @@ pub fn generate_site(config: &Config) -> Result<()> {
                 generator.write_page(&index_path, &html)?;
             }
         }
+    }
+
+    // Generate blog listing page
+    let all_docs_vec: Vec<Document> = categories.values().flatten().cloned().collect();
+    let blog_posts = utils::get_blog_posts(&all_docs_vec);
+    if !blog_posts.is_empty() {
+        let blog_posts_owned: Vec<Document> = blog_posts.iter().map(|&doc| doc.clone()).collect();
+        let blog_html = generator.generate_blog_listing_page(&blog_posts_owned)?;
+        let blog_path = Path::new("blog").join("index.html");
+        generator.write_page(&blog_path, &blog_html)?;
     }
 
     // Generate home page with all documents for the file list

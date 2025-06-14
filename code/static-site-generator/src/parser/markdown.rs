@@ -160,7 +160,7 @@ pub fn extract_summary(content: &str, max_length: usize) -> String {
                 boundary -= 1;
             }
         }
-        
+
         let mut truncated = summary[..boundary].to_string();
         // Try to break at word boundary
         if let Some(last_space) = truncated.rfind(' ') {
