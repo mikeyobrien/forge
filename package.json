@@ -29,5 +29,12 @@
     "@modelcontextprotocol/sdk": "^1.12.1"
   },
   "private": true,
-  "packageManager": "pnpm@10.5.2"
+  "packageManager": "pnpm@10.5.2",
+  "pnpm": {
+    "overrides": {
+      "vite": "6.3.5",
+      "@vitejs/plugin-react": "4.5.2",
+      "vite-plugin-pwa": "1.0.0"
+    }
+  }
 }
