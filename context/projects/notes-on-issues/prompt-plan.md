@@ -103,14 +103,14 @@ Prompt P-03 — Hello-World PWA Shell
 
 Context: infra is ready.
 
-**Goal:** A Vite React PWA served from `packages/web/` that shows "Hello Notes".
+**Goal:** A Vite React PWA served from `code/notes-on-issues/packages/web/` that shows "Hello Notes".
 
 **Tasks**
-1. Run `pnpm create vite packages/web --template react-ts`.
+1. Run `pnpm create vite code/notes-on-issues/packages/web --template react-ts`.
 2. Move Vite dep versions to root `package.json` resolutions.
 3. Add PWA plugin (`@vite-pwa/react`), configure manifest: name "Notes-on-Issues", short_name "NoI".
 4. Modify `App.tsx` to render `<h1>Hello Notes</h1>`.
-5. Add Vitest + React Testing Library setup inside `packages/web`.
+5. Add Vitest + React Testing Library setup inside `code/notes-on-issues/packages/web`.
 6. Provide one RTL test verifying header text.
 
 **Tests**
@@ -119,10 +119,14 @@ Context: infra is ready.
 Return patch.
 ```
 
+**Status**: ✅ Complete
+**Completion**: 2025-06-14
+**Notes**: Web PWA scaffolded with React, PWA plugin, centralized Vite versions, and passing tests.
+
 ```
 Prompt P-04 — AuthManager Skeleton (gh-notes-core)
 
-Create new workspace package `packages/gh-notes-core`.
+Create new workspace package `code/notes-on-issues/packages/gh-notes-core`.
 
 **Goal:** First slice of AuthManager—no network calls yet.
 
@@ -141,6 +145,9 @@ Patch only.
 ```
 
 ```
+**Status**: ✅ Complete
+**Completion**: 2025-06-15
+**Notes**: AuthManager skeleton implemented with interface and stub methods under core package.
 Prompt P-05 — Implement Device Flow Login
 
 Now flesh out AuthManager.

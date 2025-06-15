@@ -24,7 +24,15 @@ export default [
       parserOptions: {
         ecmaVersion: 2022,
         sourceType: 'module',
-        project: ['./tsconfig.json', './code/*/tsconfig.json', './code/*/tsconfig.test.json'],
+        project: [
+          './tsconfig.json',
+          './code/*/tsconfig.json',
+          './code/*/tsconfig.test.json',
+          './code/notes-on-issues/packages/*/tsconfig.json',
+          './code/notes-on-issues/packages/*/tsconfig.app.json',
+          './code/notes-on-issues/packages/*/tsconfig.node.json',
+          './code/notes-on-issues/packages/*/tsconfig.test.json',
+        ],
       },
       globals: {
         console: 'readonly',

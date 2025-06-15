@@ -1,0 +1,15 @@
+{
+  "name": "gh-notes-core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "peerDependencies": {
+    "@octokit/oauth-app": "^7.0.0"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run --config vitest.config.ts"
+  }
+}
