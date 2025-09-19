@@ -13,6 +13,7 @@ export default [
       '**/*.js',
       '**/*.mjs',
       'code/mcp-server/**',
+      'code/forge-mcp/**',
     ],
   },
   js.configs.recommended,

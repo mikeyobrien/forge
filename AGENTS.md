@@ -1,10 +1,20 @@
 # AGENTS Guidelines
 
-This repository uses AGENTS.md to coordinate contributions from automated agents.
+This repository uses AGENTS.md to coordinate contributions from automated agents. This is the only `AGENTS.md` in the repo; the
+scope map below replaces the per-directory files that previously existed.
 
 - **Review `CLAUDE.md` before starting work.** It contains additional rules and best practices that augment these instructions.
 - **Document every change.** Pull requests will only be accepted if they include thorough documentation in the `context/` directory. Follow the PARA system (Projects, Areas, Resources, Archives) and place documents in the appropriate location.
   - Any document created must be tagged with `codex`
+
+## Scope Map
+
+- **`code/forge-mcp`** – Keep TypeScript strict, prefer incremental updates, and align behaviour with the PARA automation flows described in `docs/ARCHITECTURE.md`.
+- **`code/static-site-generator`** – Maintain Rust formatting (`cargo fmt`), clippy cleanliness (`cargo clippy -- -D warnings`), and ensure unit/integration tests pass.
+- **`docs/`** – Write evergreen references and run Prettier via `pnpm format` for touched markdown files.
+- **`context/`** – Every note must include YAML frontmatter with `tags:` containing `codex`, plus accurate timestamps.
+- **`tools/`** – Shell scripts must use `set -euo pipefail` and start with the two-line `ABOUTME` header.
+- **`README.md` & top-level guides** – Keep instructions synchronized with automation scripts (notably `tools/self-check.sh`).
 
 # Writing code
 
@@ -32,6 +42,7 @@ This repository uses AGENTS.md to coordinate contributions from automated agents
 - TEST OUTPUT MUST BE PRISTINE TO PASS
 - If the logs are supposed to contain errors, capture and test it.
 - NO EXCEPTIONS POLICY: Under no circumstances should you mark any test type as "not applicable". Every project, regardless of size or complexity, MUST have unit tests, integration tests, AND end-to-end tests. If you believe a test type doesn't apply, you need the human to say exactly "I AUTHORIZE YOU TO SKIP WRITING TESTS THIS TIME"
+- Run `pnpm test` before committing; it orchestrates the Vitest suite and the Rust tests.
 
 ## We practice TDD. That means
 
