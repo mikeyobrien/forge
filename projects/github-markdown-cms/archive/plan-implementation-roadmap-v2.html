@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Markdown CMS Implementation Roadmap v2 | forge</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}:focus-visible{outline:2px solid var(--accent-primary);outline-offset:2px;}:root{--bg-primary:#0f0f0f;--bg-secondary:#1a1a1a;--bg-tertiary:#2a2a2a;--bg-elevated:#333333;--text-primary:#f0f0f0;--text-secondary:#b4b4b4;--text-muted:#737373;--text-subtle:#525252;--border-primary:#333333;--border-secondary:#404040;--border-subtle:#262626;--accent-primary:#0EA5E9;--accent-secondary:#3B82F6;--accent-gradient:linear-gradient(135deg,var(--accent-primary)0%,var(--accent-secondary)100%);--accent-gradient-hover:linear-gradient(135deg,#0284C7 0%,#2563EB 100%);--gradient-primary:linear-gradient(135deg,var(--accent-primary)0%,var(--accent-secondary)100%);--success:#10B981;--success-bg:rgba(16,185,129,0.1);--warning:#F59E0B;--warning-bg:rgba(245,158,11,0.1);--error:#EF4444;--error-bg:rgba(239,68,68,0.1);--info:#06B6D4;--info-bg:rgba(6,182,212,0.1);--link-primary:#60A5FA;--link-hover:#93C5FD;--link-visited:#A78BFA;--surface-base:var(--bg-primary);--surface-raised:var(--bg-secondary);--surface-overlay:var(--bg-tertiary);--surface-elevated:var(--bg-elevated);--interactive-hover:rgba(255,255,255,0.05);--interactive-active:rgba(255,255,255,0.1);--interactive-disabled:rgba(255,255,255,0.02);--shadow-sm:0 1px 2px 0 rgba(0,0,0,0.3);--shadow-base:0 1px 3px 0 rgba(0,0,0,0.4),0 1px 2px 0 rgba(0,0,0,0.3);--shadow-md:0 4px 6px -1px rgba(0,0,0,0.4),0 2px 4px -1px rgba(0,0,0,0.3);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.4),0 4px 6px -2px rgba(0,0,0,0.3);--accent:var(--accent-primary);--accent-hover:var(--accent-secondary);--link-color:var(--link-primary);--link-hover:var(--link-hover);--border-color:var(--border-primary);}:root{--space-1:0.5rem;--space-2:1rem;--space-3:1.5rem;--space-4:2rem;--space-6:3rem;--space-8:4rem;--space-12:6rem;--space-16:8rem;--breakpoint-sm:640px;--breakpoint-md:768px;--breakpoint-lg:1024px;--breakpoint-xl:1280px;}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Inter','Helvetica Neue',sans-serif;line-height:1.6;color:var(--text-primary);background-color:var(--bg-primary);min-height:100vh;font-feature-settings:'cv11','ss01';font-variant-numeric:tabular-nums;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;display:grid;grid-template-areas:"header" "main" "footer";grid-template-rows:auto 1fr auto;grid-template-columns:1fr;}.container{max-width:1000px;margin:0 auto;padding:0 var(--space-4);width:100%;}.site-header{grid-area:header;background:linear-gradient(135deg,#181818 0%,#0E0E0E 60%);color:var(--text-primary);height:var(--header-height,80px);transition:height 0.25s ease,box-shadow 0.25s;position:sticky;top:0;z-index:100;display:flex;flex-direction:column;align-items:center;}.header-inner{width:min(90%,1200px);display:flex;justify-content:space-between;align-items:center;padding-top:var(--space-2);}.logo{font-size:2rem;color:#fff;font-weight:700;text-decoration:none;}.site-nav{display:flex;gap:1.5rem;}.nav-item{color:var(--text-secondary);font-weight:500;position:relative;text-decoration:none;transition:color 0.2s ease;}.nav-item:hover{color:var(--text-primary);text-decoration:none;}.nav-item.active{color:var(--accent-primary);}.nav-item.active::after,.nav-item:hover::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--accent-primary);}.nav-divider{width:1px;height:20px;background-color:var(--text-secondary);opacity:0.3;margin:0 0.5rem;align-self:center;}.nav-toggle{display:none;background:none;border:none;}.burger{width:24px;height:2px;background:#fff;position:relative;}.burger::before,.burger::after{content:"";position:absolute;width:24px;height:2px;background:#fff;}.burger::before{top:-6px;}.burger::after{top:6px;}body.scrolled .site-header{height:60px;box-shadow:0 2px 4px rgba(0,0,0,0.4);}.nav-search{display:none;}main{grid-area:main;padding:var(--space-4)0;min-height:0;}.file-cards{display:grid;grid-template-columns:1fr;gap:var(--space-3);margin-top:var(--space-4);max-width:1200px;margin-left:auto;margin-right:auto;}.file-card{background-color:var(--surface-raised);border:1px solid var(--border-primary);border-radius:8px;padding:var(--space-3);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1),background-color 0.3s cubic-bezier(0.4,0,0.2,1),border-color 0.3s cubic-bezier(0.4,0,0.2,1),box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;}.file-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent-gradient);opacity:0;transition:opacity 0.3s ease;}.file-card:hover{border-color:var(--border-secondary);background-color:var(--surface-overlay);transform:translateY(-2px)translateZ(0);box-shadow:var(--shadow-md);}.file-card:hover::before{opacity:1;}.file-card:active{transform:translateY(-1px)translateZ(0);transition:all 0.1s cubic-bezier(0.4,0,0.2,1);}.file-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-2);margin-bottom:var(--space-2);}.file-title{font-size:1.1rem;font-weight:600;margin:0;line-height:1.3;flex:1;min-width:0;}.file-title a{color:var(--text-primary);text-decoration:none;transition:color 0.2s ease;}.file-title a:hover{color:var(--accent-primary);text-decoration:none;}.file-category{font-size:0.75rem;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;padding:0.25rem 0.5rem;border-radius:12px;white-space:nowrap;border:1px solid transparent;transition:all 0.2s ease;}.category-projects{background-color:rgba(16,185,129,0.1);color:var(--success);border-color:rgba(16,185,129,0.3);}.category-areas{background-color:rgba(59,130,246,0.1);color:var(--accent-secondary);border-color:rgba(59,130,246,0.3);}.category-resources{background-color:rgba(245,158,11,0.1);color:var(--warning);border-color:rgba(245,158,11,0.3);}.category-archives{background-color:rgba(107,114,128,0.1);color:var(--text-muted);border-color:rgba(107,114,128,0.3);}.category-other{background-color:rgba(139,92,246,0.1);color:#8B5CF6;border-color:rgba(139,92,246,0.3);}.file-card-meta{display:flex;justify-content:space-between;align-items:center;gap:var(--space-2);font-size:0.85rem;color:var(--text-muted);}.file-date{white-space:nowrap;font-feature-settings:'tnum';}.file-tags{display:flex;flex-wrap:wrap;gap:0.25rem;justify-content:flex-end;flex:1;min-width:0;}.file-tags .tag{font-size:0.75rem;padding:0.15rem 0.4rem;background-color:var(--surface-elevated);color:var(--text-secondary);border-radius:6px;border:1px solid var(--border-subtle);transition:all 0.2s ease;display:inline-flex;align-items:center;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.file-tags .tag:hover{background-color:var(--surface-overlay);border-color:var(--border-primary);color:var(--text-primary);}.no-tags{color:var(--text-muted);font-style:italic;font-size:0.8rem;}.document h1{font-size:clamp(1.75rem,4vw,2rem);margin-bottom:1rem;color:var(--text-primary);font-weight:600;letter-spacing:-0.025em;line-height:1.2;}.document-header{margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}.document-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-1);font-size:0.9rem;color:var(--text-muted);}.document-content{color:var(--text-primary);line-height:1.7;}.document-content h2{font-size:clamp(1.5rem,3.5vw,1.75rem);margin-top:var(--space-4);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.025em;line-height:1.3;}.document-content h3{font-size:clamp(1.25rem,3vw,1.5rem);margin-top:var(--space-3);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.02em;line-height:1.3;}.document-content h4{font-size:clamp(1.125rem,2.5vw,1.25rem);margin-top:var(--space-3);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;letter-spacing:-0.015em;line-height:1.4;}.document-content p{margin-bottom:var(--space-2);}.document-content ul,.document-content ol{margin-bottom:var(--space-2);margin-left:var(--space-3);}.document-content blockquote{border-left:3px solid var(--accent-primary);padding-left:var(--space-2);margin:var(--space-3)0;color:var(--text-secondary);font-style:italic;}.document-content code{background-color:var(--surface-raised);color:var(--text-primary);padding:0.2rem 0.4rem;border-radius:3px;font-family:'SF Mono',Monaco,'Cascadia Code','Roboto Mono',Consolas,'Courier New',monospace;font-size:0.9em;}.document-content pre{background-color:var(--surface-raised);border:1px solid var(--border-primary);padding:var(--space-2);border-radius:5px;overflow-x:auto;margin:var(--space-3)0;}.document-content pre code{background:none;padding:0;}.category-index h1{font-size:clamp(2rem,4vw,2.5rem);margin-bottom:var(--space-2);color:var(--text-primary);font-weight:700;letter-spacing:-0.025em;line-height:1.2;}.category-description{color:var(--text-secondary);margin-bottom:var(--space-3);font-style:italic;line-height:1.5;}.document-count{color:var(--text-muted);font-size:0.9rem;margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}.document-list{display:grid;gap:var(--space-3);grid-template-columns:1fr;}.document-entry{padding:var(--space-3);border:1px solid var(--border-primary);border-radius:8px;background-color:var(--surface-raised);transition:transform 0.2s cubic-bezier(0.4,0,0.2,1),background-color 0.2s cubic-bezier(0.4,0,0.2,1),border-color 0.2s cubic-bezier(0.4,0,0.2,1);}.document-entry:hover{border-color:var(--border-secondary);background-color:var(--surface-overlay);}.document-entry h2{font-size:1.2rem;margin-bottom:0.5rem;}.document-entry h2 a{color:var(--link-primary);text-decoration:none;}.document-entry h2 a:hover{color:var(--link-hover);}.entry-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--space-1);}.summary{color:var(--text-secondary);line-height:1.5;}.directory-cards{margin-bottom:var(--space-4);}.directory-cards h2{font-size:1.5rem;margin-bottom:var(--space-3);color:var(--text-primary);}.directory-grid{display:grid;gap:var(--space-3);grid-template-columns:repeat(auto-fill,minmax(350px,1fr));}.directory-card{background-color:var(--surface-raised);border:1px solid var(--border-primary);border-radius:8px;transition:transform 0.2s cubic-bezier(0.4,0,0.2,1),background-color 0.2s cubic-bezier(0.4,0,0.2,1),border-color 0.2s cubic-bezier(0.4,0,0.2,1),box-shadow 0.2s cubic-bezier(0.4,0,0.2,1);}.directory-card:hover{transform:translateY(-2px);border-color:var(--accent-primary);background-color:var(--surface-overlay);box-shadow:0 4px 12px rgba(0,0,0,0.4);}.directory-link{display:block;padding:var(--space-3);text-decoration:none;color:inherit;height:100%;}.directory-card h3{font-size:1.25rem;margin-bottom:var(--space-2);color:var(--text-primary);font-weight:600;}.directory-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);font-size:0.875rem;color:var(--text-muted);}.directory-meta .doc-count{background-color:var(--bg-tertiary);padding:2px 8px;border-radius:4px;}.directory-meta .subdir-count{background-color:var(--bg-tertiary);padding:2px 8px;border-radius:4px;}.subdirectory-index .document-entries{margin-top:var(--space-4);}.subdirectory-index .document-entries h2{font-size:1.5rem;margin-bottom:var(--space-3);color:var(--text-primary);}.document-entries .document-entry+.document-entry{margin-top:var(--space-3);}.document-entry+.document-entry{margin-top:var(--space-3);}.empty-directory{text-align:center;color:var(--text-muted);padding:var(--space-6)var(--space-3);font-style:italic;}.subdirectory-index h1{font-size:2.5rem;margin-bottom:var(--space-2);background:var(--gradient-primary);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;}.subdirectory-description{color:var(--text-secondary);margin-bottom:var(--space-3);font-style:italic;line-height:1.5;}.item-count{color:var(--text-muted);font-size:0.9rem;margin-bottom:var(--space-4);padding-bottom:var(--space-2);border-bottom:1px solid var(--border-primary);}a{color:var(--link-primary);text-decoration:none;transition:color 0.2s cubic-bezier(0.4,0,0.2,1);}a:hover{color:var(--link-hover);text-decoration:underline;}.tag{color:var(--text-muted);font-size:0.85rem;margin-right:0.5rem;}.breadcrumbs{margin-bottom:var(--space-3);font-size:0.9rem;color:var(--text-muted);}.breadcrumbs ol{list-style:none;display:flex;align-items:center;}.breadcrumbs li{display:inline;}.breadcrumbs a{color:var(--text-secondary);text-decoration:none;}.breadcrumbs a:hover{color:var(--accent-primary);}.breadcrumbs .separator{margin:0 0.5rem;color:var(--text-muted);}.breadcrumbs .current{color:var(--text-primary);}footer{grid-area:footer;background-color:var(--surface-raised);border-top:1px solid var(--border-primary);padding:var(--space-3)0;text-align:center;color:var(--text-muted);font-size:0.85rem;}@media(max-width:640px){.container{padding:0 var(--space-2);}.nav-divider{display:none;}.nav-container{grid-template-columns:1fr;justify-items:center;gap:var(--space-2);text-align:center;}.nav-menu{justify-content:center;}grid-template-columns:repeat(2,1fr);gap:var(--space-2);max-width:200px;}.file-cards{gap:var(--space-2);}.file-card{padding:var(--space-2);}.file-card-header{flex-direction:column;align-items:flex-start;gap:var(--space-1);}.file-card-meta{flex-direction:column;align-items:flex-start;gap:var(--space-1);}.file-tags{justify-content:flex-start;}padding:var(--space-2)0;margin-bottom:var(--space-4);}main{padding:var(--space-2)0;}}@media(min-width:641px)and(max-width:768px){.nav-container{grid-template-columns:1fr auto;gap:var(--space-3);}gap:var(--space-3);max-width:300px;}.file-cards{max-width:700px;}}@media(min-width:1024px){.container{padding:0 var(--space-6);}.document-list{grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:var(--space-3);}.file-cards{gap:var(--space-4);}.nav-container{gap:var(--space-6);}}.loading{position:relative;pointer-events:none;opacity:0.7;}.loading::after{content:'';position:absolute;top:50%;left:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border:2px solid var(--accent-primary);border-radius:50%;border-top-color:transparent;animation:spinner 0.8s linear infinite;}@keyframes spinner{to{transform:rotate(360deg);}}.file-card,.document-entry,.search-result{transform:translateZ(0);backface-visibility:hidden;perspective:1000px;}.skip-link{position:absolute;top:-40px;left:0;background:var(--accent-primary);color:white;padding:var(--space-1)var(--space-2);text-decoration:none;border-radius:0 0 4px 0;z-index:1001;}.skip-link:focus{top:0;}@media(prefers-contrast:high){:root{--text-primary:#ffffff;--text-secondary:#e0e0e0;--bg-primary:#000000;--bg-secondary:#1a1a1a;--border-primary:#ffffff;}}@media print{header,footer,.search-box{display:none;}body{background:white;color:black;}a{color:black;text-decoration:underline;}}.comments-section{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border-primary);}.comments-section h2{margin-bottom:1.5rem;color:var(--text-primary);}#comments-list{margin-bottom:2rem;}.loading{color:var(--text-muted);text-align:center;padding:2rem;}.error-message{color:var(--error);background:var(--error-bg);padding:1rem;border-radius:8px;border:1px solid rgba(239,68,68,0.3);text-align:center;margin:1rem 0;}.comment{margin-bottom:1.5rem;padding:1rem;background:var(--card-bg);border-radius:8px;border:1px solid var(--border-primary);}.comment-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;}.avatar{width:32px;height:32px;border-radius:50%;border:2px solid var(--border-primary);}.comment-header .author{font-weight:500;color:var(--text-primary);text-decoration:none;}.comment-header .author:hover{color:var(--accent-primary);}.comment-header .date{color:var(--text-muted);font-size:0.85rem;margin-left:auto;}.comment-body{color:var(--text-secondary);line-height:1.6;}.comment-body p{margin:0.5rem 0;}.comment-body p:first-child{margin-top:0;}.comment-body p:last-child{margin-bottom:0;}.comment-body code{background:var(--bg-secondary);padding:0.2em 0.4em;border-radius:3px;font-size:0.9em;}.comment-body pre{background:var(--bg-secondary);padding:1rem;border-radius:4px;overflow-x:auto;}.comment-body blockquote{border-left:3px solid var(--accent-primary);padding-left:1rem;margin:1rem 0;color:var(--text-muted);}#add-comment-btn{display:inline-block;background:var(--accent-primary);color:white;padding:0.5rem 1rem;border-radius:4px;text-decoration:none;font-weight:500;transition:background-color 0.2s ease;}#add-comment-btn:hover{background:var(--accent-hover);}@media(max-width:640px){.comment{padding:0.75rem;}.comment-header{flex-wrap:wrap;}.comment-header .date{width:100%;margin-left:0;margin-top:0.5rem;}}
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="/forge/" class="logo">forge</a>
+            <nav class="site-nav">
+                <a href="/forge/projects/" class="nav-item active">Projects</a>
+                <a href="/forge/areas/" class="nav-item ">Areas</a>
+                <a href="/forge/resources/" class="nav-item ">Resources</a>
+                <a href="/forge/archives/" class="nav-item ">Archives</a>
+                <span class="nav-divider"></span>
+                <a href="/forge/blog/" class="nav-item ">Blog</a>
+            </nav>
+            <button class="nav-toggle" aria-label="Open menu">
+                <span class="burger"></span>
+            </button>
+        </div>
+    </header>
+    
+    <main id="main-content">
+        <div class="container">
+            
+<nav class="breadcrumbs">
+    <ol>
+        <li><a href="/forge/">Home</a></li><li class="separator">/</li><li><a href="/forge/projects/">Projects</a></li><li class="separator">/</li><li><a href="/forge/projects/github-markdown-cms/">Github Markdown Cms</a></li><li class="separator">/</li><li><a href="/forge/projects/github-markdown-cms/archive/">Archive</a></li><li class="separator">/</li><li class="current">GitHub Markdown CMS Implementation Roadmap v2</li>
+    </ol>
+</nav>
+
+            
+<article class="document">
+    <header class="document-header">
+        <h1>GitHub Markdown CMS Implementation Roadmap v2</h1>
+        <div class="document-meta"><time class="date">2025-06-14</time>
+<span class="status status-active">active</span>
+<div class="tags"><span class="tag">implementation</span> <span class="tag">roadmap</span> <span class="tag">planning</span> <span class="tag">tdd</span> <span class="tag">nextjs</span> <span class="tag">pwa</span></div></div>
+    </header>
+    
+    <div class="document-content">
+        <hr />
+<p>title: GitHub Markdown CMS Implementation Roadmap v2
+category: projects
+created: 2025-06-14
+modified: 2025-06-14
+tags: [cms, github, markdown, implementation, roadmap, nextjs, pwa]
+command_type: plan
+project: github-markdown-cms
+status: active
+generated_by: /plan
+implements: projects/github-markdown-cms/spec-github-markdown-cms-v2.md
+related_docs:</p>
+<ul>
+<li>projects/github-markdown-cms/spec-github-markdown-cms-v2.md</li>
+<li>projects/github-markdown-cms/report-design-review.md</li>
+<li>projects/github-markdown-cms/index.md
+context_source:</li>
+<li>projects/github-markdown-cms/spec-github-markdown-cms-v2.md</li>
+</ul>
+<hr />
+<h1>GitHub Markdown CMS Implementation Roadmap v2</h1>
+<h2>Executive Summary</h2>
+<p>This roadmap provides a detailed implementation plan for the GitHub Markdown CMS v2, focusing on progressive enhancement, mobile-first design, and rapid user value delivery. The plan emphasizes Test-Driven Development (TDD) with a strong focus on user experience across all devices.</p>
+<h2>Implementation Strategy</h2>
+<h3>Core Principles</h3>
+<ol>
+<li><strong>Mobile-First Development</strong>: Every feature designed for touch first</li>
+<li><strong>Progressive Enhancement</strong>: Core features work everywhere, enhanced features detected</li>
+<li><strong>Demo-First Approach</strong>: Users can try before they authenticate</li>
+<li><strong>Offline-First Architecture</strong>: Local functionality with smart sync</li>
+<li><strong>Incremental Delivery</strong>: Ship value every sprint</li>
+</ol>
+<h3>Technology Stack (Finalized)</h3>
+<pre><code class="language-yaml">Frontend:
+  Framework: Next.js 14.2+ (App Router)
+  Editor: Lexical 0.12+
+  State: Zustand 4.4+ &amp; TanStack Query 5.0+
+  Storage: Dexie.js 3.2+
+  UI: Tailwind CSS 3.4+ &amp; Radix UI
+
+Backend:
+  Runtime: Edge Functions (Vercel/Netlify)
+  Auth: NextAuth.js 5.0 (Auth.js)
+  API: GitHub REST &amp; GraphQL via Octokit
+
+Testing:
+  Unit: Vitest 1.0+
+  Integration: Testing Library
+  E2E: Playwright 1.40+
+
+Development:
+  Language: TypeScript 5.3+
+  Package Manager: pnpm 8.0+
+  Bundler: Turbo (via Next.js)
+</code></pre>
+<h2>Phase 1: Foundation &amp; Demo Mode (Week 1-2)</h2>
+<h3>Sprint 1.1: Project Setup &amp; Core Infrastructure</h3>
+<p><strong>Goal</strong>: Establish development environment and core architecture</p>
+<p><strong>Implementation Steps</strong>:</p>
+<pre><code class="language-bash"># 1. Initialize monorepo
+pnpm create next-app@latest github-markdown-cms --typescript --tailwind --app
+cd github-markdown-cms
+
+# 2. Setup project structure
+mkdir -p src/{components,features,lib,hooks,stores,types}
+mkdir -p src/app/{(auth),api,demo}
+
+# 3. Configure development tools
+pnpm add -D @types/node vitest @vitejs/plugin-react
+pnpm add -D prettier eslint-config-prettier husky lint-staged
+</code></pre>
+<p><strong>Core Files to Create</strong>:</p>
+<pre><code class="language-typescript">// src/lib/config.ts
+export const config = {
+  app: {
+    name: 'GitHub Markdown CMS',
+    demoMode: process.env.NEXT_PUBLIC_DEMO_MODE === 'true',
+  },
+  github: {
+    clientId: process.env.GITHUB_CLIENT_ID!,
+    scope: 'repo,user',
+  },
+  editor: {
+    defaultVimMode: 'off' as const,
+    themes: ['rose-pine'] as const,
+  },
+};
+
+// src/types/index.ts
+export interface User {
+  id: string;
+  login: string;
+  avatar: string;
+  repos?: Repository[];
+}
+
+export interface Repository {
+  id: string;
+  name: string;
+  owner: string;
+  defaultBranch: string;
+  private: boolean;
+}
+
+export interface Post {
+  path: string;
+  content: string;
+  frontmatter: Record&lt;string, any&gt;;
+  sha?: string;
+  isDirty: boolean;
+}
+</code></pre>
+<p><strong>Tests First</strong>:</p>
+<pre><code class="language-typescript">// src/__tests__/setup.test.ts
+describe('Application Setup', () =&gt; {
+  test('loads configuration correctly');
+  test('initializes in demo mode when configured');
+  test('requires auth in production mode');
+});
+</code></pre>
+<h3>Sprint 1.2: Demo Mode Implementation</h3>
+<p><strong>Goal</strong>: Zero-friction first experience</p>
+<p><strong>Key Components</strong>:</p>
+<pre><code class="language-typescript">// src/app/demo/page.tsx
+export default function DemoPage() {
+  return (
+    &lt;DemoProvider&gt;
+      &lt;Editor
+        initialContent={DEMO_CONTENT}
+        readOnly={false}
+        showAuthPrompt={true}
+      /&gt;
+    &lt;/DemoProvider&gt;
+  );
+}
+
+// src/features/demo/DemoProvider.tsx
+export function DemoProvider({ children }: Props) {
+  // Mock GitHub-like API for demo
+  const mockAPI = {
+    getFiles: () =&gt; DEMO_FILES,
+    saveFile: (content: string) =&gt; localStorage.setItem('demo', content),
+    getFile: () =&gt; localStorage.getItem('demo'),
+  };
+
+  return (
+    &lt;GitHubContext.Provider value={mockAPI}&gt;
+      {children}
+    &lt;/GitHubContext.Provider&gt;
+  );
+}
+</code></pre>
+<p><strong>Success Criteria</strong>:</p>
+<ul>
+<li>Landing page loads in &lt;2s</li>
+<li>Demo editor functional without auth</li>
+<li>Mobile responsive layout works</li>
+<li>Basic markdown editing operational</li>
+</ul>
+<h3>Sprint 1.3: Basic Editor with Lexical</h3>
+<p><strong>Goal</strong>: Solid editing foundation</p>
+<p><strong>Implementation</strong>:</p>
+<pre><code class="language-typescript">// src/components/Editor/LexicalEditor.tsx
+import { $getRoot, $createParagraphNode } from 'lexical';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
+
+export function LexicalEditor({
+  initialContent,
+  onChange,
+  isMobile
+}: Props) {
+  const initialConfig = {
+    namespace: 'GitHubCMS',
+    theme: EditorTheme,
+    onError: (error: Error) =&gt; console.error(error),
+    nodes: [HeadingNode, CodeNode, LinkNode, ImageNode],
+  };
+
+  return (
+    &lt;LexicalComposer initialConfig={initialConfig}&gt;
+      &lt;div className="editor-container"&gt;
+        &lt;RichTextPlugin
+          contentEditable={&lt;ContentEditable /&gt;}
+          placeholder={&lt;Placeholder /&gt;}
+          ErrorBoundary={LexicalErrorBoundary}
+        /&gt;
+        &lt;MarkdownShortcutPlugin /&gt;
+        {isMobile &amp;&amp; &lt;MobileToolbar /&gt;}
+      &lt;/div&gt;
+    &lt;/LexicalComposer&gt;
+  );
+}
+</code></pre>
+<h2>Phase 2: GitHub Integration &amp; Mobile (Week 3-4)</h2>
+<h3>Sprint 2.1: Authentication System</h3>
+<p><strong>Goal</strong>: Secure GitHub authentication with edge functions</p>
+<p><strong>Edge Function Implementation</strong>:</p>
+<pre><code class="language-typescript">// src/app/api/auth/[...nextauth]/route.ts
+import NextAuth from 'next-auth';
+import GithubProvider from 'next-auth/providers/github';
+
+export const { auth, handlers } = NextAuth({
+  providers: [
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: 'repo user',
+        },
+      },
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, account }) {
+      if (account?.access_token) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
+  },
+});
+</code></pre>
+<p><strong>Personal Access Token Support</strong>:</p>
+<pre><code class="language-typescript">// src/features/auth/PatAuthForm.tsx
+export function PatAuthForm() {
+  const [token, setToken] = useState('');
+
+  const validateToken = async () =&gt; {
+    const octokit = new Octokit({ auth: token });
+    try {
+      const { data } = await octokit.users.getAuthenticated();
+      // Store encrypted token
+      await secureStorage.setToken(token);
+      router.push('/editor');
+    } catch (error) {
+      showError('Invalid token');
+    }
+  };
+}
+</code></pre>
+<h3>Sprint 2.2: Repository Management</h3>
+<p><strong>Goal</strong>: Browse and select repositories</p>
+<p><strong>Implementation</strong>:</p>
+<pre><code class="language-typescript">// src/features/repos/useRepositories.ts
+export function useRepositories() {
+  return useQuery({
+    queryKey: ['repositories'],
+    queryFn: async () =&gt; {
+      const octokit = await getOctokit();
+      const { data } = await octokit.repos.listForAuthenticatedUser({
+        per_page: 100,
+        sort: 'updated',
+      });
+
+      // Filter for GitHub Pages repos
+      return data.filter((repo) =&gt; repo.has_pages || repo.name.includes('.github.io'));
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
+</code></pre>
+<h3>Sprint 2.3: Mobile-First UI</h3>
+<p><strong>Goal</strong>: Touch-optimized interface</p>
+<p><strong>Mobile Components</strong>:</p>
+<pre><code class="language-typescript">// src/components/Mobile/MobileNav.tsx
+export function MobileNav() {
+  const { swipeHandlers } = useSwipeGesture({
+    onSwipeRight: () =&gt; openFileDrawer(),
+    onSwipeLeft: () =&gt; openPreview(),
+  });
+
+  return (
+    &lt;nav {...swipeHandlers} className="md:hidden"&gt;
+      &lt;MobileToolbar /&gt;
+      &lt;BottomSheet /&gt;
+    &lt;/nav&gt;
+  );
+}
+
+// src/components/Mobile/TouchKeyboard.tsx
+export function TouchKeyboard() {
+  const shortcuts = ['#', '**', '_', '[]()', '```', '&gt;', '-'];
+
+  return (
+    &lt;div className="fixed bottom-0 left-0 right-0 bg-gray-100 p-2"&gt;
+      {shortcuts.map(s =&gt; (
+        &lt;button
+          key={s}
+          onClick={() =&gt; insertText(s)}
+          className="px-3 py-2 mr-2 bg-white rounded"
+        &gt;
+          {s}
+        &lt;/button&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h2>Phase 3: Media &amp; Offline (Week 5-6)</h2>
+<h3>Sprint 3.1: Image Management System</h3>
+<p><strong>Goal</strong>: Clipboard paste, drag-drop, optimization</p>
+<p><strong>Image Upload Pipeline</strong>:</p>
+<pre><code class="language-typescript">// src/features/media/ImageUploader.ts
+export class ImageUploader {
+  async handlePaste(e: ClipboardEvent) {
+    const items = Array.from(e.clipboardData?.items || []);
+    const imageItem = items.find((item) =&gt; item.type.startsWith('image/'));
+
+    if (imageItem) {
+      const file = imageItem.getAsFile();
+      if (file) {
+        const optimized = await this.optimize(file);
+        const url = await this.upload(optimized);
+        return url;
+      }
+    }
+  }
+
+  async optimize(file: File): Promise&lt;File&gt; {
+    // Resize if &gt; 2048px
+    // Compress if &gt; 500KB
+    // Convert to WebP if supported
+    return optimizeImage(file, {
+      maxWidth: 2048,
+      maxSize: 500 * 1024,
+      format: 'webp',
+    });
+  }
+
+  async upload(file: File): Promise&lt;string&gt; {
+    const strategy = this.selectStrategy(file);
+    return strategy.upload(file);
+  }
+}
+</code></pre>
+<h3>Sprint 3.2: Offline-First Architecture</h3>
+<p><strong>Goal</strong>: Complete offline functionality</p>
+<p><strong>Service Worker Setup</strong>:</p>
+<pre><code class="language-typescript">// src/service-worker.ts
+import { precacheAndRoute } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import { NetworkFirst, CacheFirst } from 'workbox-strategies';
+
+// Precache app shell
+precacheAndRoute(self.__WB_MANIFEST);
+
+// API caching strategy
+registerRoute(
+  ({ url }) =&gt; url.pathname.startsWith('/api/github'),
+  new NetworkFirst({
+    cacheName: 'github-api',
+    networkTimeoutSeconds: 5,
+  }),
+);
+
+// Offline queue for mutations
+const queue = new Queue('github-sync', {
+  onSync: async ({ queue }) =&gt; {
+    let entry;
+    while ((entry = await queue.shiftRequest())) {
+      try {
+        await fetch(entry.request);
+      } catch (error) {
+        await queue.unshiftRequest(entry);
+        throw error;
+      }
+    }
+  },
+});
+</code></pre>
+<h3>Sprint 3.3: Progressive Vim Mode</h3>
+<p><strong>Goal</strong>: Adaptive vim experience</p>
+<p><strong>Implementation</strong>:</p>
+<pre><code class="language-typescript">// src/features/vim/ProgressiveVim.tsx
+export function useProgressiveVim() {
+  const [level, setLevel] = useState&lt;VimLevel&gt;('off');
+  const [commands, setCommands] = useState&lt;string[]&gt;([]);
+
+  // Track vim-like input
+  useEffect(() =&gt; {
+    if (level === 'off' &amp;&amp; commands.includes(':w')) {
+      showToast({
+        title: 'Enable Vim Mode?',
+        description: 'You seem familiar with Vim commands',
+        action: () =&gt; setLevel('basic'),
+      });
+    }
+  }, [commands]);
+
+  // Progressive command sets
+  const availableCommands = {
+    off: [],
+    basic: [':w', ':q', 'i', 'Esc', 'hjkl'],
+    intermediate: [...basic, 'v', '/', 'n', 'p'],
+    advanced: [...intermediate, 'q', '@', '"'],
+  };
+
+  return { level, setLevel, availableCommands };
+}
+</code></pre>
+<h2>Phase 4: Advanced Features &amp; Polish (Week 7-8)</h2>
+<h3>Sprint 4.1: Conflict Resolution &amp; Sync</h3>
+<p><strong>Goal</strong>: Smart merge conflict handling</p>
+<p><strong>Three-Way Merge UI</strong>:</p>
+<pre><code class="language-typescript">// src/features/sync/ConflictResolver.tsx
+export function ConflictResolver({ conflict }: Props) {
+  const [resolution, setResolution] = useState&lt;Resolution&gt;();
+
+  return (
+    &lt;div className="grid grid-cols-3 gap-4"&gt;
+      &lt;div&gt;
+        &lt;h3&gt;Your Version&lt;/h3&gt;
+        &lt;DiffEditor content={conflict.local} /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;h3&gt;Current Version&lt;/h3&gt;
+        &lt;DiffEditor content={conflict.remote} /&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;h3&gt;Common Ancestor&lt;/h3&gt;
+        &lt;DiffEditor content={conflict.base} /&gt;
+      &lt;/div&gt;
+
+      &lt;div className="col-span-3"&gt;
+        &lt;ResolutionOptions onSelect={setResolution} /&gt;
+        &lt;MergePreview resolution={resolution} /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3>Sprint 4.2: PWA Enhancement</h3>
+<p><strong>Goal</strong>: App-like experience</p>
+<p><strong>PWA Configuration</strong>:</p>
+<pre><code class="language-typescript">// src/app/manifest.ts
+export default function manifest() {
+  return {
+    name: 'GitHub Markdown CMS',
+    short_name: 'GitCMS',
+    description: 'Edit your GitHub Pages blog',
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#191724',
+    theme_color: '#c4a7e7',
+    icons: [
+      {
+        src: '/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+    ],
+  };
+}
+</code></pre>
+<h3>Sprint 4.3: Performance Optimization</h3>
+<p><strong>Goal</strong>: Meet all performance targets</p>
+<p><strong>Optimization Checklist</strong>:</p>
+<ol>
+<li>Route-based code splitting</li>
+<li>Image lazy loading with blur placeholders</li>
+<li>Virtual scrolling for file lists &gt;100 items</li>
+<li>Debounced search with Web Workers</li>
+<li>Incremental Static Regeneration for landing</li>
+</ol>
+<h2>Testing Strategy</h2>
+<h3>Test Structure</h3>
+<pre><code>tests/
+├── unit/           # Component logic
+├── integration/    # Feature flows
+├── e2e/           # User journeys
+└── performance/   # Speed metrics
+</code></pre>
+<h3>Critical Test Scenarios</h3>
+<pre><code class="language-typescript">// tests/e2e/critical-paths.spec.ts
+test('New user can edit in demo mode', async ({ page }) =&gt; {
+  await page.goto('/');
+  await page.click('text=Try Demo');
+  await page.type('.editor', '# Hello World');
+  await expect(page.locator('.preview')).toContainText('Hello World');
+});
+
+test('Mobile user can create and publish post', async ({ page, isMobile }) =&gt; {
+  // Set mobile viewport
+  await page.setViewportSize({ width: 375, height: 812 });
+  // Test touch interactions
+});
+</code></pre>
+<h2>Deployment Strategy</h2>
+<h3>Infrastructure as Code</h3>
+<pre><code class="language-yaml"># vercel.json
+{
+  'functions': { 'app/api/auth/[...nextauth]/route.ts': { 'runtime': 'edge' } },
+  'crons': [{ 'path': '/api/cron/cleanup', 'schedule': '0 0 * * *' }],
+}
+</code></pre>
+<h3>Environment Configuration</h3>
+<pre><code class="language-bash"># Production
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=https://gitcms.app
+
+# Development
+NEXT_PUBLIC_DEMO_MODE=true
+</code></pre>
+<h2>Success Metrics &amp; Monitoring</h2>
+<h3>Key Performance Indicators</h3>
+<ol>
+<li><strong>Time to First Edit</strong>: &lt;30s for new users</li>
+<li><strong>Mobile Performance</strong>: Lighthouse &gt;95</li>
+<li><strong>Sync Success Rate</strong>: &gt;99.9%</li>
+<li><strong>User Retention</strong>: &gt;80% weekly active</li>
+</ol>
+<h3>Monitoring Setup</h3>
+<pre><code class="language-typescript">// src/lib/analytics.ts
+export const analytics = {
+  track(event: string, properties?: any) {
+    if (userConsent) {
+      // Privacy-focused analytics
+      plausible(event, { props: properties });
+    }
+  },
+
+  // Performance monitoring
+  measureWebVitals() {
+    if ('web-vital' in window) {
+      new PerformanceObserver((list) =&gt; {
+        for (const entry of list.getEntries()) {
+          analytics.track('web-vital', {
+            name: entry.name,
+            value: Math.round(entry.value),
+          });
+        }
+      }).observe({ entryTypes: ['web-vital'] });
+    }
+  },
+};
+</code></pre>
+<h2>Risk Management</h2>
+<h3>Technical Mitigations</h3>
+<ol>
+<li><strong>API Rate Limits</strong>: Implement exponential backoff and caching</li>
+<li><strong>Storage Quotas</strong>: Monitor usage and implement cleanup</li>
+<li><strong>Offline Conflicts</strong>: Queue operations with conflict detection</li>
+</ol>
+<h3>Launch Strategy</h3>
+<ol>
+<li>Soft launch with invite-only beta</li>
+<li>Gather feedback from 10-20 power users</li>
+<li>Iterate based on real usage patterns</li>
+<li>Public launch with Product Hunt campaign</li>
+</ol>
+<h2>Conclusion</h2>
+<p>This implementation roadmap provides a clear path from zero to a production-ready Progressive Web App that serves both mobile and desktop users effectively. By focusing on demo mode first and progressive enhancement throughout, we ensure rapid user acquisition and high retention rates.</p>
+
+    </div>
+    
+    
+</article>
+
+        </div>
+    </main>
+    
+    <footer role="contentinfo">
+        <div class="container">
+            <p>Generated by para-ssg | Press <kbd>Ctrl</kbd>+<kbd>K</kbd> to search</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.0.0/marked.min.js"></script>
+    <script>
+        
+(function(){let searchIndex=null;let searchInput=null;let searchResults=null;let searchOverlay=null;let currentFocus=-1;
+document.addEventListener('DOMContentLoaded',function(){initializeSearch();});function initializeSearch(){
+createSearchOverlay();
+document.addEventListener('keydown',function(e){
+if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openSearch();}
+else if(e.key==='/'&&!isInputElement(e.target)){e.preventDefault();openSearch();}
+else if(e.key==='Escape'&&searchOverlay.style.display==='block'){closeSearch();}});
+loadSearchIndex();}function createSearchOverlay(){
+searchOverlay=document.createElement('div');searchOverlay.id='search-overlay';searchOverlay.setAttribute('role','dialog');searchOverlay.setAttribute('aria-modal','true');searchOverlay.setAttribute('aria-labelledby','search-input');searchOverlay.style.cssText=`display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,10,10,0.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:1000;opacity:0;transition:opacity 0.3s ease;`;
+const searchContainer=document.createElement('div');searchContainer.id='search-container';searchContainer.style.cssText=`position:absolute;top:10%;left:50%;transform:translateX(-50%)scale(0.95);width:90%;max-width:700px;background:var(--surface-2,#2a2a2a);border:1px solid var(--surface-3,#333);border-radius:16px;box-shadow:0 24px 48px rgba(0,0,0,0.4),0 12px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.05);max-height:80vh;display:flex;flex-direction:column;opacity:0;transition:transform 0.3s ease,opacity 0.3s ease;`;
+searchInput=document.createElement('input');searchInput.type='text';searchInput.id='search-input';searchInput.placeholder='Search documents... (Press "/" or Ctrl+K)';searchInput.setAttribute('aria-label','Search documents');searchInput.setAttribute('aria-describedby','search-instructions');searchInput.style.cssText=`padding:24px 28px;font-size:18px;font-weight:400;border:none;border-bottom:1px solid var(--surface-3,#333);background:transparent;outline:none;color:var(--text-primary,#e0e0e0);transition:border-color 0.2s ease;`;searchInput.setAttribute('autocomplete','off');searchInput.setAttribute('spellcheck','false');
+searchResults=document.createElement('div');searchResults.id='search-results';searchResults.setAttribute('role','listbox');searchResults.setAttribute('aria-label','Search results');searchResults.setAttribute('aria-live','polite');searchResults.style.cssText=`padding:0 12px 12px;overflow-y:auto;max-height:calc(80vh-90px);scrollbar-width:thin;scrollbar-color:var(--surface-4,#444)transparent;`;
+const scrollbarStyles=document.createElement('style');scrollbarStyles.textContent=`#search-results::-webkit-scrollbar{width:8px;}#search-results::-webkit-scrollbar-track{background:transparent;}#search-results::-webkit-scrollbar-thumb{background:var(--surface-4,#444);border-radius:4px;}#search-results::-webkit-scrollbar-thumb:hover{background:var(--surface-5,#555);}#search-container.search-active{transform:translateX(-50%)scale(1);opacity:1;}#search-overlay.search-active{opacity:1;}@keyframes resultFadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}.search-result{animation:resultFadeIn 0.3s ease forwards;}.search-result:nth-child(1){animation-delay:0s;}.search-result:nth-child(2){animation-delay:0.05s;}.search-result:nth-child(3){animation-delay:0.1s;}.search-result:nth-child(4){animation-delay:0.15s;}.search-result:nth-child(5){animation-delay:0.2s;}.search-result:nth-child(n+6){animation-delay:0.25s;}`;document.head.appendChild(scrollbarStyles);
+const searchInstructions=document.createElement('div');searchInstructions.id='search-instructions';searchInstructions.className='sr-only';searchInstructions.textContent='Type to search. Use arrow keys to navigate results. Press Enter to select.';searchInstructions.style.cssText=`position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;`;
+searchContainer.appendChild(searchInput);searchContainer.appendChild(searchInstructions);searchContainer.appendChild(searchResults);searchOverlay.appendChild(searchContainer);document.body.appendChild(searchOverlay);
+searchInput.addEventListener('input',performSearch);searchInput.addEventListener('keydown',handleSearchNavigation);searchOverlay.addEventListener('click',function(e){if(e.target===searchOverlay){closeSearch();}});}function loadSearchIndex(){fetch('/search-index.json').then(response=>response.json()).then(data=>{searchIndex=data;console.log('Search index loaded:',data.stats);}).catch(error=>{console.error('Failed to load search index:',error);});}function openSearch(){if(!searchOverlay)return;searchOverlay.style.display='block';searchInput.value='';searchResults.innerHTML='';currentFocus=-1;
+requestAnimationFrame(()=>{searchOverlay.classList.add('search-active');document.getElementById('search-container').classList.add('search-active');searchInput.focus();});}function closeSearch(){if(!searchOverlay)return;
+searchOverlay.classList.remove('search-active');document.getElementById('search-container').classList.remove('search-active');
+setTimeout(()=>{searchOverlay.style.display='none';searchInput.value='';searchResults.innerHTML='';},300);}function performSearch(){const query=searchInput.value.toLowerCase().trim();if(!query){searchResults.innerHTML='';return;}if(!searchIndex||!searchIndex.entries){searchResults.innerHTML='<p style="color: #a0a0a0;">Search index not loaded yet...</p>';return;}const results=searchDocuments(query);displayResults(results,query);}function searchDocuments(query){const results=[];const queryWords=query.split(/\s+/).filter(w=>w.length>0);for(const entry of searchIndex.entries){let score=0;let matches=[];
+for(const word of queryWords){if(entry.title.toLowerCase().includes(word)){score+=10;matches.push('title');}}
+for(const tag of entry.tags){for(const word of queryWords){if(tag.toLowerCase().includes(word)){score+=5;matches.push('tag');break;}}}
+for(const word of queryWords){if(entry.content.includes(word)){score+=1;matches.push('content');}}if(score>0){results.push({entry:entry,score:score,matches:[...new Set(matches)]});}}
+results.sort((a,b)=>b.score-a.score);return results.slice(0,20);
+}function displayResults(results,query){if(results.length===0){searchResults.innerHTML='<p style="color: #a0a0a0;" role="status">No results found</p>';searchResults.setAttribute('aria-label','No search results found');return;}searchResults.setAttribute('aria-label',`${results.length}search results found`);const html=results.map((result,index)=>{const entry=result.entry;const highlightedTitle=highlightText(entry.title,query);const highlightedExcerpt=highlightText(entry.excerpt,query);const categoryColors={'projects':'var(--accent-gradient-1, linear-gradient(135deg, #007acc, #0099ff))','areas':'var(--accent-gradient-2, linear-gradient(135deg, #00cc88, #00ffaa))','resources':'var(--accent-gradient-3, linear-gradient(135deg, #cc7700, #ff9900))','archives':'var(--accent-gradient-4, linear-gradient(135deg, #cc0077, #ff0099))'};const categoryGradient=categoryColors[entry.category]||categoryColors['resources'];return`<div class="search-result"data-index="${index}"role="option"aria-selected="false"tabindex="-1"style="
+                    position: relative;
+                    padding: 20px;
+                    margin: 0 16px 16px;
+                    background: var(--surface-1, #1a1a1a);
+                    border: 1px solid var(--surface-3, #333);
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    transform: translateY(0);
+                    opacity: 0;
+                "><div style="
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        width: 4px;
+                        background: ${categoryGradient};
+                        border-radius: 12px 0 0 12px;
+                        transition: width 0.3s ease;
+                    "></div><h3 style="
+                        margin: 0 0 8px 0;
+                        padding-left: 8px;
+                        font-size: 18px;
+                        font-weight: 600;
+                        line-height: 1.4;
+                    "><a href="${entry.path}"style="
+                            text-decoration: none;
+                            color: var(--text-primary, #e0e0e0);
+                            transition: color 0.2s ease;
+                        "onmouseover="this.style.color='var(--link-hover, #4a9eff)'"onmouseout="this.style.color='var(--text-primary, #e0e0e0)'">${highlightedTitle}</a></h3><p style="
+                        margin: 0 0 12px 0;
+                        padding-left: 8px;
+                        color: var(--text-secondary, #a0a0a0);
+                        font-size: 14px;
+                        line-height: 1.6;
+                    ">${highlightedExcerpt}</p><div style="
+                        padding-left: 8px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                        align-items: center;
+                    "><span style="
+                            background: ${categoryGradient};
+                            color: white;
+                            padding: 4px 12px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 500;
+                            text-transform: capitalize;
+                        ">${entry.category}</span>${entry.tags.slice(0,3).map(tag=>`<span style="
+                                background: var(--surface-3, #333);
+                                color: var(--text-secondary, #a0a0a0);
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                font-size: 12px;
+                                transition: all 0.2s ease;
+                            "onmouseover="this.style.background='var(--surface-4, #444)'"onmouseout="this.style.background='var(--surface-3, #333)'">${tag}</span>`).join('')}</div></div>`;}).join('');searchResults.innerHTML=html;
+const resultElements=searchResults.querySelectorAll('.search-result');resultElements.forEach(el=>{
+el.addEventListener('mouseenter',function(){this.style.background='var(--surface-2, #2a2a2a)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.2)';const accentBar=this.querySelector('div');if(accentBar)accentBar.style.width='6px';});el.addEventListener('mouseleave',function(){this.style.background='var(--surface-1, #1a1a1a)';this.style.transform='translateY(0)';this.style.boxShadow='none';const accentBar=this.querySelector('div');if(accentBar)accentBar.style.width='4px';});
+el.addEventListener('click',function(e){if(!e.target.closest('a')){const link=this.querySelector('a');if(link)window.location.href=link.href;}});});}function highlightText(text,query){if(!text)return'';const words=query.split(/\s+/).filter(w=>w.length>0);let highlighted=text;for(const word of words){const regex=new RegExp(`(${escapeRegex(word)})`,'gi');highlighted=highlighted.replace(regex,'<mark style="background: var(--link-color, #007acc); color: white; padding: 1px 4px; border-radius: 3px; font-weight: 500;">$1</mark>');}return highlighted;}function handleSearchNavigation(e){const results=searchResults.querySelectorAll('.search-result');if(e.key==='ArrowDown'){e.preventDefault();currentFocus++;if(currentFocus>=results.length)currentFocus=0;setFocus(results);}else if(e.key==='ArrowUp'){e.preventDefault();currentFocus--;if(currentFocus<0)currentFocus=results.length-1;setFocus(results);}else if(e.key==='Enter'&&currentFocus>=0&&currentFocus<results.length){e.preventDefault();const link=results[currentFocus].querySelector('a');if(link)window.location.href=link.href;}}function setFocus(results){results.forEach((el,index)=>{if(index===currentFocus){el.style.background='var(--link-color, #007acc)';el.style.transform='translateY(-2px) translateZ(0)';el.style.boxShadow='0 0 0 2px var(--link-color, #007acc)';el.scrollIntoView({block:'nearest',behavior:'smooth'});el.setAttribute('aria-selected','true');el.setAttribute('tabindex','0');const accentBar=el.querySelector('div');if(accentBar)accentBar.style.width='8px';}else{el.style.background='var(--surface-1, #1a1a1a)';el.style.transform='translateY(0) translateZ(0)';el.style.boxShadow='none';el.setAttribute('aria-selected','false');el.setAttribute('tabindex','-1');const accentBar=el.querySelector('div');if(accentBar)accentBar.style.width='4px';}});}function isInputElement(element){return element.tagName==='INPUT'||element.tagName==='TEXTAREA'||element.isContentEditable;}function escapeRegex(string){return string.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+document.addEventListener('DOMContentLoaded',function(){const inlineSearchBoxes=document.querySelectorAll('.search-box');inlineSearchBoxes.forEach(box=>{box.addEventListener('click',openSearch);box.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();openSearch();}});});});})();
+        // Header interactions for para-ssg
+(function(){
+    const header = document.querySelector('.site-header');
+    const toggle = document.querySelector('.nav-toggle');
+    if(toggle){
+        toggle.addEventListener('click', () => header.classList.toggle('open'));
+    }
+    window.addEventListener('scroll', () => {
+        if(window.scrollY > 40){
+            document.body.classList.add('scrolled');
+        } else {
+            document.body.classList.remove('scrolled');
+        }
+    });
+})();
+    </script>
+</body>
+</html>
