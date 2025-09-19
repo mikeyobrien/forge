@@ -12,7 +12,7 @@ export default [
       '**/coverage/**',
       '**/*.js',
       '**/*.mjs',
-      'code/mcp-server/**',
+      'code/mcp-server/**','code/forge-mcp/**',
     ],
   },
   js.configs.recommended,
@@ -28,6 +28,9 @@ export default [
           './tsconfig.vitest.json',
           './code/*/tsconfig.json',
           './code/*/tsconfig.test.json',
+          './packages/*/tsconfig.json',
+          './packages/*/tsconfig.vitest.json',
+          './packages/*/tsconfig.node.json',
         ],
       },
       globals: {
@@ -56,6 +59,10 @@ export default [
         setImmediate: 'readonly',
         clearImmediate: 'readonly',
         NodeJS: 'readonly',
+        document: 'readonly',
+        window: 'readonly',
+        HTMLElement: 'readonly',
+        JSX: 'readonly',
       },
     },
     plugins: {
@@ -105,6 +112,15 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
+    },
+  },
+  {
+    files: ['packages/web/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
 ];

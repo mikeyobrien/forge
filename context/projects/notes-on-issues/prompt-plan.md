@@ -94,6 +94,9 @@ Deliverable: patch.
 ```
 
 ```
+**Status**: ✅ Complete
+**Completion**: 2025-06-14
+**Notes**: CI workflow added with Node matrix and README badge.
 Prompt P-03 — Hello-World PWA Shell
 
 Context: infra is ready.
@@ -115,6 +118,9 @@ Return patch.
 ```
 
 ```
+**Status**: ✅ Complete
+**Completion**: 2025-06-15
+**Notes**: Vite React PWA scaffolded with PWA plugin and passing tests.
 Prompt P-04 — AuthManager Skeleton (gh-notes-core)
 
 Create new workspace package `packages/gh-notes-core`.
